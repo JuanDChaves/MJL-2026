@@ -1,0 +1,7 @@
+{
+  "name": "MJL-APP",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
