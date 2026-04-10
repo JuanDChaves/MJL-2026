@@ -6,10 +6,32 @@ import {
   FormControl,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonItem, IonIcon, IonInput, IonButton, IonList, IonText, IonCheckbox, IonSpinner, IonFabButton, IonFab, IonFabList } from '@ionic/angular/standalone';
+import {
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardContent,
+  IonItem,
+  IonIcon,
+  IonInput,
+  IonButton,
+  IonList,
+  IonText,
+  IonSpinner,
+  IonFabButton,
+  IonFab,
+  IonFabList,
+} from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { chevronUpCircle, accessibility } from 'ionicons/icons';
-import { mail, lockClosed, eye, eyeOff, arrowForward } from 'ionicons/icons';
+import {
+  mail,
+  lockClosed,
+  eye,
+  eyeOff,
+  arrowForward,
+  chevronUpCircle,
+  man,
+} from 'ionicons/icons';
 import { LoginService } from '../../services/login-service';
 
 @Component({
@@ -31,8 +53,8 @@ import { LoginService } from '../../services/login-service';
     ReactiveFormsModule,
     IonFabButton,
     IonFab,
-    IonFabList
-],
+    IonFabList,
+  ],
 })
 export class LoginFormComponent {
   private loginServ = inject(LoginService);
@@ -53,7 +75,15 @@ export class LoginFormComponent {
   errorMessage: string | null = null;
 
   constructor() {
-    addIcons({ mail, lockClosed, eye, eyeOff, arrowForward, chevronUpCircle,accessibility });
+    addIcons({
+      mail,
+      lockClosed,
+      eye,
+      eyeOff,
+      arrowForward,
+      chevronUpCircle,
+      man,
+    });
   }
 
   get emailControl() {
@@ -117,5 +147,8 @@ export class LoginFormComponent {
       this.isLoading = false;
     }
   }
-}
 
+  toHome() {
+    this.router.navigate(['/home']);
+  }
+}

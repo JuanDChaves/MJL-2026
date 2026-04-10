@@ -3,6 +3,13 @@
     <ion-title>
       Blank
     </ion-title>
+    @if (userServ.isLogged()) {
+      <ion-buttons slot="end">
+        <ion-button (click)="closeSession()">
+          <ion-icon name="power-sharp"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    }
   </ion-toolbar>
 </ion-header>
 

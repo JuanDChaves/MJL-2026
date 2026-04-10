@@ -34,7 +34,11 @@
           }
 
           <ion-item>
-            <ion-icon name="lock-closed" slot="start" aria-hidden="true"></ion-icon>
+            <ion-icon
+              name="lock-closed"
+              slot="start"
+              aria-hidden="true"
+            ></ion-icon>
             <ion-input
               formControlName="password"
               [type]="showPassword ? 'text' : 'password'"
@@ -66,7 +70,6 @@
             </ion-item>
           }
         </ion-list>
-        
 
         @if (errorMessage) {
           <ion-text color="danger" class="global-error">
@@ -90,14 +93,5 @@
       </form>
     </ion-card-content>
   </ion-card>
-  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
-    <ion-fab-button>
-      <ion-icon name="chevron-up-circle"></ion-icon>
-    </ion-fab-button>
-    <ion-fab-list side="top">
-      <ion-fab-button>
-        <ion-icon name="accessibility"></ion-icon>
-      </ion-fab-button>
-    </ion-fab-list>
-  </ion-fab>
+  
 </div>
