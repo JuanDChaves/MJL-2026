@@ -31,6 +31,7 @@ import {
   arrowForward,
   chevronUpCircle,
   man,
+  colorWand,
 } from 'ionicons/icons';
 import { LoginService } from '../../services/login-service';
 
@@ -83,6 +84,7 @@ export class LoginFormComponent {
       arrowForward,
       chevronUpCircle,
       man,
+      colorWand,
     });
   }
 
@@ -150,5 +152,10 @@ export class LoginFormComponent {
 
   toHome() {
     this.router.navigate(['/home']);
+  }
+
+  autocomplete() {
+    this.email.setValue('matias123@gmail.com');
+    this.password.setValue('12345678');
   }
 }
