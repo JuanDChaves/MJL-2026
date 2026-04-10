@@ -1,0 +1,103 @@
+<div class="login-container">
+  <div class="login-logo">
+    <div class="logo-icon">🍺</div>
+    <h1 class="brand-name">MJL Bar</h1>
+  </div>
+
+  <ion-card class="login-card">
+    <ion-card-header>
+      <ion-card-title>Iniciar Sesión</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <ion-list>
+          <ion-item>
+            <ion-icon name="mail" slot="start" aria-hidden="true"></ion-icon>
+            <ion-input
+              formControlName="email"
+              type="email"
+              label="Correo electrónico"
+              labelPlacement="floating"
+              autocomplete="email"
+              enterkeyhint="next"
+              placeholder="ejemplo@correo.com"
+            ></ion-input>
+          </ion-item>
+
+          @if (emailControl?.touched && getEmailErrorMessage()) {
+            <ion-item lines="none" class="error-item">
+              <ion-text color="danger" class="error-text">
+                {{ getEmailErrorMessage() }}
+              </ion-text>
+            </ion-item>
+          }
+
+          <ion-item>
+            <ion-icon name="lock-closed" slot="start" aria-hidden="true"></ion-icon>
+            <ion-input
+              formControlName="password"
+              [type]="showPassword ? 'text' : 'password'"
+              label="Contraseña"
+              labelPlacement="floating"
+              autocomplete="current-password"
+              enterkeyhint="done"
+              placeholder="••••••••"
+            ></ion-input>
+            <ion-button
+              fill="clear"
+              slot="end"
+              (click)="togglePassword()"
+              aria-label="Mostrar u ocultar contraseña"
+              class="toggle-password-btn"
+            >
+              <ion-icon
+                slot="icon-only"
+                [name]="showPassword ? 'eye-off' : 'eye'"
+              ></ion-icon>
+            </ion-button>
+          </ion-item>
+
+          @if (passwordControl?.touched && getPasswordErrorMessage()) {
+            <ion-item lines="none" class="error-item">
+              <ion-text color="danger" class="error-text">
+                {{ getPasswordErrorMessage() }}
+              </ion-text>
+            </ion-item>
+          }
+        </ion-list>
+        
+
+        @if (errorMessage) {
+          <ion-text color="danger" class="global-error">
+            {{ errorMessage }}
+          </ion-text>
+        }
+
+        <ion-button
+          type="submit"
+          expand="block"
+          [disabled]="isLoading"
+          class="submit-button"
+        >
+          @if (isLoading) {
+            <ion-spinner name="crescent"></ion-spinner>
+          } @else {
+            Ingresar
+            <ion-icon name="arrow-forward" slot="end"></ion-icon>
+          }
+        </ion-button>
+      </form>
+    </ion-card-content>
+  </ion-card>
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button>
+      <ion-icon name="chevron-up-circle"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="top">
+      <ion-fab-button>
+        <ion-icon name="accessibility"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
+</div>
