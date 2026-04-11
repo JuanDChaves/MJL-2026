@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<resources>
-    <string name="app_name">HTN</string>
-    <string name="title_activity_main">HTN</string>
-    <string name="package_name">com.htn.mjl2026</string>
-    <string name="custom_url_scheme">com.htn.mjl2026</string>
-</resources>
