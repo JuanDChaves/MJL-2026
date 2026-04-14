@@ -37,6 +37,21 @@ import {
   flash,
 } from 'ionicons/icons';
 import { Router } from '@angular/router';
+import { UserService } from 'src/app/services/user-service';
+
+type perfilRol =
+  | 'duenio'
+  | 'supervisor'
+  | 'metre'
+  | 'mozo'
+  | 'cocinero'
+  | 'cantinero'
+  | 'cliente';
+type perfilUser = {
+  value: perfilRol;
+  label: string;
+  icon: string;
+};
 
 @Component({
   selector: 'app-registration-form',
@@ -61,7 +76,7 @@ import { Router } from '@angular/router';
 })
 export class RegistrationFormComponent {
   router = inject(Router);
-
+  userService = inject(UserService);
   registrationForm = new FormGroup({
     apellidos: new FormControl('', [
       Validators.required,
@@ -83,12 +98,11 @@ export class RegistrationFormComponent {
       Validators.required,
       Validators.email,
     ]),
-    clave: new FormControl('', [
-      Validators.required,
-      Validators.minLength(6),
-    ]),
+    clave: new FormControl('', [Validators.required, Validators.minLength(6)]),
     perfil: new FormControl('', [Validators.required]),
   });
+  userProfile: perfilRol = 'duenio';
+  profilelist = signal<perfilUser[]>([]);
 
   perfiles = [
     { value: 'duenio', label: 'Dueño', icon: 'person' },
@@ -97,6 +111,7 @@ export class RegistrationFormComponent {
     { value: 'mozo', label: 'Mozo', icon: 'restaurant' },
     { value: 'cocinero', label: 'Cocinero', icon: 'beer' },
     { value: 'cantinero', label: 'Cantinero', icon: 'beer' },
+    { value: 'cliente', label: 'Cliente', icon: 'person' },
   ];
 
   showPassword = signal(false);
@@ -119,6 +134,25 @@ export class RegistrationFormComponent {
       beer,
       flash,
     });
+    this.getPerfilUser();
+  }
+
+  getPerfilUser(): void {
+    if (this.userProfile === 'duenio' || this.userProfile === 'supervisor') {
+      this.profilelist.set([
+        { value: 'metre', label: 'Metre', icon: 'clipboard' },
+        { value: 'mozo', label: 'Mozo', icon: 'restaurant' },
+        { value: 'cocinero', label: 'Cocinero', icon: 'beer' },
+        { value: 'cantinero', label: 'Cantinero', icon: 'beer' }
+      ]);
+      if(this.userProfile === 'duenio') {
+        this.profilelist.update(current => [{ value: 'supervisor', label: 'Supervisor', icon: 'people' },...current, ]);
+      }
+    }else if (this.userProfile === 'metre') {
+      this.profilelist.set([
+        { value: 'cliente', label: 'Cliente', icon: 'person' },
+      ])
+    }    
   }
 
   get f() {
@@ -157,7 +191,9 @@ export class RegistrationFormComponent {
   onSelectPhoto() {
     // TODO: Implementar selección de foto
     // Por ahora simulamos una foto
-    this.profilePhotoUrl.set('https://ionicframework.com/docs/img/demos/avatar.jpeg');
+    this.profilePhotoUrl.set(
+      'https://ionicframework.com/docs/img/demos/avatar.jpeg'
+    );
   }
 
   removePhoto() {

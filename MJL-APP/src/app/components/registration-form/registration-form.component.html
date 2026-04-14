@@ -159,30 +159,33 @@
         </div>
 
         <!-- Perfil -->
-        <div class="field-wrapper">
-          <ion-item class="field-item">
-            <ion-icon name="people" slot="start" class="field-icon"></ion-icon>
-            <ion-select
-              formControlName="perfil"
-              label="Perfil"
-              labelPlacement="floating"
-              placeholder="Seleccionar perfil"
-              interface="popover"
-              class="field-select"
-            >
-              @for (perfil of perfiles; track perfil.value) {
-                <ion-select-option [value]="perfil.value">
-                  {{ perfil.label }}
-                </ion-select-option>
-              }
-            </ion-select>
-          </ion-item>
-          @if (f['perfil'].touched && getErrorMessage('perfil')) {
-            <ion-text color="danger" class="field-error">
-              {{ getErrorMessage('perfil') }}
-            </ion-text>
-          }
-        </div>
+         @if (userService.isLogged()) {
+          
+           <div class="field-wrapper">
+             <ion-item class="field-item">
+               <ion-icon name="people" slot="start" class="field-icon"></ion-icon>
+               <ion-select
+               formControlName="perfil"
+               label="Perfil"
+               labelPlacement="floating"
+               placeholder="Seleccionar perfil"
+               interface="popover"
+               class="field-select"
+               >
+               @for (perfil of this.profilelist(); track perfil.value) {                
+                 <ion-select-option [value]="perfil.value">
+                   {{ perfil.label }}
+                  </ion-select-option>
+                }
+              </ion-select>
+            </ion-item>
+            @if (f['perfil'].touched && getErrorMessage('perfil')) {
+              <ion-text color="danger" class="field-error">
+                {{ getErrorMessage('perfil') }}
+              </ion-text>
+            }
+          </div>
+        }
       </ion-list>
 
       <!-- Submit Button -->
