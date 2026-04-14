@@ -37,7 +37,7 @@ import {
   flash,
 } from 'ionicons/icons';
 import { Router } from '@angular/router';
-import { UserService } from 'src/app/services/user-service';
+import { UserService } from '../../services/user-service';
 
 type perfilRol =
   | 'duenio'
@@ -102,17 +102,7 @@ export class RegistrationFormComponent {
     perfil: new FormControl('', [Validators.required]),
   });
   userProfile: perfilRol = 'duenio';
-  profilelist = signal<perfilUser[]>([]);
-
-  perfiles = [
-    { value: 'duenio', label: 'Dueño', icon: 'person' },
-    { value: 'supervisor', label: 'Supervisor', icon: 'people' },
-    { value: 'metre', label: 'Metre', icon: 'clipboard' },
-    { value: 'mozo', label: 'Mozo', icon: 'restaurant' },
-    { value: 'cocinero', label: 'Cocinero', icon: 'beer' },
-    { value: 'cantinero', label: 'Cantinero', icon: 'beer' },
-    { value: 'cliente', label: 'Cliente', icon: 'person' },
-  ];
+  profilelist = signal<perfilUser[]>([]);  
 
   showPassword = signal(false);
   profilePhotoUrl = signal<string | null>(null);
