@@ -19,4 +19,11 @@ export const routes: Routes = [
         (m) => m.LoginFormComponent,
       ),
   },
+  {
+    path: 'register',
+    loadComponent: () =>
+      import('./components/registration-form/registration-form.component').then(
+        (m) => m.RegistrationFormComponent,
+      ),
+  },
 ];

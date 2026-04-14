@@ -32,6 +32,7 @@ import {
   chevronUpCircle,
   man,
   colorWand,
+  personAdd,
 } from 'ionicons/icons';
 import { LoginService } from '../../services/login-service';
 
@@ -85,6 +86,7 @@ export class LoginFormComponent {
       chevronUpCircle,
       man,
       colorWand,
+      personAdd,
     });
   }
 
@@ -152,6 +154,10 @@ export class LoginFormComponent {
 
   toHome() {
     this.router.navigate(['/home']);
+  }
+
+  toRegister() {
+    this.router.navigate(['/register']);
   }
 
   autocomplete() {

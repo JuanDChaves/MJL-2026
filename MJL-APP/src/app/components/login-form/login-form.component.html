@@ -78,6 +78,17 @@
         }
 
         <ion-button
+          type="button"
+          expand="block"
+          fill="outline"
+          (click)="toRegister()"
+          class="register-button"
+        >
+          Crear Usuario
+          <ion-icon slot="end" name="person-add"></ion-icon>
+        </ion-button>
+
+        <ion-button
           type="submit"
           expand="block"
           [disabled]="isLoading"
