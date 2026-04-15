@@ -1,0 +1,80 @@
+import { inject, Injectable } from '@angular/core';
+import { SupabaseService } from './supabase-service';
+
+export interface BaseEntity {
+  id?: string;
+  activo: boolean;
+}
+
+@Injectable({
+  providedIn: 'root',
+})
+export class DbService<T extends BaseEntity> {
+  private sbService = inject(SupabaseService);
+
+  async insert(
+    table: string,
+    data: Omit<T, 'id'>
+  ): Promise<{ data: T | null; error: any }> {
+    const { data: result, error } = await this.sbService.client
+      .from(table)
+      .insert(data as any)
+      .select()
+      .single();
+    return { data: result, error };
+  }
+
+  async update(
+    table: string,
+    id: string,
+    data: Partial<T>
+  ): Promise<{ data: T | null; error: any }> {
+    const { data: result, error } = await this.sbService.client
+      .from(table)
+      .update(data as any)
+      .eq('id', id)
+      .select()
+      .single();
+    return { data: result, error };
+  }
+
+  async delete(table: string, id: string): Promise<{ error: any }> {
+    const { error } = await this.sbService.client
+      .from(table)
+      .update({ activo: false })
+      .eq('id', id);
+    return { error };
+  }
+
+  async getAll(table: string): Promise<{ data: T[] | null; error: any }> {
+    const { data, error } = await this.sbService.client
+      .from(table)
+      .select('*')
+      .eq('activo', true);
+    return { data: data as T[] | null, error };
+  }
+
+  async getOneById(
+    table: string,
+    id: string
+  ): Promise<{ data: T | null; error: any }> {
+    const { data, error } = await this.sbService.client
+      .from(table)
+      .select('*')
+      .eq('id', id)
+      .single();
+    return { data: data as T | null, error };
+  }
+
+  async getOneByEmail(
+    table: string,
+    email: string
+  ): Promise<{ data: T | null; error: any }> {
+    const { data, error } = await this.sbService.client
+      .from(table)
+      .select('*')
+      .eq('correo_electronico', email)
+      .single();
+    return { data: data as T | null, error };
+  }
+}
