@@ -38,6 +38,8 @@ import {
 } from 'ionicons/icons';
 import { Router } from '@angular/router';
 import { UserService } from '../../services/user-service';
+import { LoginService } from '../../services/login-service';
+import { SupabaseService } from '../../services/supabase-service';
 
 type perfilRol =
   | 'duenio'
@@ -77,6 +79,9 @@ type perfilUser = {
 export class RegistrationFormComponent {
   router = inject(Router);
   userService = inject(UserService);
+  loginServ = inject(LoginService);
+  sbServ = inject(SupabaseService);
+
   registrationForm = new FormGroup({
     apellidos: new FormControl('', [
       Validators.required,
@@ -99,10 +104,10 @@ export class RegistrationFormComponent {
       Validators.email,
     ]),
     clave: new FormControl('', [Validators.required, Validators.minLength(6)]),
-    perfil: new FormControl('', [Validators.required]),
+    perfil: new FormControl(''),
   });
   userProfile: perfilRol = 'duenio';
-  profilelist = signal<perfilUser[]>([]);  
+  profilelist = signal<perfilUser[]>([]);
 
   showPassword = signal(false);
   profilePhotoUrl = signal<string | null>(null);
@@ -125,6 +130,15 @@ export class RegistrationFormComponent {
       flash,
     });
     this.getPerfilUser();
+    if (this.userService.isLogged()) {
+      const perfilControl = this.registrationForm.get('perfil');
+      perfilControl?.setValidators([Validators.required]);
+      perfilControl?.updateValueAndValidity();
+    } else {
+      const perfilControl = this.registrationForm.get('perfil');
+      perfilControl?.clearValidators();
+      perfilControl?.updateValueAndValidity();
+    }
   }
 
   getPerfilUser(): void {
@@ -133,16 +147,19 @@ export class RegistrationFormComponent {
         { value: 'metre', label: 'Metre', icon: 'clipboard' },
         { value: 'mozo', label: 'Mozo', icon: 'restaurant' },
         { value: 'cocinero', label: 'Cocinero', icon: 'beer' },
-        { value: 'cantinero', label: 'Cantinero', icon: 'beer' }
+        { value: 'cantinero', label: 'Cantinero', icon: 'beer' },
       ]);
-      if(this.userProfile === 'duenio') {
-        this.profilelist.update(current => [{ value: 'supervisor', label: 'Supervisor', icon: 'people' },...current, ]);
+      if (this.userProfile === 'duenio') {
+        this.profilelist.update((current) => [
+          { value: 'supervisor', label: 'Supervisor', icon: 'people' },
+          ...current,
+        ]);
       }
-    }else if (this.userProfile === 'metre') {
+    } else if (this.userProfile === 'metre') {
       this.profilelist.set([
         { value: 'cliente', label: 'Cliente', icon: 'person' },
-      ])
-    }    
+      ]);
+    }
   }
 
   get f() {
@@ -182,7 +199,7 @@ export class RegistrationFormComponent {
     // TODO: Implementar selección de foto
     // Por ahora simulamos una foto
     this.profilePhotoUrl.set(
-      'https://ionicframework.com/docs/img/demos/avatar.jpeg'
+      'foto de la camara'
     );
   }
 
@@ -194,19 +211,67 @@ export class RegistrationFormComponent {
     this.router.navigate(['/login']);
   }
 
-  onSubmit() {
+  async onSubmit() {
     if (this.registrationForm.invalid) {
       this.registrationForm.markAllAsTouched();
+      console.log('campos del form invalidos');
       return;
     }
 
     this.isSubmitting.set(true);
 
-    // TODO: Implementar registro
     console.log('Formulario de registro:', this.registrationForm.value);
+
+    // 1. Crear usuario en Supabase Auth
+    const responseAuth = await this.loginServ.createAccount(
+      this.registrationForm.value.correoElectronico!,
+      this.registrationForm.value.clave!
+    );
+
+    if (responseAuth.error) {
+      if (responseAuth.error.code == 'user_already_exists') {
+        console.log('El usuario ya existe');
+        this.isSubmitting.set(false);
+        return;
+      }
+    }
+
+    // 2. Obtener el user_id del usuario creado
+    const userId = responseAuth.data?.user?.id;
+    
+    if (!userId) {
+      console.log('Error al obtener user_id', responseAuth);
+      this.isSubmitting.set(false);
+      return;
+    }
+
+    if(!this.userService.isLogged()) {
+      this.registrationForm.value.perfil = 'cliente';
+    }
+
+    // 3. Guardar datos en tabla usuarios
+    const { error: insertError } = await this.sbServ.client
+      .from('usuarios')
+      .insert({
+        user_id: userId,
+        apellidos: this.registrationForm.value.apellidos,
+        nombres: this.registrationForm.value.nombres,
+        identificacion: this.registrationForm.value.numeroDocumento,
+        correo_electronico: this.registrationForm.value.correoElectronico,
+        perfil: this.registrationForm.value.perfil,
+        activo: false,
+        url_foto_perfil: this.profilePhotoUrl()
+      });
+
+    if (insertError) {
+      console.log('Error al guardar en usuarios:', insertError);
+    } else {
+      console.log('Usuario guardado correctamente en tabla usuarios');
+    }
 
     setTimeout(() => {
       this.isSubmitting.set(false);
+      this.router.navigate(['/login']);
     }, 1500);
   }
 }

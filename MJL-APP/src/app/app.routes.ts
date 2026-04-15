@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { isLoggedGuardGuard } from './guards/is-logged-guard-guard';
 
 export const routes: Routes = [
   {
@@ -25,5 +26,6 @@ export const routes: Routes = [
       import('./components/registration-form/registration-form.component').then(
         (m) => m.RegistrationFormComponent,
       ),
+    // canActivate: [isLoggedGuardGuard]
   },
 ];
