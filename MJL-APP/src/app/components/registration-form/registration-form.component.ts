@@ -40,9 +40,9 @@ import { Router } from '@angular/router';
 import { UserService } from '../../services/user-service';
 import { LoginService } from '../../services/login-service';
 import { DbService } from '../../services/db-service';
-import { perfilRol } from '../types/typeRol';
-import { LocalStorageService } from 'src/app/services/local-storage-service';
-import { IUser } from 'src/app/interfaces/IUsers';
+import { perfilRol } from '../../types/typeRol';
+import { LocalStorageService } from '../../services/local-storage-service';
+import { IUser } from '../../interfaces/IUsers';
 
 
 type perfilUser = {
@@ -109,7 +109,7 @@ export class RegistrationFormComponent {
   profilePhotoUrl = signal<string | null>(null);
   isSubmitting = signal(false);
 
-  constructor() {
+constructor() {
     addIcons({
       person,
       call,
@@ -125,7 +125,25 @@ export class RegistrationFormComponent {
       beer,
       flash,
     });
-    this.getPerfilUser();
+    this.setValidatorsOnPerfilControl();
+    this.loadPerfilOptions();
+  }
+
+  async loadPerfilOptions() {
+    const user = this.userService.userData();
+
+    if (user) {
+      this.setPerfilOptions(user);
+    } else {
+      const storedUser = await this.storageServ.getData<IUser>('user');
+      if (storedUser) {
+        this.userService.userData.set(storedUser);
+        this.setPerfilOptions(storedUser);
+      }
+    }
+  }
+
+  setValidatorsOnPerfilControl() {
     if (this.userService.isLogged()) {
       const perfilControl = this.registrationForm.get('perfil');
       perfilControl?.setValidators([Validators.required]);
@@ -137,35 +155,26 @@ export class RegistrationFormComponent {
     }
   }
 
-  async getPerfilUser() {
-    let user = this.userService.userData();
-    
-    // Si el signal está vacío, cargar directamente desde storage
-    if (!user) {
-      user = await this.storageServ.getData<IUser>('user');
-    }
-    
-    if (user) {
-      if (user.perfil === 'duenio' || user.perfil === 'supervisor') {
-        this.profilelist.set([
-          { value: 'metre', label: 'Metre', icon: 'clipboard' },
-          { value: 'mozo', label: 'Mozo', icon: 'restaurant' },
-          { value: 'cocinero', label: 'Cocinero', icon: 'beer' },
-          { value: 'cantinero', label: 'Cantinero', icon: 'beer' },
-        ]);
-        if (user.perfil === 'duenio') {
-          this.profilelist.update((current) => [
-            { value: 'supervisor', label: 'Supervisor', icon: 'people' },
-            ...current,
-          ]);
-        }
-      } else if (user.perfil === 'metre') {
-        this.profilelist.set([
-          { value: 'cliente', label: 'Cliente', icon: 'person' },
+  setPerfilOptions(user: IUser) {
+    if (user.perfil === 'duenio' || user.perfil === 'supervisor') {
+      this.profilelist.set([
+        { value: 'metre', label: 'Metre', icon: 'clipboard' },
+        { value: 'mozo', label: 'Mozo', icon: 'restaurant' },
+        { value: 'cocinero', label: 'Cocinero', icon: 'beer' },
+        { value: 'cantinero', label: 'Cantinero', icon: 'beer' },
+      ]);
+      if (user.perfil === 'duenio') {
+        this.profilelist.update((current) => [
+          { value: 'supervisor', label: 'Supervisor', icon: 'people' },
+          ...current,
         ]);
       }
+    } else if (user.perfil === 'metre') {
+      this.profilelist.set([
+        { value: 'cliente', label: 'Cliente', icon: 'person' },
+      ]);
     }
-  }
+  } 
 
   get f() {
     return this.registrationForm.controls;
@@ -216,6 +225,23 @@ export class RegistrationFormComponent {
     this.router.navigate(['/login']);
   }
 
+  getValuesFromForm(userId:any){
+    if(!this.userService.isLogged()) {
+      this.registrationForm.value.perfil = 'cliente';
+    }
+
+    return {
+        user_id: userId,
+        apellidos: this.registrationForm.value.apellidos,
+        nombres: this.registrationForm.value.nombres,
+        identificacion: this.registrationForm.value.numeroDocumento,
+        correo_electronico: this.registrationForm.value.correoElectronico,
+        perfil: this.registrationForm.value.perfil,
+        activo: false,
+        url_foto_perfil: this.profilePhotoUrl()
+      }
+  }
+
   async onSubmit() {
     if (this.registrationForm.invalid) {
       this.registrationForm.markAllAsTouched();
@@ -249,23 +275,11 @@ export class RegistrationFormComponent {
       this.isSubmitting.set(false);
       return;
     }
-
-    if(!this.userService.isLogged()) {
-      this.registrationForm.value.perfil = 'cliente';
-    }
+    const user = this.getValuesFromForm(userId);
 
     // 3. Guardar datos en tabla usuarios
     const { error: insertError } = await this.dbService
-      .insert('usuarios',{
-        user_id: userId,
-        apellidos: this.registrationForm.value.apellidos,
-        nombres: this.registrationForm.value.nombres,
-        identificacion: this.registrationForm.value.numeroDocumento,
-        correo_electronico: this.registrationForm.value.correoElectronico,
-        perfil: this.registrationForm.value.perfil,
-        activo: false,
-        url_foto_perfil: this.profilePhotoUrl()
-      })
+      .insert('usuarios',user)
     if (insertError) {
       console.log('Error al guardar en usuarios:', insertError);
     } else {
