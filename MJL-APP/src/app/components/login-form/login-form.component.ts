@@ -141,16 +141,11 @@ export class LoginFormComponent {
 
     try {
       const { email, password } = this.loginForm.value;
-      console.log('Login attempt:', email);
       const response = await this.loginServ.initSession(email!, password!);
       if (response.error) {
-        console.log('salio mal');
         this.errorMessage = 'Error al iniciar sesión';
       } else {
         const response = await this.dbServ.getOneByEmail('usuarios', email!);
-        console.log(email);
-        console.log(response, 'aca');
-        // console.log(response.data as IUser);
         await this.storageServ.saveData('perfil', response.data.perfil);
         await this.storageServ.saveData('user', response.data!);
         console.log('guardado en el local storage exitoso');
