@@ -33,6 +33,11 @@ import {
   man,
   colorWand,
   personAdd,
+  people,
+  clipboard,
+  restaurant,
+  beer,
+  person,
 } from 'ionicons/icons';
 import { LoginService } from '../../services/login-service';
 import { DbService } from 'src/app/services/db-service';
@@ -93,6 +98,11 @@ export class LoginFormComponent {
       man,
       colorWand,
       personAdd,
+      people,
+      clipboard,
+      restaurant,
+      beer,
+      person,
     });
   }
 
@@ -166,8 +176,33 @@ export class LoginFormComponent {
     this.router.navigate(['/register']);
   }
 
-  autocomplete() {
+  autocompleteDuenio() {
     this.email.setValue('matias123@gmail.com');
+    this.password.setValue('12345678');
+  }
+
+  autocompleteSupervisor() {
+    this.email.setValue('pablo123@gmail.com');
+    this.password.setValue('12345678');
+  }
+
+  autocompleteMetre() {
+    this.email.setValue('miguel123@gmail.com');
+    this.password.setValue('12345678');
+  }
+
+  autocompleteMozo() {
+    this.email.setValue('pepito@gmail.com');
+    this.password.setValue('12345678');
+  }
+
+  autocompleteCocinero() {
+    this.email.setValue('sofia123@gmail.com');
+    this.password.setValue('12345678');
+  }
+
+  autocompleteCliente() {
+    this.email.setValue('fatu123@gmail.com');
     this.password.setValue('12345678');
   }
 }
