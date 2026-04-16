@@ -5,6 +5,7 @@ import { addIcons } from 'ionicons';
 import {  personCircle, powerSharp } from 'ionicons/icons';
 import { LoginService } from '../services/login-service';
 import { Router } from '@angular/router';
+import { LocalStorageService } from '../services/local-storage-service';
 
 @Component({
   selector: 'app-home',
@@ -16,15 +17,17 @@ export class HomePage {
   userServ = inject(UserService)
   loginServ = inject(LoginService)
   router = inject(Router)
+  storageServ = inject(LocalStorageService)
 
   constructor() {
     addIcons({powerSharp,personCircle});
   }
 
-  closeSession(){
+  async closeSession(){
     console.log('cerrar session');
-    this.loginServ.closeSession();
-    this.router.navigate(['/login']);
+    await this.loginServ.closeSession();
+    await this.storageServ.clearData();
+    this.backToLogin();
   }
 
   backToLogin(){
