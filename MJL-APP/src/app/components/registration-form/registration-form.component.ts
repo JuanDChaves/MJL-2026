@@ -39,16 +39,12 @@ import {
 import { Router } from '@angular/router';
 import { UserService } from '../../services/user-service';
 import { LoginService } from '../../services/login-service';
-import { SupabaseService } from '../../services/supabase-service';
+import { DbService } from '../../services/db-service';
+import { perfilRol } from '../types/typeRol';
+import { LocalStorageService } from 'src/app/services/local-storage-service';
+import { IUser } from 'src/app/interfaces/IUsers';
 
-type perfilRol =
-  | 'duenio'
-  | 'supervisor'
-  | 'metre'
-  | 'mozo'
-  | 'cocinero'
-  | 'cantinero'
-  | 'cliente';
+
 type perfilUser = {
   value: perfilRol;
   label: string;
@@ -80,7 +76,8 @@ export class RegistrationFormComponent {
   router = inject(Router);
   userService = inject(UserService);
   loginServ = inject(LoginService);
-  sbServ = inject(SupabaseService);
+  storageServ = inject(LocalStorageService);
+  dbService = inject(DbService);
 
   registrationForm = new FormGroup({
     apellidos: new FormControl('', [
@@ -106,7 +103,6 @@ export class RegistrationFormComponent {
     clave: new FormControl('', [Validators.required, Validators.minLength(6)]),
     perfil: new FormControl(''),
   });
-  userProfile: perfilRol = 'duenio';
   profilelist = signal<perfilUser[]>([]);
 
   showPassword = signal(false);
@@ -141,24 +137,33 @@ export class RegistrationFormComponent {
     }
   }
 
-  getPerfilUser(): void {
-    if (this.userProfile === 'duenio' || this.userProfile === 'supervisor') {
-      this.profilelist.set([
-        { value: 'metre', label: 'Metre', icon: 'clipboard' },
-        { value: 'mozo', label: 'Mozo', icon: 'restaurant' },
-        { value: 'cocinero', label: 'Cocinero', icon: 'beer' },
-        { value: 'cantinero', label: 'Cantinero', icon: 'beer' },
-      ]);
-      if (this.userProfile === 'duenio') {
-        this.profilelist.update((current) => [
-          { value: 'supervisor', label: 'Supervisor', icon: 'people' },
-          ...current,
+  async getPerfilUser() {
+    let user = this.userService.userData();
+    
+    // Si el signal está vacío, cargar directamente desde storage
+    if (!user) {
+      user = await this.storageServ.getData<IUser>('user');
+    }
+    
+    if (user) {
+      if (user.perfil === 'duenio' || user.perfil === 'supervisor') {
+        this.profilelist.set([
+          { value: 'metre', label: 'Metre', icon: 'clipboard' },
+          { value: 'mozo', label: 'Mozo', icon: 'restaurant' },
+          { value: 'cocinero', label: 'Cocinero', icon: 'beer' },
+          { value: 'cantinero', label: 'Cantinero', icon: 'beer' },
+        ]);
+        if (user.perfil === 'duenio') {
+          this.profilelist.update((current) => [
+            { value: 'supervisor', label: 'Supervisor', icon: 'people' },
+            ...current,
+          ]);
+        }
+      } else if (user.perfil === 'metre') {
+        this.profilelist.set([
+          { value: 'cliente', label: 'Cliente', icon: 'person' },
         ]);
       }
-    } else if (this.userProfile === 'metre') {
-      this.profilelist.set([
-        { value: 'cliente', label: 'Cliente', icon: 'person' },
-      ]);
     }
   }
 
@@ -250,9 +255,8 @@ export class RegistrationFormComponent {
     }
 
     // 3. Guardar datos en tabla usuarios
-    const { error: insertError } = await this.sbServ.client
-      .from('usuarios')
-      .insert({
+    const { error: insertError } = await this.dbService
+      .insert('usuarios',{
         user_id: userId,
         apellidos: this.registrationForm.value.apellidos,
         nombres: this.registrationForm.value.nombres,
@@ -261,8 +265,7 @@ export class RegistrationFormComponent {
         perfil: this.registrationForm.value.perfil,
         activo: false,
         url_foto_perfil: this.profilePhotoUrl()
-      });
-
+      })
     if (insertError) {
       console.log('Error al guardar en usuarios:', insertError);
     } else {
