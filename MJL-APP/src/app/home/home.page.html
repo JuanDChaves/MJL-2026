@@ -1,22 +1,25 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
+    <ion-title> Blank </ion-title>
     @if (userServ.isLogged()) {
-      <ion-buttons slot="end">
-        
-        
-        <ion-button (click)="closeSession()">
-          <ion-icon name="power-sharp"></ion-icon>
-        </ion-button>
-      </ion-buttons>
+    <ion-buttons slot="end">
+      @if (userServ.userData()?.perfil === 'duenio' ||
+      userServ.userData()?.perfil === 'supervisor' ||
+      userServ.userData()?.perfil === 'metre' ) {
+      <ion-button [routerLink]="['/register']" color="warning">
+        Registrar
+      </ion-button>
+      }
+      <ion-button (click)="closeSession()">
+        <ion-icon name="power-sharp"></ion-icon>
+      </ion-button>
+    </ion-buttons>
     }@else {
-      <ion-buttons slot="end">
-        <ion-button (click)="backToLogin()">
-          <ion-icon name="person-circle"></ion-icon>
-        </ion-button>
-      </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button (click)="backToLogin()">
+        <ion-icon name="person-circle"></ion-icon>
+      </ion-button>
+    </ion-buttons>
     }
   </ion-toolbar>
 </ion-header>
@@ -30,6 +33,14 @@
 
   <div id="container">
     <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+    <p>
+      Start with Ionic
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://ionicframework.com/docs/components"
+        >UI Components</a
+      >
+    </p>
   </div>
 </ion-content>
