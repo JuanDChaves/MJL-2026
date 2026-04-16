@@ -222,7 +222,7 @@ constructor() {
   }
 
   goBack() {
-    this.router.navigate(['/login']);
+    this.router.navigate(['/home']);
   }
 
   getValuesFromForm(userId:any){
