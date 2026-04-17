@@ -77,4 +77,14 @@ export class DbService<T extends BaseEntity> {
       .single();
     return { data: data as T | null, error };
   }
+
+  async userExist(id:string,email:string): Promise<boolean>{
+    const responseId = await  this.sbService.client
+      .from('usuarios')
+      .select('*')
+      .eq('identificacion',id)
+      .single()      
+    const responseEmail = await this.getOneByEmail('usuarios',email);
+    return responseId.data !== null || responseEmail.data !== null;
+  }
 }

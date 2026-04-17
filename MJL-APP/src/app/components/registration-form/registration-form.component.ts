@@ -44,7 +44,6 @@ import { perfilRol } from '../../types/typeRol';
 import { LocalStorageService } from '../../services/local-storage-service';
 import { IUser } from '../../interfaces/IUsers';
 
-
 type perfilUser = {
   value: perfilRol;
   label: string;
@@ -109,7 +108,7 @@ export class RegistrationFormComponent {
   profilePhotoUrl = signal<string | null>(null);
   isSubmitting = signal(false);
 
-constructor() {
+  constructor() {
     addIcons({
       person,
       call,
@@ -174,7 +173,7 @@ constructor() {
         { value: 'cliente', label: 'Cliente', icon: 'person' },
       ]);
     }
-  } 
+  }
 
   get f() {
     return this.registrationForm.controls;
@@ -212,9 +211,7 @@ constructor() {
   onSelectPhoto() {
     // TODO: Implementar selección de foto
     // Por ahora simulamos una foto
-    this.profilePhotoUrl.set(
-      'foto de la camara'
-    );
+    this.profilePhotoUrl.set('foto de la camara');
   }
 
   removePhoto() {
@@ -225,21 +222,21 @@ constructor() {
     this.router.navigate(['/home']);
   }
 
-  getValuesFromForm(userId:any){
-    if(!this.userService.isLogged()) {
+  getValuesFromForm(userId: any) {
+    if (!this.userService.isLogged()) {
       this.registrationForm.value.perfil = 'cliente';
     }
 
     return {
-        user_id: userId,
-        apellidos: this.registrationForm.value.apellidos,
-        nombres: this.registrationForm.value.nombres,
-        identificacion: this.registrationForm.value.numeroDocumento,
-        correo_electronico: this.registrationForm.value.correoElectronico,
-        perfil: this.registrationForm.value.perfil,
-        activo: false,
-        url_foto_perfil: this.profilePhotoUrl()
-      }
+      user_id: userId,
+      apellidos: this.registrationForm.value.apellidos,
+      nombres: this.registrationForm.value.nombres,
+      identificacion: this.registrationForm.value.numeroDocumento,
+      correo_electronico: this.registrationForm.value.correoElectronico,
+      perfil: this.registrationForm.value.perfil,
+      activo: false,
+      url_foto_perfil: this.profilePhotoUrl(),
+    };
   }
 
   async onSubmit() {
@@ -253,23 +250,26 @@ constructor() {
 
     console.log('Formulario de registro:', this.registrationForm.value);
 
+    // chequeamos que NO exista el usuario
+    const id = this.registrationForm.value.numeroDocumento!;
+    const email = this.registrationForm.value.correoElectronico!;
+
+    const userExist = await this.userService.userExist(id, email);
+    if (userExist) {
+      console.log('El usuario ya existe');
+      this.isSubmitting.set(false);
+      return;
+    }
+
     // 1. Crear usuario en Supabase Auth
     const responseAuth = await this.loginServ.createAccount(
       this.registrationForm.value.correoElectronico!,
       this.registrationForm.value.clave!
-    );
-
-    if (responseAuth.error) {
-      if (responseAuth.error.code == 'user_already_exists') {
-        console.log('El usuario ya existe');
-        this.isSubmitting.set(false);
-        return;
-      }
-    }
+    );   
 
     // 2. Obtener el user_id del usuario creado
     const userId = responseAuth.data?.user?.id;
-    
+
     if (!userId) {
       console.log('Error al obtener user_id', responseAuth);
       this.isSubmitting.set(false);
@@ -278,8 +278,10 @@ constructor() {
     const user = this.getValuesFromForm(userId);
 
     // 3. Guardar datos en tabla usuarios
-    const { error: insertError } = await this.dbService
-      .insert('usuarios',user)
+    const { error: insertError } = await this.dbService.insert(
+      'usuarios',
+      user
+    );
     if (insertError) {
       console.log('Error al guardar en usuarios:', insertError);
     } else {
@@ -288,7 +290,7 @@ constructor() {
 
     setTimeout(() => {
       this.isSubmitting.set(false);
-      this.router.navigate(['/login']);
+      this.router.navigate(['/home']);
     }, 1500);
   }
 }
