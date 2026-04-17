@@ -1,0 +1,11 @@
+#ignore ia files
+skills-lock.json
+AGENTS.md
+.agents
+sesiones.txt
+
+#vscode 
+.vscode
+
+#supabase
+supabase

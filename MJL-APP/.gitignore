@@ -75,3 +75,6 @@ android
 
 #build folder
 www
+
+#opencode
+opencode.json

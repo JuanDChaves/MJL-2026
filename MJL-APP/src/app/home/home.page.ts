@@ -1,30 +1,43 @@
 import { Component, inject } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, IonIcon } from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, IonIcon, ViewWillEnter } from '@ionic/angular/standalone';
 import { UserService } from '../services/user-service';
 import { addIcons } from 'ionicons';
 import {  personCircle, powerSharp } from 'ionicons/icons';
 import { LoginService } from '../services/login-service';
-import { Router } from '@angular/router';
+import { Router, RouterLink, } from '@angular/router';
+import { LocalStorageService } from '../services/local-storage-service';
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, IonIcon],
+  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, IonIcon, RouterLink],
 })
-export class HomePage {
+export class HomePage implements  ViewWillEnter{
   userServ = inject(UserService)
   loginServ = inject(LoginService)
   router = inject(Router)
+  storageServ = inject(LocalStorageService)
 
   constructor() {
     addIcons({powerSharp,personCircle});
+    
+  }
+  async ionViewWillEnter() {
+    await this.loadUserData();
+    console.log(this.userServ.userData());
+  }
+  
+  async loadUserData(){
+    await this.userServ.loadUserData();
   }
 
-  closeSession(){
+  async closeSession(){
     console.log('cerrar session');
-    this.loginServ.closeSession();
-    this.router.navigate(['/login']);
+    await this.loginServ.closeSession();
+    await this.storageServ.clearData();
+    await this.userServ.loadUserData();
+    this.backToLogin();
   }
 
   backToLogin(){

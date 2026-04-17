@@ -78,6 +78,17 @@
         }
 
         <ion-button
+          type="button"
+          expand="block"
+          fill="outline"
+          (click)="toRegister()"
+          class="register-button"
+        >
+          Crear Usuario
+          <ion-icon slot="end" name="person-add"></ion-icon>
+        </ion-button>
+
+        <ion-button
           type="submit"
           expand="block"
           [disabled]="isLoading"
@@ -93,17 +104,29 @@
       </form>
     </ion-card-content>
   </ion-card>
-  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
-    <ion-fab-button>
-      <ion-icon name="chevron-up-circle"></ion-icon>
-    </ion-fab-button>
-    <ion-fab-list side="top">
-      <ion-fab-button (click)="toHome()">
-        <ion-icon name="man"></ion-icon>
-      </ion-fab-button>
-      <ion-fab-button (click)="autocomplete()">
-        <ion-icon name="color-wand"></ion-icon>
-      </ion-fab-button>
-    </ion-fab-list>
-  </ion-fab>
+<ion-fab slot="fixed" vertical="bottom" horizontal="end">
+     <ion-fab-button>
+       <ion-icon name="chevron-up-circle"></ion-icon>
+     </ion-fab-button>
+     <ion-fab-list side="top">
+       <ion-fab-button (click)="autocompleteDuenio()" title="Dueño">
+         <ion-icon name="man"></ion-icon>
+       </ion-fab-button>
+       <ion-fab-button (click)="autocompleteSupervisor()" title="Supervisor">
+         <ion-icon name="people"></ion-icon>
+       </ion-fab-button>
+       <ion-fab-button (click)="autocompleteMetre()" title="Metre">
+         <ion-icon name="clipboard"></ion-icon>
+       </ion-fab-button>
+       <ion-fab-button (click)="autocompleteMozo()" title="Mozo">
+         <ion-icon name="restaurant"></ion-icon>
+       </ion-fab-button>
+       <ion-fab-button (click)="autocompleteCocinero()" title="Cocinero">
+         <ion-icon name="beer"></ion-icon>
+       </ion-fab-button>
+       <ion-fab-button (click)="autocompleteCliente()" title="Cliente">
+         <ion-icon name="person"></ion-icon>
+       </ion-fab-button>
+     </ion-fab-list>
+   </ion-fab>
 </div>

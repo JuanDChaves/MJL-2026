@@ -1,0 +1,388 @@
+.registration-content {
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --padding-start: 0;
+  --padding-end: 0;
+  --background: linear-gradient(
+    135deg,
+    var(--ion-color-primary) 0%,
+    var(--ion-color-primary-shade) 100%
+  );
+}
+
+.registration-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 0;
+  background: var(--ion-background-color, #ffffff);
+}
+
+.registration-header {
+  --background: transparent;
+  --box-shadow: none;
+  
+  ion-toolbar {
+    --background: transparent;
+    --padding-top: var(--ion-safe-area-top, 0);
+    --padding-bottom: 0.5rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .back-button {
+    --color: var(--ion-color-primary);
+    --padding-start: 0.5rem;
+    --padding-end: 0.5rem;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .header-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+}
+
+.profile-photo-section {
+  display: flex;
+  justify-content: center;
+  padding: 1.5rem 1rem 1rem;
+  background: linear-gradient(
+    180deg,
+    var(--ion-color-primary) 0%,
+    var(--ion-color-primary-shade) 100%
+  );
+}
+
+.photo-container {
+  position: relative;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.photo-wrapper {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 
+    0 4px 20px rgba(0, 0, 0, 0.2),
+    0 0 0 4px var(--ion-color-primary-contrast);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: photoAppear 0.5s ease-out;
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  .profile-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .photo-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0.5rem;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background 0.3s ease;
+
+    .camera-icon {
+      color: #ffffff;
+      font-size: 1.5rem;
+    }
+  }
+
+  &:hover .photo-overlay {
+    background: rgba(0, 0, 0, 0.7);
+  }
+}
+
+.photo-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: var(--ion-color-light);
+  border: 3px dashed var(--ion-color-primary);
+  box-shadow: 
+    0 4px 20px rgba(0, 0, 0, 0.1),
+    inset 0 2px 10px rgba(255, 255, 255, 0.5);
+  transition: all 0.3s ease;
+  animation: photoAppear 0.5s ease-out;
+
+  &:active {
+    transform: scale(0.95);
+    background: var(--ion-color-light-shade);
+  }
+
+  .placeholder-icon {
+    font-size: 3rem;
+    color: var(--ion-color-primary);
+    opacity: 0.7;
+    margin-bottom: 0.25rem;
+  }
+
+  .photo-hint {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--ion-color-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+.registration-form {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+.fields-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0 1rem;
+  background: transparent;
+
+  &.ios {
+    --ion-item-background: transparent;
+  }
+}
+
+.field-wrapper {
+  position: relative;
+  animation: slideInLeft 0.4s ease-out calc(var(--field-index, 0) * 0.08s) both;
+}
+
+@for $i from 1 through 6 {
+  .field-wrapper:nth-child(#{$i}) {
+    --field-index: #{$i - 1};
+  }
+}
+
+.field-item {
+  --padding-start: 0.75rem;
+  --padding-end: 0.5rem;
+  --inner-padding-end: 0.5rem;
+  --border-radius: 12px;
+  --background: var(--ion-color-light, #f5f5f5);
+  --border-color: transparent;
+  --ion-item-background: var(--ion-color-light, #f5f5f5);
+  margin-bottom: 0.25rem;
+  transition: --border-color 0.3s ease, --background 0.3s ease;
+
+  &.item-has-focus {
+    --border-color: var(--ion-color-primary);
+    --background: var(--ion-color-primary-tint);
+  }
+
+  ion-icon.field-icon {
+    color: var(--ion-color-primary);
+    font-size: 1.25rem;
+    margin-right: 0.5rem;
+  }
+
+  .field-input {
+    --padding-start: 0.5rem;
+    font-size: 1rem;
+  }
+
+  .field-select {
+    --padding-start: 0.5rem;
+    font-size: 1rem;
+  }
+
+  ion-input,
+  ion-select {
+    --placeholder-color: var(--ion-color-medium-shade);
+    --placeholder-opacity: 0.6;
+  }
+}
+
+.field-item.item-has-focus {
+  --border-width: 2px;
+  --border-style: solid;
+}
+
+.field-error {
+  display: block;
+  padding: 0.25rem 1rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-top: -0.25rem;
+  animation: shake 0.4s ease-out;
+}
+
+.toggle-password-btn {
+  --padding-start: 0.5rem;
+  --padding-end: 0.5rem;
+  --padding-top: 0.5rem;
+  --padding-bottom: 0.5rem;
+  min-width: 44px;
+  min-height: 44px;
+  --color: var(--ion-color-medium);
+
+  &:active {
+    --color: var(--ion-color-primary);
+  }
+}
+
+.submit-button {
+  --border-radius: 12px;
+  --box-shadow: 
+    0 4px 15px rgba(var(--ion-color-primary-rgb), 0.4),
+    0 2px 5px rgba(0, 0, 0, 0.1);
+  --padding-top: 1rem;
+  --padding-bottom: 1rem;
+  margin: 1.5rem 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  animation: fadeInUp 0.5s ease-out 0.5s both;
+
+  &:active {
+    transform: scale(0.98);
+    --box-shadow: 
+      0 2px 8px rgba(var(--ion-color-primary-rgb), 0.3),
+      0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  &:disabled {
+    --box-shadow: none;
+    opacity: 0.6;
+  }
+
+  ion-spinner {
+    --color: var(--ion-color-primary-contrast);
+  }
+
+  ion-icon {
+    margin-left: 0.5rem;
+  }
+}
+
+@keyframes photoAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-2px);
+  }
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(2px);
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-photo-section {
+    padding: 1rem 0.75rem 0.75rem;
+  }
+
+  .photo-container {
+    width: 100px;
+    height: 100px;
+  }
+
+  .photo-placeholder {
+    width: 100px;
+    height: 100px;
+
+    .placeholder-icon {
+      font-size: 2.5rem;
+    }
+  }
+
+  .photo-wrapper {
+    width: 100px;
+    height: 100px;
+  }
+
+  .fields-list {
+    padding: 0 0.75rem;
+  }
+
+  .submit-button {
+    margin: 1rem 0.75rem 1.5rem;
+    font-size: 1rem;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .registration-content {
+    --background: linear-gradient(
+      135deg,
+      var(--ion-color-primary-shade) 0%,
+      var(--ion-color-dark) 100%
+    );
+  }
+
+  .field-item {
+    --background: var(--ion-color-dark);
+    --ion-item-background: var(--ion-color-dark);
+  }
+
+  .photo-placeholder {
+    background: var(--ion-color-dark);
+
+    .photo-overlay {
+      background: rgba(0, 0, 0, 0.8);
+    }
+  }
+}

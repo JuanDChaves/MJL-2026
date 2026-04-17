@@ -32,8 +32,17 @@ import {
   chevronUpCircle,
   man,
   colorWand,
+  personAdd,
+  people,
+  clipboard,
+  restaurant,
+  beer,
+  person,
 } from 'ionicons/icons';
 import { LoginService } from '../../services/login-service';
+import { DbService } from 'src/app/services/db-service';
+import { LocalStorageService } from 'src/app/services/local-storage-service';
+import { IUser } from 'src/app/interfaces/IUsers';
 
 @Component({
   selector: 'app-login-form',
@@ -59,6 +68,9 @@ import { LoginService } from '../../services/login-service';
 })
 export class LoginFormComponent {
   private loginServ = inject(LoginService);
+  private dbServ = inject(DbService);
+  private storageServ = inject(LocalStorageService);
+
   router = inject(Router);
 
   email = new FormControl('', [Validators.required, Validators.email]);
@@ -85,6 +97,12 @@ export class LoginFormComponent {
       chevronUpCircle,
       man,
       colorWand,
+      personAdd,
+      people,
+      clipboard,
+      restaurant,
+      beer,
+      person,
     });
   }
 
@@ -133,14 +151,14 @@ export class LoginFormComponent {
 
     try {
       const { email, password } = this.loginForm.value;
-      console.log('Login attempt:', email);
-      // TODO: Call LoginService.initSession(email, password)
       const response = await this.loginServ.initSession(email!, password!);
       if (response.error) {
-        console.log('salio mal');
         this.errorMessage = 'Error al iniciar sesión';
       } else {
-        console.log('salio bien');
+        const response = await this.dbServ.getOneByEmail('usuarios', email!);
+        await this.storageServ.saveData('perfil', response.data.perfil);
+        await this.storageServ.saveData('user', response.data!);
+        console.log('guardado en el local storage exitoso');
         this.router.navigate(['/home']);
       }
     } catch (error: any) {
@@ -150,12 +168,37 @@ export class LoginFormComponent {
     }
   }
 
-  toHome() {
-    this.router.navigate(['/home']);
+  toRegister() {
+    this.router.navigate(['/register']);
   }
 
-  autocomplete() {
+  autocompleteDuenio() {
     this.email.setValue('matias123@gmail.com');
+    this.password.setValue('12345678');
+  }
+
+  autocompleteSupervisor() {
+    this.email.setValue('pablo123@gmail.com');
+    this.password.setValue('12345678');
+  }
+
+  autocompleteMetre() {
+    this.email.setValue('miguel123@gmail.com');
+    this.password.setValue('12345678');
+  }
+
+  autocompleteMozo() {
+    this.email.setValue('pepito@gmail.com');
+    this.password.setValue('12345678');
+  }
+
+  autocompleteCocinero() {
+    this.email.setValue('sofia123@gmail.com');
+    this.password.setValue('12345678');
+  }
+
+  autocompleteCliente() {
+    this.email.setValue('fatu123@gmail.com');
     this.password.setValue('12345678');
   }
 }
