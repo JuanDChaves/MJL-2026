@@ -1,9 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import {
-  FormGroup,
-  Validators,
   ReactiveFormsModule,
-  FormControl,
 } from '@angular/forms';
 import {
   IonContent,
@@ -19,6 +16,7 @@ import {
   IonSelect,
   IonSelectOption,
   IonSpinner,
+  ViewWillEnter,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
@@ -42,7 +40,8 @@ import { LoginService } from '../../services/login-service';
 import { DbService } from '../../services/db-service';
 import { perfilRol } from '../../types/typeRol';
 import { LocalStorageService } from '../../services/local-storage-service';
-import { IUser } from '../../interfaces/IUsers';
+import { RegisterFormService } from 'src/app/services/register-form-service';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 type perfilUser = {
   value: perfilRol;
@@ -71,42 +70,37 @@ type perfilUser = {
     ReactiveFormsModule,
   ],
 })
-export class RegistrationFormComponent {
+
+export class RegistrationFormComponent implements ViewWillEnter {
   router = inject(Router);
   userService = inject(UserService);
   loginServ = inject(LoginService);
   storageServ = inject(LocalStorageService);
   dbService = inject(DbService);
+  formService = inject(RegisterFormService);
 
-  registrationForm = new FormGroup({
-    apellidos: new FormControl('', [
-      Validators.required,
-      Validators.minLength(2),
-      Validators.pattern(/^[a-zA-ZáéíóúñÁÉÍÓÚÑ\s'-]+$/),
-    ]),
-    nombres: new FormControl('', [
-      Validators.required,
-      Validators.minLength(2),
-      Validators.pattern(/^[a-zA-ZáéíóúñÁÉÍÓÚÑ\s'-]+$/),
-    ]),
-    numeroDocumento: new FormControl('', [
-      Validators.required,
-      Validators.minLength(7),
-      Validators.maxLength(8),
-      Validators.pattern(/^\d{7,8}$/),
-    ]),
-    correoElectronico: new FormControl('', [
-      Validators.required,
-      Validators.email,
-    ]),
-    clave: new FormControl('', [Validators.required, Validators.minLength(6)]),
-    perfil: new FormControl(''),
-  });
-  profilelist = signal<perfilUser[]>([]);
+  form = toSignal(this.formService.form$, {initialValue: this.formService.registerForm});
+  profilelist = toSignal(this.formService.profileList$,{initialValue:[]});
 
   showPassword = signal(false);
   profilePhotoUrl = signal<string | null>(null);
   isSubmitting = signal(false);
+
+  identificationLabel = () => {
+    const user = this.userService.userData();
+    if (!user || user.perfil === 'metre') {
+      return 'Número de documento';
+    }
+    return 'CUIL';
+  };
+
+  identificationPlaceholder = () => {
+    const user = this.userService.userData();
+    if (!user || user.perfil === 'metre') {
+      return 'Ingrese DNI';
+    }
+    return 'Ingrese CUIL';
+  };
 
   constructor() {
     addIcons({
@@ -124,63 +118,19 @@ export class RegistrationFormComponent {
       beer,
       flash,
     });
-    this.setValidatorsOnPerfilControl();
-    this.loadPerfilOptions();
+    
   }
-
-  async loadPerfilOptions() {
-    const user = this.userService.userData();
-
-    if (user) {
-      this.setPerfilOptions(user);
-    } else {
-      const storedUser = await this.storageServ.getData<IUser>('user');
-      if (storedUser) {
-        this.userService.userData.set(storedUser);
-        this.setPerfilOptions(storedUser);
-      }
-    }
-  }
-
-  setValidatorsOnPerfilControl() {
-    if (this.userService.isLogged()) {
-      const perfilControl = this.registrationForm.get('perfil');
-      perfilControl?.setValidators([Validators.required]);
-      perfilControl?.updateValueAndValidity();
-    } else {
-      const perfilControl = this.registrationForm.get('perfil');
-      perfilControl?.clearValidators();
-      perfilControl?.updateValueAndValidity();
-    }
-  }
-
-  setPerfilOptions(user: IUser) {
-    if (user.perfil === 'duenio' || user.perfil === 'supervisor') {
-      this.profilelist.set([
-        { value: 'metre', label: 'Metre', icon: 'clipboard' },
-        { value: 'mozo', label: 'Mozo', icon: 'restaurant' },
-        { value: 'cocinero', label: 'Cocinero', icon: 'beer' },
-        { value: 'cantinero', label: 'Cantinero', icon: 'beer' },
-      ]);
-      if (user.perfil === 'duenio') {
-        this.profilelist.update((current) => [
-          { value: 'supervisor', label: 'Supervisor', icon: 'people' },
-          ...current,
-        ]);
-      }
-    } else if (user.perfil === 'metre') {
-      this.profilelist.set([
-        { value: 'cliente', label: 'Cliente', icon: 'person' },
-      ]);
-    }
+  async ionViewWillEnter(){
+    await this.userService.loadUserData();
+    await this.formService.buildForm();
   }
 
   get f() {
-    return this.registrationForm.controls;
+    return this.form().controls;
   }
 
   getErrorMessage(field: string): string | null {
-    const control = this.registrationForm.get(field);
+    const control = this.formService.registerForm.get(field);
     if (!control || !control.touched || !control.errors) return null;
 
     if (control.hasError('required')) {
@@ -196,10 +146,11 @@ export class RegistrationFormComponent {
       return 'Correo inválido';
     }
     if (control.hasError('pattern')) {
-      if (field === 'numeroDocumento') {
+      if (field === 'identificacion') {
+        if( !this.userService.isLogged() || this.userService.userData()?.perfil === 'metre')
         return 'Solo números (7-8 dígitos)';
       }
-      return 'Solo letras permitidas';
+      return 'Solo numeros de 11 digitos';
     }
     return null;
   }
@@ -224,35 +175,35 @@ export class RegistrationFormComponent {
 
   getValuesFromForm(userId: any) {
     if (!this.userService.isLogged()) {
-      this.registrationForm.value.perfil = 'cliente';
+      this.form().value.perfil = 'cliente';
     }
 
     return {
       user_id: userId,
-      apellidos: this.registrationForm.value.apellidos,
-      nombres: this.registrationForm.value.nombres,
-      identificacion: this.registrationForm.value.numeroDocumento,
-      correo_electronico: this.registrationForm.value.correoElectronico,
-      perfil: this.registrationForm.value.perfil,
+      apellidos: this.form().value.lastname,
+      nombres: this.form().value.name,
+      identificacion: this.form().value.identificacion,
+      correo_electronico: this.form().value.email,
+      perfil: this.form().value.profiles,
       activo: false,
       url_foto_perfil: this.profilePhotoUrl(),
     };
   }
 
   async onSubmit() {
-    if (this.registrationForm.invalid) {
-      this.registrationForm.markAllAsTouched();
+    if (this.form().invalid) {
+      this.form().markAllAsTouched();
       console.log('campos del form invalidos');
       return;
     }
 
     this.isSubmitting.set(true);
 
-    console.log('Formulario de registro:', this.registrationForm.value);
+    console.log('Formulario de registro:', this.form().value);
 
     // chequeamos que NO exista el usuario
-    const id = this.registrationForm.value.numeroDocumento!;
-    const email = this.registrationForm.value.correoElectronico!;
+    const id = this.form().value.identificacion!;
+    const email = this.form().value.correoElectronico!;
 
     const userExist = await this.userService.userExist(id, email);
     if (userExist) {
@@ -263,8 +214,8 @@ export class RegistrationFormComponent {
 
     // 1. Crear usuario en Supabase Auth
     const responseAuth = await this.loginServ.createAccount(
-      this.registrationForm.value.correoElectronico!,
-      this.registrationForm.value.clave!
+      this.form().value.correoElectronico!,
+      this.form().value.clave!
     );   
 
     // 2. Obtener el user_id del usuario creado
@@ -290,7 +241,11 @@ export class RegistrationFormComponent {
 
     setTimeout(() => {
       this.isSubmitting.set(false);
-      this.router.navigate(['/home']);
+      if(this.userService.isLogged()){
+        this.router.navigate(['/home']);
+      }else{
+        this.router.navigate(['/login']);
+      }
     }, 1500);
   }
 }

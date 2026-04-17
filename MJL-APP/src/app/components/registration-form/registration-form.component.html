@@ -35,7 +35,7 @@
     </div>
 
     <!-- Registration Form -->
-    <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()" class="registration-form">
+    <form [formGroup]="form()" (ngSubmit)="onSubmit()" class="registration-form">
       <ion-list class="fields-list">
         <!-- Apellidos -->
         <div class="field-wrapper">
@@ -81,24 +81,24 @@
           }
         </div>
 
-        <!-- Número de Documento -->
+        <!-- Número de Documento / CUIL -->
         <div class="field-wrapper">
           <ion-item class="field-item">
             <ion-icon name="document-text" slot="start" class="field-icon"></ion-icon>
             <ion-input
-              formControlName="numeroDocumento"
+              formControlName="identificacion"
               type="number"
-              label="Número de documento"
+              [label]="identificationLabel()"
               labelPlacement="floating"
               autocomplete="off"
               enterkeyhint="next"
-              placeholder="Ingrese DNI"
+              [placeholder]="identificationPlaceholder()"
               class="field-input"
             ></ion-input>
           </ion-item>
-          @if (f['numeroDocumento'].touched && getErrorMessage('numeroDocumento')) {
+          @if (f['identificacion'].touched && getErrorMessage('identificacion')) {
             <ion-text color="danger" class="field-error">
-              {{ getErrorMessage('numeroDocumento') }}
+              {{ getErrorMessage('identificacion') }}
             </ion-text>
           }
         </div>

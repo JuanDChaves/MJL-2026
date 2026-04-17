@@ -1,5 +1,5 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, IonIcon } from '@ionic/angular/standalone';
+import { Component, inject } from '@angular/core';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, IonIcon, ViewWillEnter } from '@ionic/angular/standalone';
 import { UserService } from '../services/user-service';
 import { addIcons } from 'ionicons';
 import {  personCircle, powerSharp } from 'ionicons/icons';
@@ -13,7 +13,7 @@ import { LocalStorageService } from '../services/local-storage-service';
   styleUrls: ['home.page.scss'],
   imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, IonIcon, RouterLink],
 })
-export class HomePage implements OnInit{
+export class HomePage implements  ViewWillEnter{
   userServ = inject(UserService)
   loginServ = inject(LoginService)
   router = inject(Router)
@@ -23,10 +23,11 @@ export class HomePage implements OnInit{
     addIcons({powerSharp,personCircle});
     
   }
-  async ngOnInit() {
+  async ionViewWillEnter() {
     await this.loadUserData();
+    console.log(this.userServ.userData());
   }
-
+  
   async loadUserData(){
     await this.userServ.loadUserData();
   }
@@ -35,6 +36,7 @@ export class HomePage implements OnInit{
     console.log('cerrar session');
     await this.loginServ.closeSession();
     await this.storageServ.clearData();
+    await this.userServ.loadUserData();
     this.backToLogin();
   }
 
