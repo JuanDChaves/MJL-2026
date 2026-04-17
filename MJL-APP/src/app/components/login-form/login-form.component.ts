@@ -168,10 +168,6 @@ export class LoginFormComponent {
     }
   }
 
-  toHome() {
-    this.router.navigate(['/home']);
-  }
-
   toRegister() {
     this.router.navigate(['/register']);
   }
