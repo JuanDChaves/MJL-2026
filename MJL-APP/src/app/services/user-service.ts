@@ -26,7 +26,7 @@ export class UserService {
     this.userData.set(null);
   }
 
-  async userExist(identifiacion:string,email:string): Promise<boolean>{
-    return await this.dbService.userExist(identifiacion,email);
+  async userExist(identifiacion:string): Promise<boolean>{
+    return await this.dbService.userExist(identifiacion);
   }
 }
