@@ -1,7 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import {
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import {
   IonContent,
   IonHeader,
@@ -70,7 +68,6 @@ type perfilUser = {
     ReactiveFormsModule,
   ],
 })
-
 export class RegistrationFormComponent implements ViewWillEnter {
   router = inject(Router);
   userService = inject(UserService);
@@ -79,12 +76,16 @@ export class RegistrationFormComponent implements ViewWillEnter {
   dbService = inject(DbService);
   formService = inject(RegisterFormService);
 
-  form = toSignal(this.formService.form$, {initialValue: this.formService.registerForm});
-  profilelist = toSignal(this.formService.profileList$,{initialValue:[]});
+  form = toSignal(this.formService.form$, {
+    initialValue: this.formService.registerForm,
+  });
+  profilelist = toSignal(this.formService.profileList$, { initialValue: [] });
 
   showPassword = signal(false);
   profilePhotoUrl = signal<string | null>(null);
   isSubmitting = signal(false);
+
+  errorMessage: string | null = null;
 
   identificationLabel = () => {
     const user = this.userService.userData();
@@ -118,9 +119,12 @@ export class RegistrationFormComponent implements ViewWillEnter {
       beer,
       flash,
     });
-    
   }
-  async ionViewWillEnter(){
+
+  async ionViewWillEnter() {
+    this.formService.cleanForm();
+    this.profilePhotoUrl.set(null);
+    this.errorMessage = null;
     await this.userService.loadUserData();
     await this.formService.buildForm();
   }
@@ -147,10 +151,16 @@ export class RegistrationFormComponent implements ViewWillEnter {
     }
     if (control.hasError('pattern')) {
       if (field === 'identificacion') {
-        if( !this.userService.isLogged() || this.userService.userData()?.perfil === 'metre')
-        return 'Solo números (7-8 dígitos)';
+        if (
+          !this.userService.isLogged() ||
+          this.userService.userData()?.perfil === 'metre'
+        ) {
+          return 'Solo números (7-8 dígitos)';
+        }
+        return 'Solo numeros de 11 digitos';
+      } else if (field === 'apellidos' || field === 'nombres') {
+        return 'Solo letras';
       }
-      return 'Solo numeros de 11 digitos';
     }
     return null;
   }
@@ -173,79 +183,112 @@ export class RegistrationFormComponent implements ViewWillEnter {
     this.router.navigate(['/home']);
   }
 
-  getValuesFromForm(userId: any) {
+  getValuesFromForm(userId: any): Promise<any> {
     if (!this.userService.isLogged()) {
       this.form().value.perfil = 'cliente';
     }
 
-    return {
-      user_id: userId,
-      apellidos: this.form().value.lastname,
-      nombres: this.form().value.name,
-      identificacion: this.form().value.identificacion,
-      correo_electronico: this.form().value.email,
-      perfil: this.form().value.profiles,
-      activo: false,
-      url_foto_perfil: this.profilePhotoUrl(),
-    };
+    return new Promise((resolve, reject) => {
+      resolve({
+        user_id: userId,
+        apellidos: this.form().value.apellidos,
+        nombres: this.form().value.nombres,
+        identificacion: this.form().value.identificacion,
+        correo_electronico: this.form().value.correoElectronico,
+        perfil: this.form().value.perfil,
+        activo: false,
+        url_foto_perfil: this.profilePhotoUrl(),
+      });
+    });
   }
 
   async onSubmit() {
     if (this.form().invalid) {
       this.form().markAllAsTouched();
-      console.log('campos del form invalidos');
+      this.errorMessage = 'Por favor, complete todos los campos';
       return;
     }
 
     this.isSubmitting.set(true);
+    this.errorMessage = null;
 
-    console.log('Formulario de registro:', this.form().value);
-
-    // chequeamos que NO exista el usuario
     const id = this.form().value.identificacion!;
-    const email = this.form().value.correoElectronico!;
+    let userId: string | null = null;
 
-    const userExist = await this.userService.userExist(id, email);
-    if (userExist) {
-      console.log('El usuario ya existe');
-      this.isSubmitting.set(false);
-      return;
-    }
-
-    // 1. Crear usuario en Supabase Auth
-    const responseAuth = await this.loginServ.createAccount(
-      this.form().value.correoElectronico!,
-      this.form().value.clave!
-    );   
-
-    // 2. Obtener el user_id del usuario creado
-    const userId = responseAuth.data?.user?.id;
-
-    if (!userId) {
-      console.log('Error al obtener user_id', responseAuth);
-      this.isSubmitting.set(false);
-      return;
-    }
-    const user = this.getValuesFromForm(userId);
-
-    // 3. Guardar datos en tabla usuarios
-    const { error: insertError } = await this.dbService.insert(
-      'usuarios',
-      user
-    );
-    if (insertError) {
-      console.log('Error al guardar en usuarios:', insertError);
-    } else {
-      console.log('Usuario guardado correctamente en tabla usuarios');
-    }
-
-    setTimeout(() => {
-      this.isSubmitting.set(false);
-      if(this.userService.isLogged()){
-        this.router.navigate(['/home']);
-      }else{
-        this.router.navigate(['/login']);
+    try {
+      // chequeamos que NO exista un usuario con esa identificacion
+      const userExist = await this.userService.userExist(id);
+      if (userExist) {
+        this.errorMessage = 'Ya existe un usuario con esa identificacion';
+        this.isSubmitting.set(false);
+        return;
       }
-    }, 1500);
+
+      //si esta logueado registrar sin cerrar la sesion actual
+      if (this.userService.isLogged()) {
+        const result = await this.loginServ.createUserViaEdgeFunction(
+          this.form().value.correoElectronico!,
+          this.form().value.clave!
+        );
+
+        if (result.error) {
+          this.errorMessage =
+            result.error.message || 'Error al crear el usuario';
+          this.isSubmitting.set(false);
+          return;
+        }
+        userId = result.userId;
+      } else {
+        // Sino esta logueado, crear usuario y cerrar sesion
+        const { data, error } = await this.loginServ.createAccount(
+          this.form().value.correoElectronico!,
+          this.form().value.clave!
+        );
+        if (error) {
+          if (error.code === 'user_already_exists') {
+            this.errorMessage = 'El correo ya está registrado';
+            this.isSubmitting.set(false);
+            return;
+          }
+        }
+        this.loginServ.closeSession();
+        userId = data.user.id;
+      }
+
+      if (!userId) {
+        this.errorMessage = 'Error al crear el usuario';
+        this.isSubmitting.set(false);
+        return;
+      }
+
+      // 2. Obtener datos del formulario
+      const user = await this.getValuesFromForm(userId);
+
+      // 3. Guardar datos en tabla usuarios
+      const { error: insertError } = await this.dbService.insert(
+        'usuarios',
+        user
+      );
+
+      if (insertError) {
+        this.errorMessage = `Error al guardar en usuarios: ${insertError}`;
+      } else {
+        this.formService.registerForm.reset();
+        this.profilePhotoUrl.set(null);
+        this.errorMessage = null;
+        this.isSubmitting.set(false);
+        if (
+          this.userService.userData()?.perfil === 'metre' ||
+          this.userService.userData()?.perfil === 'duenio' ||
+          this.userService.userData()?.perfil === 'supervisor'
+        ) {
+          this.router.navigate(['/home']);
+        } else {
+          this.router.navigate(['/login']);
+        }
+      }
+    } catch (error: any) {
+      this.errorMessage = error.message || 'Error al iniciar sesión';
+    }
   }
 }
