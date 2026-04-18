@@ -188,6 +188,12 @@
         }
       </ion-list>
 
+      @if (errorMessage) {
+          <ion-text color="danger" class="global-error">
+            {{ errorMessage }}
+          </ion-text>
+        }
+
       <!-- Submit Button -->
       <ion-button
         type="submit"

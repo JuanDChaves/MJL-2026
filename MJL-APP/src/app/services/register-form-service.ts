@@ -22,13 +22,14 @@ export class RegisterFormService {
   lastname = new FormControl('', [
     Validators.required,
     Validators.minLength(2),
-    Validators.pattern(/^[a-zA-ZáéíóúñÁÉÍÓÚÑ\s'-]+$/),
+    Validators.pattern(/^[a-zA-ZáéíóúñÁÉÍÓÚÑ\s]+$/),
+
   ]);
 
   name = new FormControl('', [
     Validators.required,
     Validators.minLength(2),
-    Validators.pattern(/^[a-zA-ZáéíóúñÁÉÍÓÚÑ\s'-]+$/),
+    Validators.pattern(/^[a-zA-ZáéíóúñÁÉÍÓÚÑ\s]+$/),
   ]);
 
   dni = new FormControl('', [
@@ -117,4 +118,10 @@ export class RegisterFormService {
     }
     this.form.set(this.registerForm);
   }
+
+  cleanForm(){
+    this.registerForm.reset();
+    this.profilelist.set([]);
+  }
+
 }
