@@ -152,8 +152,13 @@ export class LoginFormComponent {
     try {
       const { email, password } = this.loginForm.value;
       const response = await this.loginServ.initSession(email!, password!);
+      console.log(response);
       if (response.error) {
-        this.errorMessage = 'Error al iniciar sesión';
+        if (response.error.code === "invalid_credentials") {
+          this.errorMessage = 'Credenciales incorrectas';
+        }else{
+          this.errorMessage = 'Error al iniciar sesión';
+        }
       } else {
         const response = await this.dbServ.getOneByEmail('usuarios', email!);
         await this.storageServ.saveData('perfil', response.data.perfil);
