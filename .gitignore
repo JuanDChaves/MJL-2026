@@ -6,3 +6,7 @@ sesiones.txt
 
 #vscode 
 .vscode
+
+#supabase
+supabase/.temp
+supabase/migrations
