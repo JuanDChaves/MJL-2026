@@ -18,6 +18,7 @@ export class LoginService {
     return response;
   }
   
+  //crea una cuenta sin estar logueado
   async createAccount(
     email: string, 
     pass: string,    
@@ -29,6 +30,7 @@ export class LoginService {
     return response;
   }
 
+  //crea una cuenta estando logueado
   async createUserViaEdgeFunction(
     email: string,
     password: string

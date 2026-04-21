@@ -78,11 +78,12 @@ export class DbService<T extends BaseEntity> {
     return { data: data as T | null, error };
   }
 
-  async userExist(id:string,): Promise<boolean>{
+  //aca el id es el dni o cuil del usuario
+  async userExist(identificacion:string,): Promise<boolean>{
     const responseId = await  this.sbService.client
       .from('usuarios')
       .select('*')
-      .eq('identificacion',id)
+      .eq('identificacion',identificacion)
       .single()      
     return responseId.data !== null
   }
