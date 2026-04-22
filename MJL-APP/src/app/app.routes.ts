@@ -10,10 +10,6 @@ export const routes: Routes = [
       ),
   },
   {
-    path: 'home',
-    loadComponent: () => import('./pages/home/home.page').then((m) => m.HomePage),
-  },
-  {
     path: 'login',
     loadComponent: () =>
       import('./components/login-form/login-form.component').then(
@@ -21,12 +17,16 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'home',
+    loadComponent: () => import('./pages/home/home.page').then((m) => m.HomePage),
+  },
+  {
     path: 'register',
     loadComponent: () =>
       import('./components/registration-form/registration-form.component').then(
         (m) => m.RegistrationFormComponent,
       ),
-    canActivate: [isLoggedGuard]
+    canActivate: [isLoggedGuard],
   },
   {
     path: 'customer-auth-panel',
@@ -34,5 +34,5 @@ export const routes: Routes = [
       import('./components/Home/home-supervisor/customer-auth-panel/customer-auth-panel.component').then(
         (m) => m.CustomerAuthPanelComponent,
       ),
-  }
+  },
 ];

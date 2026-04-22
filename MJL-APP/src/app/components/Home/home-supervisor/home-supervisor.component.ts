@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { IonButton } from "@ionic/angular/standalone";
 
@@ -6,12 +6,8 @@ import { IonButton } from "@ionic/angular/standalone";
   selector: 'app-home-supervisor',
   templateUrl: './home-supervisor.component.html',
   styleUrls: ['./home-supervisor.component.scss'],
-  imports: [IonButton,RouterLink],
+  imports: [IonButton, RouterLink],
 })
-export class HomeSupervisorComponent  implements OnInit {
-
+export class HomeSupervisorComponent {
   constructor() { }
-
-  ngOnInit() {}
-
 }

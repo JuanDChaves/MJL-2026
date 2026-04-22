@@ -1,7 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import {
-  IonContent,
   IonCard,
   IonCardHeader,
   IonCardTitle,
@@ -16,22 +15,20 @@ import { addIcons } from 'ionicons';
 import { checkmark, close, checkmarkCircle } from 'ionicons/icons';
 import { IUserUnauthorized } from '../../../../interfaces/IUserUnauthorized';
 import { UserService } from '../../../../services/user-service';
+import { LayoutComponent } from '../../../../components/layout/layout.component';
 
 @Component({
   selector: 'app-customer-auth-panel',
   templateUrl: './customer-auth-panel.component.html',
   styleUrls: ['./customer-auth-panel.component.scss'],
   imports: [
-    IonContent,
     IonCard,
-    IonCardHeader,
-    IonCardTitle,
     IonCardContent,
-    IonCardSubtitle,
     IonAvatar,
     IonButton,
     IonIcon,
     DatePipe,
+    LayoutComponent,
   ],
 })
 export class CustomerAuthPanelComponent implements ViewWillEnter {

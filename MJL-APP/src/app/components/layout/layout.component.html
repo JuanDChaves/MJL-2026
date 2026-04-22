@@ -1,0 +1,19 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    @if (showBackButton) {
+      <ion-buttons slot="start">
+        <ion-back-button [defaultHref]="backUrl"></ion-back-button>
+      </ion-buttons>
+    }
+    <ion-title>{{ title }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="closeSession()">
+        <ion-icon name="power-sharp"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ng-content></ng-content>
+</ion-content>
