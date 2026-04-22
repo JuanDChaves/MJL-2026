@@ -42,7 +42,6 @@ import {
 import { LoginService } from '../../services/login-service';
 import { DbService } from 'src/app/services/db-service';
 import { LocalStorageService } from 'src/app/services/local-storage-service';
-import { IUser } from 'src/app/interfaces/IUsers';
 
 @Component({
   selector: 'app-login-form',

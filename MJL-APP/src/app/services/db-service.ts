@@ -26,13 +26,14 @@ export class DbService<T extends BaseEntity> {
 
   async update(
     table: string,
-    id: string,
+    column:string,
+    value: any,
     data: Partial<T>
   ): Promise<{ data: T | null; error: any }> {
     const { data: result, error } = await this.sbService.client
       .from(table)
       .update(data as any)
-      .eq('id', id)
+      .eq(column, value)
       .select()
       .single();
     return { data: result, error };
