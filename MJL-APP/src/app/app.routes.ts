@@ -11,7 +11,7 @@ export const routes: Routes = [
   },
   {
     path: 'home',
-    loadComponent: () => import('./home/home.page').then((m) => m.HomePage),
+    loadComponent: () => import('./pages/home/home.page').then((m) => m.HomePage),
   },
   {
     path: 'login',
@@ -28,4 +28,11 @@ export const routes: Routes = [
       ),
     canActivate: [isLoggedGuard]
   },
+  {
+    path: 'customer-auth-panel',
+    loadComponent: () =>
+      import('./components/Home/home-supervisor/customer-auth-panel/customer-auth-panel.component').then(
+        (m) => m.CustomerAuthPanelComponent,
+      ),
+  }
 ];
