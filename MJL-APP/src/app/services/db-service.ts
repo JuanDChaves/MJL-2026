@@ -46,11 +46,18 @@ export class DbService<T extends BaseEntity> {
     return { error };
   }
 
-  async getAll(table: string): Promise<{ data: T[] | null; error: any }> {
+  async getAllWithFilter(table: string,filter:string,value:any): Promise<{ data: T[] | null; error: any }> {
     const { data, error } = await this.sbService.client
       .from(table)
       .select('*')
-      .eq('activo', true);
+      .eq(filter, value);
+    return { data: data as T[] | null, error };
+  }
+
+  async getAll(table: string): Promise<{ data: T[] | null; error: any }> {
+    const { data, error } = await this.sbService.client
+      .from(table)
+      .select('*');
     return { data: data as T[] | null, error };
   }
 
@@ -79,9 +86,9 @@ export class DbService<T extends BaseEntity> {
   }
 
   //aca el id es el dni o cuil del usuario
-  async userExist(identificacion:string,): Promise<boolean>{
+  async userExist(table:string, identificacion:string,): Promise<boolean>{
     const responseId = await  this.sbService.client
-      .from('usuarios')
+      .from(table)
       .select('*')
       .eq('identificacion',identificacion)
       .single()      

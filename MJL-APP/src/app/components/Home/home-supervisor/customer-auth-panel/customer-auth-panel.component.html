@@ -1,30 +1,45 @@
-<ion-card>
-  <ion-card-header>
-    <ion-card-title>Panel de autorizacion de clientes</ion-card-title>
-    <ion-card-subtitle>Registros pendientes de autorizacion</ion-card-subtitle>
-  </ion-card-header>
-  <ion-card-content>
-    <ion-list>
-      <ion-item>
-        <ion-thumbnail slot="start">
-          <img alt="Silhouette of mountains" src="https://ionicframework.com/docs/img/demos/thumbnail.svg" />
-        </ion-thumbnail>
-        <ion-label>
-          <ion-text color="medium">John Doe</ion-text>
-        </ion-label>
-        <ion-label>
-          <ion-text color="medium">Castillo</ion-text>
-        </ion-label>
-        <ion-label>
-          <ion-text color="medium">123456789</ion-text>
-        </ion-label>
-        <ion-label>
-          <ion-text color="medium">8vH9o@example.com</ion-text>
-        </ion-label>
-        <ion-button fill="outline" slot="end">Aprobar</ion-button>
-        <ion-button fill="outline" slot="end">Rechazar</ion-button>
-      </ion-item>
-      
-    </ion-list>
-  </ion-card-content>
-</ion-card>
+<ion-content [fullscreen]="true" class="auth-panel-content">
+  <ion-card class="panel-header">
+    <ion-card-header>
+      <ion-card-title>Solicitudes pendientes</ion-card-title>
+      <ion-card-subtitle>Registros pendientes de autorización</ion-card-subtitle>
+    </ion-card-header>
+  </ion-card>
+
+  @for (item of unauthorizedUsersList(); track item.identificacion) {
+    <ion-card class="user-card">
+      <ion-card-content>
+        <div class="user-info">
+          <ion-avatar class="user-avatar">
+            <img
+              [src]="item.url_foto_perfil || 'https://ionicframework.com/docs/img/demos/avatar.svg'"
+              [alt]="'Foto de ' + item.nombres + ' ' + item.apellidos"
+            />
+          </ion-avatar>
+          <div class="user-details">
+            <h2 class="user-name">{{ item.nombres }} {{ item.apellidos }}</h2>
+            <p class="user-dni">{{item.identificacion.toString().length > 8 ? 'CUIL' : 'DNI'}}: {{ item.identificacion }}</p>
+            <p class="user-date">Registrado: {{ item.fecha_registro | date:'dd/MM/yyyy' }}</p>
+          </div>
+        </div>
+        <div class="actions">
+          <ion-button fill="solid" color="success" class="action-btn">
+            <ion-icon slot="start" name="checkmark"></ion-icon>
+            Aprobar
+          </ion-button>
+          <ion-button fill="solid" color="danger" class="action-btn">
+            <ion-icon slot="start" name="close"></ion-icon>
+            Rechazar
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  }
+
+  @empty {
+    <div class="empty-state">
+      <ion-icon name="checkmark-circle" class="empty-icon"></ion-icon>
+      <p>No hay solicitudes pendientes</p>
+    </div>
+  }
+</ion-content>

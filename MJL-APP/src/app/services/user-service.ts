@@ -27,6 +27,25 @@ export class UserService {
   }
 
   async userExist(identifiacion:string): Promise<boolean>{
-    return await this.dbService.userExist(identifiacion);
+    return await this.dbService.userExist('usuarios',identifiacion);
   }
+
+  async loadUserAuthorization(user: IUser): Promise<{ data: any | null; error: any }> {
+    const response = await this.dbService.insert('solicitudes',{apellidos:user.apellidos,nombres:user.nombres,identificacion:user.id,url_foto_perfil:user.url_foto_perfil});
+    if(response.error){
+      console.log(response.error);
+      return {data: null, error: response.error};
+    }
+    return {data: response.data, error: null};
+  }
+
+  async getUnauthorizedUsers(): Promise<{ data: any | null; error: any }> {
+    const response = await this.dbService.getAll('solicitudes');
+    if(response.error){
+      console.log(response.error);
+      return {data: null, error: response.error};
+    }
+    return {data: response.data, error: null};
+  }
+  
 }
