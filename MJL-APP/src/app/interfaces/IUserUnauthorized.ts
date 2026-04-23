@@ -1,8 +1,8 @@
 export interface IUserUnauthorized {
   apellidos: string;
   nombres: string;
-  identificacion: number;
-  estado: boolean;
+  identificacion: string;
+  estado: boolean|null;
   url_foto_perfil: string | null;
-  fecha_registro: Date;
+  fecha_registro: Date|null;
 };

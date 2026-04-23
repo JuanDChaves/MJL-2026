@@ -4,6 +4,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { LocalStorageService } from './local-storage-service';
 import { IUser } from '../interfaces/IUsers';
 import { DbService } from './db-service';
+import { IUserUnauthorized } from '../interfaces/IUserUnauthorized';
 
 @Injectable({
   providedIn: 'root',
@@ -30,14 +31,9 @@ export class UserService {
   }
 
   async loadUserAuthorization(
-    user: IUser
+    user: IUserUnauthorized
   ): Promise<{ data: any | null; error: any }> {
-    const response = await this.dbService.insert('solicitudes', {
-      apellidos: user.apellidos,
-      nombres: user.nombres,
-      identificacion: user.id,
-      url_foto_perfil: user.url_foto_perfil,
-    });
+    const response = await this.dbService.insert('solicitudes', { apellidos: user.apellidos, nombres: user.nombres, identificacion: user.identificacion });
     if (response.error) {
       console.log(response.error);
       return { data: null, error: response.error };
