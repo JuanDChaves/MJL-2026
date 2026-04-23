@@ -150,6 +150,15 @@ export class LoginFormComponent {
 
     try {
       const { email, password } = this.loginForm.value;
+      const {data,error} = await this.dbServ.getOneByEmail('usuarios', email!);
+      if(!data){
+        this.errorMessage = 'El correo no se encuentra registrado';
+        return;
+      }
+      if(!data.activo) {
+        this.errorMessage = 'El usuario no ha sido aprobado por el administrador';
+        return;
+      }
       const response = await this.loginServ.initSession(email!, password!);
       console.log(response);
       if (response.error) {
