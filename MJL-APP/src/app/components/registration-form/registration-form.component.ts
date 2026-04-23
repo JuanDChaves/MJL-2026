@@ -270,7 +270,7 @@ export class RegistrationFormComponent implements ViewWillEnter {
           }
         );
         if (solicitudError) {
-          this.errorMessage = `Error al guardar en solicitudes:`;
+          this.errorMessage = `Error al guardar en usuarios pendientes de aprobacion`;
           this.isSubmitting.set(false);
           return;
         }
