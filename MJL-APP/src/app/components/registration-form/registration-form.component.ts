@@ -196,7 +196,7 @@ export class RegistrationFormComponent implements ViewWillEnter {
         identificacion: this.form().value.identificacion,
         correo_electronico: this.form().value.correoElectronico,
         perfil: this.form().value.perfil,
-        activo: false,
+        activo: this.form().value.perfil !== 'cliente' ? true : false,
         url_foto_perfil: this.profilePhotoUrl(),
       });
     });

@@ -42,6 +42,7 @@ import {
 import { LoginService } from '../../services/login-service';
 import { DbService } from 'src/app/services/db-service';
 import { LocalStorageService } from 'src/app/services/local-storage-service';
+import { IUser } from 'src/app/interfaces/IUsers';
 
 @Component({
   selector: 'app-login-form',
@@ -151,11 +152,12 @@ export class LoginFormComponent {
     try {
       const { email, password } = this.loginForm.value;
       const {data,error} = await this.dbServ.getOneByEmail('usuarios', email!);
-      if(!data){
+      const user = data as IUser;
+      if(!user){
         this.errorMessage = 'El correo no se encuentra registrado';
         return;
       }
-      if(!data.activo) {
+      if(user.perfil === 'cliente' && !user.activo) {
         this.errorMessage = 'El usuario no ha sido aprobado por el administrador';
         return;
       }
