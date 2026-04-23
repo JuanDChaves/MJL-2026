@@ -40,6 +40,7 @@ import { perfilRol } from '../../types/typeRol';
 import { LocalStorageService } from '../../services/local-storage-service';
 import { RegisterFormService } from 'src/app/services/register-form-service';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { IUser } from 'src/app/interfaces/IUsers';
 
 type perfilUser = {
   value: perfilRol;
@@ -183,20 +184,19 @@ export class RegistrationFormComponent implements ViewWillEnter {
     this.router.navigate(['/home']);
   }
 
-  getValuesFromForm(userId: any): Promise<any> {
+  getValuesFromForm(): Promise<IUser> {
     if (!this.userService.isLogged()) {
       this.form().value.perfil = 'cliente';
     }
 
     return new Promise((resolve, reject) => {
       resolve({
-        user_id: userId,
         apellidos: this.form().value.apellidos,
         nombres: this.form().value.nombres,
         identificacion: this.form().value.identificacion,
         correo_electronico: this.form().value.correoElectronico,
         perfil: this.form().value.perfil,
-        activo: false,
+        activo: this.form().value.perfil !== 'cliente' ? true : false,
         url_foto_perfil: this.profilePhotoUrl(),
       });
     });
@@ -224,8 +224,8 @@ export class RegistrationFormComponent implements ViewWillEnter {
         return;
       }
 
-      //si esta logueado registrar sin cerrar la sesion actual
       if (this.userService.isLogged()) {
+        //si esta logueado registrar sin cerrar la sesion actual
         const result = await this.loginServ.createUserViaEdgeFunction(
           this.form().value.correoElectronico!,
           this.form().value.clave!
@@ -252,26 +252,39 @@ export class RegistrationFormComponent implements ViewWillEnter {
           }
         }
         this.loginServ.closeSession();
-        userId = data.user.id;
-      }
-
-      if (!userId) {
-        this.errorMessage = 'Error al crear el usuario';
-        this.isSubmitting.set(false);
-        return;
       }
 
       // 2. Obtener datos del formulario
-      const user = await this.getValuesFromForm(userId);
+      const user = await this.getValuesFromForm();
 
-      // 3. Guardar datos en tabla usuarios
+      // 3 Si es cliente guardamos en solicitudes
+      if(user.perfil === 'cliente'){
+        const { error: solicitudError } = await this.userService.loadUserAuthorization(
+          {
+            identificacion: user.identificacion,
+            estado: null,
+            apellidos: user.apellidos,
+            nombres: user.nombres,
+            url_foto_perfil: user.url_foto_perfil,
+            fecha_registro: null,
+          }
+        );
+        if (solicitudError) {
+          this.errorMessage = `Error al guardar en usuarios pendientes de aprobacion`;
+          this.isSubmitting.set(false);
+          return;
+        }
+      }
+
+      // 4. Guardar datos en tabla usuarios
       const { error: insertError } = await this.dbService.insert(
         'usuarios',
         user
       );
 
       if (insertError) {
-        this.errorMessage = `Error al guardar en usuarios: ${insertError}`;
+        console.log(insertError);
+        this.errorMessage = `Error al guardar en usuarios`;
       } else {
         this.formService.registerForm.reset();
         this.profilePhotoUrl.set(null);

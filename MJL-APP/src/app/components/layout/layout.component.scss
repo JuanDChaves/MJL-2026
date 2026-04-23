@@ -1,0 +1,14 @@
+:host {
+  display: block;
+}
+
+ion-header {
+  ion-toolbar {
+    --padding-start: 16px;
+    --padding-end: 16px;
+  }
+
+  ion-title {
+    font-weight: 600;
+  }
+}
