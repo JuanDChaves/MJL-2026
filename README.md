@@ -13,10 +13,20 @@ App móvil para la hamburguesería HTN
 ## Introducción
 _Completar_
 ## Funcionalidades de la App
-_Completar_
+### UI
+#### Pantallas 
+
+<img src="./MJL-APP/docs/images/static-splash-screen.png" alt="Logo" width="100" height="100"/>
+<img src="./MJL-APP/docs/images/color-scheme.png" alt="Logo" width="100" height="100"/>
+<img src="./MJL-APP/docs/images/login.png" alt="Logo" width="100" height="100"/>
+<img src="./MJL-APP/docs/images/accesos-directos.png" alt="Logo" width="100" height="100"/>
+<img src="./MJL-APP/docs/images/home-supervisor.png" alt="Logo" width="100" height="100"/>
+<img src="./MJL-APP/docs/images/home-cocinero.png" alt="Logo" width="100" height="100"/>
+<img src="./MJL-APP/docs/images/home-mozo.png" alt="Logo" width="100" height="100"/>
+
 ## Tareas del equipo
 
-### Entrega Preliminar 3 - Tareas
+### Entrega Preliminar 3 - 25/04 
 ### Briceño Castillo, Matías Emanuel 
 - Módulo: Home del Dueño y Supervisor  
 - Inicio y fin: 18/04 - 24/04
@@ -32,7 +42,8 @@ _Completar_
 - Inicio y fin: 18/04 - 24/04
 - Branch: feature/home-mozo
 
-### Entrega Preliminar 1 - Tareas
+---
+### Entrega Preliminar 1 - 11/04
 
 ### Briceño Castillo, Matías Emanuel 
 - Módulo: Formulario Login
