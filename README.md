@@ -13,18 +13,39 @@ App móvil para la hamburguesería HTN
 ## Introducción
 _Completar_
 ## Funcionalidades de la App
-### UI
-#### Pantallas 
+### UI - Pantallas
 
+#### Paleta de Color
+<div align="center">
+    <img src="./MJL-APP/docs/images/color-scheme.png" alt="Logo" width="100" height="100"/>
+</div>
+
+#### Splash Screen Estático
 <div align="center">
     <img src="./MJL-APP/docs/images/static-splash-screen.png" alt="Logo" width="100" height="100"/>
-    <img src="./MJL-APP/docs/images/color-scheme.png" alt="Logo" width="100" height="100"/>
+</div>
+
+#### Login
+<div align="center">
     <img src="./MJL-APP/docs/images/login.png" alt="Logo" width="100" height="100"/>
     <img src="./MJL-APP/docs/images/accesos-directos.png" alt="Logo" width="100" height="100"/>
+</div>
+
+#### Home Supervisor-Dueño 
+<div align="center">
     <img src="./MJL-APP/docs/images/home-supervisor.png" alt="Logo" width="100" height="100"/>
+</div>
+
+#### Home Cocinero
+<div align="center">
     <img src="./MJL-APP/docs/images/home-cocinero.png" alt="Logo" width="100" height="100"/>
+</div>
+
+#### Home Mozo
+<div align="center">
     <img src="./MJL-APP/docs/images/home-mozo.png" alt="Logo" width="100" height="100"/>
 </div>
+
 ## Tareas del equipo
 
 ### Entrega Preliminar 3 - 25/04 
