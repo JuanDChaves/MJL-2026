@@ -1,3 +1,7 @@
 <app-layout [title]="'Inicio'" [showBackButton]="false">
-  <app-home-supervisor></app-home-supervisor>
+  @if(this.userServ.userData()?.perfil === "mozo"){
+    <app-mozo-home-page></app-mozo-home-page>
+  } @else {
+    <app-home-supervisor></app-home-supervisor>
+  }
 </app-layout>
