@@ -17,33 +17,33 @@ _Completar_
 
 #### Paleta de Color
 <div align="center">
-    <img src="./MJL-APP/docs/images/color-scheme.png" alt="Logo" width="100" height="100"/>
+    <img src="./MJL-APP/docs/images/color-scheme.png" alt="Logo"/>
 </div>
 
 #### Splash Screen Estático
 <div align="center">
-    <img src="./MJL-APP/docs/images/static-splash-screen.png" alt="Logo" width="100" height="100"/>
+    <img src="./MJL-APP/docs/images/static-splash-screen.png" alt="Logo"/>
 </div>
 
 #### Login
 <div align="center">
-    <img src="./MJL-APP/docs/images/login.png" alt="Logo" width="100" height="100"/>
-    <img src="./MJL-APP/docs/images/accesos-directos.png" alt="Logo" width="100" height="100"/>
+    <img src="./MJL-APP/docs/images/login.png" alt="Logo"/>
+    <img src="./MJL-APP/docs/images/accesos-directos.png" alt="Logo"/>
 </div>
 
 #### Home Supervisor-Dueño 
 <div align="center">
-    <img src="./MJL-APP/docs/images/home-supervisor.png" alt="Logo" width="100" height="100"/>
+    <img src="./MJL-APP/docs/images/home-supervisor.png" alt="Logo"/>
 </div>
 
 #### Home Cocinero
 <div align="center">
-    <img src="./MJL-APP/docs/images/home-cocinero.png" alt="Logo" width="100" height="100"/>
+    <img src="./MJL-APP/docs/images/home-cocinero.png" alt="Logo"/>
 </div>
 
 #### Home Mozo
 <div align="center">
-    <img src="./MJL-APP/docs/images/home-mozo.png" alt="Logo" width="100" height="100"/>
+    <img src="./MJL-APP/docs/images/home-mozo.png" alt="Logo"/>
 </div>
 
 ## Tareas del equipo
