@@ -58,5 +58,9 @@ export const routes: Routes = [
     {
     path: 'home-cocinero',
     loadComponent: () => import('./components/Home/home-cocinero/home-cocinero.page').then( m => m.HomeCocineroPage)
+  },  {
+    path: 'home-cantinero',
+    loadComponent: () => import('./components/Home/home-cantinero/home-cantinero.page').then( m => m.HomeCantineroPage)
   }
+
 ];

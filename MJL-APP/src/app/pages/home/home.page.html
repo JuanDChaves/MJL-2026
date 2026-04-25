@@ -3,7 +3,9 @@
     <app-mozo-home-page></app-mozo-home-page>
   } @else if(userServ.userData()?.perfil === 'cocinero') {
      <app-home-cocinero></app-home-cocinero> 
-  }@else{
+  }@else if (userServ.userData()?.perfil === 'supervisor') {
     <app-home-supervisor></app-home-supervisor>
+  } @else{
+    <app-home-cantinero></app-home-cantinero>
   }
 </app-layout>
