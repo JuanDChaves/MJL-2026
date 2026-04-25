@@ -154,7 +154,7 @@ export class LoginFormComponent {
       const {data,error} = await this.dbServ.getOneByEmail('usuarios', email!);
       const user = data as IUser;
       if(!user){
-        this.errorMessage = 'El correo no se encuentra registrado';
+        this.errorMessage = 'Credenciales incorrectas';
         return;
       }
       if(user.perfil === 'cliente' && !user.activo) {

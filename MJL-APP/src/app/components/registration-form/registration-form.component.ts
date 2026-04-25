@@ -184,13 +184,14 @@ export class RegistrationFormComponent implements ViewWillEnter {
     this.router.navigate(['/home']);
   }
 
-  getValuesFromForm(): Promise<IUser> {
+  getValuesFromForm(user_id:string): Promise<IUser> {
     if (!this.userService.isLogged()) {
       this.form().value.perfil = 'cliente';
     }
 
     return new Promise((resolve, reject) => {
       resolve({
+        user_id: user_id,
         apellidos: this.form().value.apellidos,
         nombres: this.form().value.nombres,
         identificacion: this.form().value.identificacion,
@@ -251,11 +252,12 @@ export class RegistrationFormComponent implements ViewWillEnter {
             return;
           }
         }
+        userId = data.user.id;
         this.loginServ.closeSession();
       }
 
       // 2. Obtener datos del formulario
-      const user = await this.getValuesFromForm();
+      const user = await this.getValuesFromForm(userId!);
 
       // 3 Si es cliente guardamos en solicitudes
       if(user.perfil === 'cliente'){
