@@ -1,6 +1,7 @@
 # MJL-2026
 
-![Logo de la App](./MJL-APP/docs/images/icon-only.png)
+<!-- ![Logo de la App](./MJL-APP/docs/images/icon-only.png) -->
+<img src="./MJL-APP/docs/images/icon-only.png" alt="Logo" width="100" height="100"/>
 App móvil para la hamburguesería HTN 
 
 ## Tabla de Contenido
