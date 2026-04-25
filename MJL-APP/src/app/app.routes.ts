@@ -34,9 +34,29 @@ export const routes: Routes = [
       import('./components/Home/home-supervisor/customer-auth-panel/customer-auth-panel.component').then(
         (m) => m.CustomerAuthPanelComponent,
       ),
-  },  {
+  },  
+  {
+    path: 'mozo-home-page',
+    loadComponent: () => import('./components/Home/home-mozo/mozo-home-page/mozo-home-page.component').then((m) => m.MozoHomePageComponent),
+  },
+  {
+    path: 'pedidos-para-aprobar',
+    loadComponent: () => import('./components/Home/home-mozo/pedidos-para-aprobar/pedidos-para-aprobar.component').then((m) => m.PedidosParaAprobarComponent),
+  },
+  {
+    path: 'pedidos-pendientes',
+    loadComponent: () => import('./components/Home/home-mozo/pedidos-pendientes/pedidos-pendientes.component').then((m) => m.PedidosPendientesComponent),
+  },
+  {
+    path: 'chat',
+    loadComponent: () => import('./components/Home/home-mozo/chat/chat.component').then((m) => m.ChatComponent),
+  },
+  {
+    path: 'pagos',
+    loadComponent: () => import('./components/Home/home-mozo/pagos/pagos.component').then((m) => m.PagosComponent),
+  },
+    {
     path: 'home-cocinero',
     loadComponent: () => import('./components/Home/home-cocinero/home-cocinero.page').then( m => m.HomeCocineroPage)
-  },
-
+  }
 ];
