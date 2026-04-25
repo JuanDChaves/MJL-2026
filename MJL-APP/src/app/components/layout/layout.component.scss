@@ -4,23 +4,31 @@
   height: 100vh;
 }
 
+// Variables globales del layout
+$bg-color: #F5A623;
+$title-color: #1A1A1A;
+
 ion-header {
   flex-shrink: 0;
   
   ion-toolbar {
     --padding-start: 16px;
     --padding-end: 16px;
+    --background: #{$bg-color};
+    --color: #{$title-color};
   }
 
   ion-title {
-    font-weight: 600;
+    font-family: 'Georgia', serif;
+    font-weight: 700;
+    font-size: 1.2rem;
   }
 }
 
 ion-content {
-  --overflow: hidden;
-  --padding-start: 0;
-  --padding-end: 0;
-  --padding-top: 0;
-  --padding-bottom: 0;
+  --background: #{$bg-color};
+  --padding-top: 16px;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --padding-bottom: 16px;
 }
