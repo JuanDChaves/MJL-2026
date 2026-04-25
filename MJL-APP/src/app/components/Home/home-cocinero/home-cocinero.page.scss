@@ -6,11 +6,27 @@ $btn-text:      #FFFFFF;
 $title-color:   #1A1A1A;
 $shadow:        0 4px 12px rgba(0, 0, 0, 0.25);
 
-// ─── Toolbar ─────────────────────────────────────────────────────────────────
-ion-toolbar {
-  --background: #{$bg-color};
-  --color:      #{$title-color};
+// ─── Host element ────────────────────────────────────────────────────────────
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+// ─── Container ─────────────────────────────────────────────────────────────────
+.home-cocinero-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: $bg-color;
+}
+
+// ─── Header ─────────────────────────────────────────────────────────────────
+.home-header {
+  background: $bg-color;
+  padding: 16px 24px;
   padding-top: env(safe-area-inset-top);
+  text-align: center;
+  flex-shrink: 0;
 }
 
 .home-title {
@@ -20,6 +36,7 @@ ion-toolbar {
   letter-spacing: 0.02em;
   color: $title-color;
   text-align: center;
+  margin: 0;
 }
 
 .device-note {
@@ -29,18 +46,15 @@ ion-toolbar {
 }
 
 // ─── Content ─────────────────────────────────────────────────────────────────
-.home-content {
-  --background: #{$bg-color};
-}
-
 .main-container {
   display:         flex;
   flex-direction:  column;
   align-items:     center;
   justify-content: center;
-  min-height:      100%;
+  flex:            1;
   padding:         32px 24px 48px;
   box-sizing:      border-box;
+  overflow-y:      auto;
 }
 
 // ─── Logo circle ─────────────────────────────────────────────────────────────

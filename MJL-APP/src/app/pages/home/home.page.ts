@@ -8,8 +8,7 @@ import { HomeCocineroPage } from "src/app/components/Home/home-cocinero/home-coc
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss'],
-  imports: [HomeSupervisorComponent, LayoutComponent, HomeCocineroPage],
+  imports: [LayoutComponent, HomeCocineroPage, HomeSupervisorComponent]
 })
 export class HomePage implements ViewWillEnter {
   userServ = inject(UserService);
