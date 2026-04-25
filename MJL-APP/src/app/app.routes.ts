@@ -34,7 +34,7 @@ export const routes: Routes = [
       import('./components/Home/home-supervisor/customer-auth-panel/customer-auth-panel.component').then(
         (m) => m.CustomerAuthPanelComponent,
       ),
-  },
+  },  
   {
     path: 'mozo-home-page',
     loadComponent: () => import('./components/Home/home-mozo/mozo-home-page/mozo-home-page.component').then((m) => m.MozoHomePageComponent),
@@ -54,6 +54,9 @@ export const routes: Routes = [
   {
     path: 'pagos',
     loadComponent: () => import('./components/Home/home-mozo/pagos/pagos.component').then((m) => m.PagosComponent),
+  },
+    {
+    path: 'home-cocinero',
+    loadComponent: () => import('./components/Home/home-cocinero/home-cocinero.page').then( m => m.HomeCocineroPage)
   }
-
 ];

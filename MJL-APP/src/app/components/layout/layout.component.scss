@@ -1,8 +1,12 @@
 :host {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
 }
 
 ion-header {
+  flex-shrink: 0;
+  
   ion-toolbar {
     --padding-start: 16px;
     --padding-end: 16px;
@@ -11,4 +15,12 @@ ion-header {
   ion-title {
     font-weight: 600;
   }
+}
+
+ion-content {
+  --overflow: hidden;
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
 }

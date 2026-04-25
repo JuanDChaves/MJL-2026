@@ -1,0 +1,44 @@
+// ─── Host element ────────────────────────────────────────────────────────────
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+// ─── Container ─────────────────────────────────────────────────────────────────
+.home-supervisor-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+// ─── Buttons container ───────────────────────────────────────────────────────
+.buttons-container {
+  width: 100%;
+  max-width: 340px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+// ─── Buttons ─────────────────────────────────────────────────────────────────
+.supervisor-btn {
+  --background: #B71C1C;
+  --background-hover: #D32F2F;
+  --background-activated: #D32F2F;
+  --color: #FFFFFF;
+  --border-radius: 12px;
+  --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  
+  font-family: 'Georgia', serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  
+  height: 56px;
+  margin: 0;
+}
