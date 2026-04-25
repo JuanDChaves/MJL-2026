@@ -1,5 +1,6 @@
 # MJL-2026
 
+![Logo de la App](./MJL-APP/docs/images/icon-only.png)
 App móvil para la hamburguesería HTN 
 
 ## Tabla de Contenido
