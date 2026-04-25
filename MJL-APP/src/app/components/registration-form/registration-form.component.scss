@@ -1,21 +1,24 @@
+// ─── Variables (mismas que home-supervisor) ───────────────────────────────────
+$bg-color:      #F5A623;   // warm amber
+$btn-color:     #B71C1C;   // deep red buttons
+$btn-hover:     #D32F2F;
+$btn-text:      #FFFFFF;
+$title-color:   #1A1A1A;
+$shadow:        0 4px 12px rgba(0, 0, 0, 0.25);
+
 .registration-content {
   --padding-top: 0;
   --padding-bottom: 0;
   --padding-start: 0;
   --padding-end: 0;
-  --background: linear-gradient(
-    135deg,
-    var(--ion-color-primary) 0%,
-    var(--ion-color-primary-shade) 100%
-  );
+  --background: #{$bg-color};
 }
 
 .registration-container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: 100%;
   padding: 0;
-  background: var(--ion-background-color, #ffffff);
 }
 
 .registration-header {
@@ -31,7 +34,7 @@
   }
 
   .back-button {
-    --color: var(--ion-color-primary);
+    --color: #{$title-color};
     --padding-start: 0.5rem;
     --padding-end: 0.5rem;
     min-width: 44px;
@@ -39,21 +42,19 @@
   }
 
   .header-title {
+    font-family: 'Georgia', serif;
     font-size: 1.25rem;
     font-weight: 700;
     letter-spacing: 0.5px;
+    color: #{$title-color};
   }
 }
 
 .profile-photo-section {
   display: flex;
   justify-content: center;
-  padding: 1.5rem 1rem 1rem;
-  background: linear-gradient(
-    180deg,
-    var(--ion-color-primary) 0%,
-    var(--ion-color-primary-shade) 100%
-  );
+  padding: 1rem 1rem 1.5rem;
+  background: #{$bg-color};
 }
 
 .photo-container {
@@ -70,7 +71,7 @@
   overflow: hidden;
   box-shadow: 
     0 4px 20px rgba(0, 0, 0, 0.2),
-    0 0 0 4px var(--ion-color-primary-contrast);
+    0 0 0 4px #{$btn-color};
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   animation: photoAppear 0.5s ease-out;
 
@@ -115,8 +116,8 @@
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  background: var(--ion-color-light);
-  border: 3px dashed var(--ion-color-primary);
+  background: #ffffff;
+  border: 3px dashed #{$btn-color};
   box-shadow: 
     0 4px 20px rgba(0, 0, 0, 0.1),
     inset 0 2px 10px rgba(255, 255, 255, 0.5);
@@ -125,20 +126,21 @@
 
   &:active {
     transform: scale(0.95);
-    background: var(--ion-color-light-shade);
+    background: #f5f5f5;
   }
 
   .placeholder-icon {
     font-size: 3rem;
-    color: var(--ion-color-primary);
+    color: #{$btn-color};
     opacity: 0.7;
     margin-bottom: 0.25rem;
   }
 
   .photo-hint {
+    font-family: 'Georgia', serif;
     font-size: 0.75rem;
     font-weight: 500;
-    color: var(--ion-color-primary);
+    color: #{$btn-color};
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
@@ -154,7 +156,7 @@
 .fields-list {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.5rem;
   padding: 0 1rem;
   background: transparent;
 
@@ -179,19 +181,21 @@
   --padding-end: 0.5rem;
   --inner-padding-end: 0.5rem;
   --border-radius: 12px;
-  --background: var(--ion-color-light, #f5f5f5);
+  --background: #ffffff;
   --border-color: transparent;
-  --ion-item-background: var(--ion-color-light, #f5f5f5);
+  --ion-item-background: #ffffff;
   margin-bottom: 0.25rem;
   transition: --border-color 0.3s ease, --background 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 
   &.item-has-focus {
-    --border-color: var(--ion-color-primary);
-    --background: var(--ion-color-primary-tint);
+    --border-color: #{$btn-color};
+    --background: #ffffff;
+    box-shadow: 0 4px 12px rgba(183, 28, 28, 0.2);
   }
 
   ion-icon.field-icon {
-    color: var(--ion-color-primary);
+    color: #{$btn-color};
     font-size: 1.25rem;
     margin-right: 0.5rem;
   }
@@ -199,11 +203,13 @@
   .field-input {
     --padding-start: 0.5rem;
     font-size: 1rem;
+    font-family: 'Georgia', serif;
   }
 
   .field-select {
     --padding-start: 0.5rem;
     font-size: 1rem;
+    font-family: 'Georgia', serif;
   }
 
   ion-input,
@@ -225,6 +231,7 @@
   font-weight: 600;
   margin-top: -0.25rem;
   animation: shake 0.4s ease-out;
+  color: #{$btn-color};
 }
 
 .toggle-password-btn {
@@ -237,30 +244,62 @@
   --color: var(--ion-color-medium);
 
   &:active {
-    --color: var(--ion-color-primary);
+    --color: #{$btn-color};
   }
 }
 
+// ─── Submit Button (estilo home-supervisor) ───────────────────────────────────
 .submit-button {
+  // Ionic CSS Custom Properties
+  --background: #{$btn-color};
+  --background-hover: #{$btn-hover};
+  --background-activated: #{$btn-hover};
+  --background-focused: #{$btn-hover};
+  --color: #{$btn-text};
   --border-radius: 12px;
-  --box-shadow: 
-    0 4px 15px rgba(var(--ion-color-primary-rgb), 0.4),
-    0 2px 5px rgba(0, 0, 0, 0.1);
-  --padding-top: 1rem;
-  --padding-bottom: 1rem;
+  --box-shadow: #{$shadow};
+  
+  // Layout
+  width: calc(100% - 2rem);
+  height: auto;
+  min-height: 56px;
   margin: 1.5rem 1rem 2rem;
-  font-size: 1.1rem;
+  
+  // Tipografía
+  font-family: 'Georgia', serif;
+  font-size: 1.05rem;
   font-weight: 700;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
+  
+  // Transiciones
   transition: all 0.3s ease;
   animation: fadeInUp 0.5s ease-out 0.5s both;
+  
+  // Layout interno: icono a la izquierda, texto centrado
+  &::part(native) {
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  
+  ion-icon {
+    font-size: 1.4rem;
+    flex-shrink: 0;
+    margin-right: 16px;
+    color: #{$btn-text};
+  }
+  
+  .button-inner {
+    flex: 1;
+    text-align: center;
+    padding-right: 40px;
+  }
 
   &:active {
     transform: scale(0.98);
-    --box-shadow: 
-      0 2px 8px rgba(var(--ion-color-primary-rgb), 0.3),
-      0 1px 3px rgba(0, 0, 0, 0.1);
+    --box-shadow: 0 2px 8px rgba(183, 28, 28, 0.3);
   }
 
   &:disabled {
@@ -269,14 +308,24 @@
   }
 
   ion-spinner {
-    --color: var(--ion-color-primary-contrast);
-  }
-
-  ion-icon {
-    margin-left: 0.5rem;
+    --color: #{$btn-text};
   }
 }
 
+.global-error {
+  display: block;
+  margin: 1rem;
+  padding: 0.75rem 1rem;
+  background: #ffffff;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-align: center;
+  color: #{$btn-color};
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+// ─── Keyframes ───────────────────────────────────────────────────────────────
 @keyframes photoAppear {
   from {
     opacity: 0;
@@ -330,9 +379,10 @@
   }
 }
 
+// Responsive
 @media (max-width: 480px) {
   .profile-photo-section {
-    padding: 1rem 0.75rem 0.75rem;
+    padding: 0.75rem 0.75rem 1rem;
   }
 
   .photo-container {
@@ -359,42 +409,12 @@
   }
 
   .submit-button {
+    width: calc(100% - 1.5rem);
     margin: 1rem 0.75rem 1.5rem;
     font-size: 1rem;
   }
-}
-
-@media (prefers-color-scheme: dark) {
-  .registration-content {
-    --background: linear-gradient(
-      135deg,
-      var(--ion-color-primary-shade) 0%,
-      var(--ion-color-dark) 100%
-    );
+  
+  .global-error {
+    margin: 0.75rem;
   }
-
-  .field-item {
-    --background: var(--ion-color-dark);
-    --ion-item-background: var(--ion-color-dark);
-  }
-
-  .photo-placeholder {
-    background: var(--ion-color-dark);
-
-    .photo-overlay {
-      background: rgba(0, 0, 0, 0.8);
-    }
-  }
-}
-
-.global-error {
-  display: block;
-  margin-top: 2rem;
-  margin-bottom: 1rem;
-  padding: 0.75rem 1rem;
-  background: var(--ion-color-danger-contrast, #fff5f5);
-  border-radius: 8px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  text-align: center;
 }
