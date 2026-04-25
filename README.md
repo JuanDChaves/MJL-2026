@@ -4,14 +4,14 @@ App móvil para la hamburguesería HTN
 
 ## Tabla de Contenido
 - [Introducción](#introducción)
-- Funcionalidades de la App(#funcionalidades-de-la-app)
-- Tareas del equipo(#tarea-del-equipo)
-- Convenciones de Commits(#convenciones-de-commits)
+- [Funcionalidades de la App](#funcionalidades-de-la-app)
+- [Tareas del equipo](#tareas-del-equipo)
+- [Convenciones de Commits](#convenciones-de-commits)
 
 ## Introducción
-
+_Completar_
 ## Funcionalidades de la App
-
+_Completar_
 ## Tareas del equipo
 
 ### Entrega Preliminar 3 - Tareas
