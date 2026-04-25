@@ -34,5 +34,9 @@ export const routes: Routes = [
       import('./components/Home/home-supervisor/customer-auth-panel/customer-auth-panel.component').then(
         (m) => m.CustomerAuthPanelComponent,
       ),
+  },  {
+    path: 'home-cocinero',
+    loadComponent: () => import('./components/Home/home-cocinero/home-cocinero.page').then( m => m.HomeCocineroPage)
   },
+
 ];
