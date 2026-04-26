@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import {
-  IonHeader, IonToolbar, IonTitle, IonNote,
-  IonContent, IonIcon
-} from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonNote, IonContent, IonIcon, IonButton } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
   addCircleOutline,
@@ -18,8 +15,9 @@ import {
   standalone: true,
   imports: [
     IonHeader, IonToolbar, IonTitle,
-    IonContent, IonIcon
-  ],
+    IonContent, IonIcon,
+    IonButton
+],
 })
 export class HomeCocineroPage implements OnInit {
 

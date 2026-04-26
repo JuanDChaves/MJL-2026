@@ -27,8 +27,8 @@ ion-header {
 
 ion-content {
   --background: #{$bg-color};
-  --padding-top: 16px;
+  --padding-top: 0;
   --padding-start: 16px;
   --padding-end: 16px;
-  --padding-bottom: 16px;
+  --padding-bottom: 0;
 }

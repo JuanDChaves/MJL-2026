@@ -15,7 +15,8 @@ $shadow:        0 4px 12px rgba(0, 0, 0, 0.25);
 .home-cantinero-container {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: auto;
+  min-height: 100%;
 }
 
 // ─── Header ─────────────────────────────────────────────────────────────────
@@ -90,55 +91,64 @@ $shadow:        0 4px 12px rgba(0, 0, 0, 0.25);
 
 // ─── Individual button ───────────────────────────────────────────────────────
 .menu-btn {
-  display:          flex;
-  align-items:      center;
-  justify-content:  center;
-  gap:              10px;
-
+  // Ionic CSS Custom Properties - estos controlan el botón interno
+  --background: #{$btn-color};
+  --background-hover: #{$btn-hover};
+  --background-activated: #{$btn-hover};
+  --background-focused: #{$btn-hover};
+  --color: #{$btn-text};
+  --border-radius: 12px;
+  --box-shadow: #{$shadow};
+  
   width:            100%;
-  padding:          16px 20px;
-  border:           none;
-  border-radius:    12px;
-  background:       $btn-color;
-  color:            $btn-text;
-  cursor:           pointer;
-
+  height:           auto;
+  min-height:       56px;
+  margin:           0;
+  
   font-family:      'Georgia', serif;
   font-size:        1.05rem;
   font-weight:      700;
   letter-spacing:   0.03em;
   text-transform:   uppercase;
-
-  box-shadow:       $shadow;
-  transition:       background 0.18s ease, transform 0.15s ease, box-shadow 0.15s ease;
-
+  
   // Staggered entrance animations
   opacity: 0;
   animation: slide-up 0.45s ease forwards;
-
+  
   &:nth-child(1) { animation-delay: 0.15s; }
   &:nth-child(2) { animation-delay: 0.28s; }
   &:nth-child(3) { animation-delay: 0.41s; }
-
+  
+  // Layout interno: icono a la izquierda, texto centrado
+  &::part(native) {
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  
   ion-icon {
     font-size: 1.4rem;
     flex-shrink: 0;
+    color: #{$btn-text};
+    margin-right: 16px;
   }
-
+  
   span {
     flex: 1;
     text-align: center;
+    padding-right: 40px; // Compensar el espacio del icono para centrar visualmente
   }
-
+  
   &:hover {
-    background:   $btn-hover;
+    --background: #{$btn-hover};
+    --box-shadow: 0 6px 18px rgba(0,0,0,0.3);
     transform:    translateY(-2px);
-    box-shadow:   0 6px 18px rgba(0,0,0,0.3);
   }
-
+  
   &:active {
     transform:  translateY(1px);
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    --box-shadow: 0 2px 6px rgba(0,0,0,0.2);
   }
 }
 
