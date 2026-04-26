@@ -12,7 +12,7 @@
             </ion-avatar>
             <div class="user-details">
               <h2 class="user-name">{{ item.nombres }} {{ item.apellidos }}</h2>
-              <p class="user-dni">{{item.identificacion.toString().length > 8 ? 'CUIL' : 'DNI'}}: {{ item.identificacion }}</p>
+              <p class="user-dni">DNI: {{ item.identificacion }}</p>
               <p class="user-date">Registrado: {{ item.fecha_registro | date:'dd/MM/yyyy' }}</p>
             </div>
           </div>

@@ -6,5 +6,6 @@ export interface IUser {
   perfil: string;
   activo: boolean;
   url_foto_perfil: string | null;
-  identificacion: string
+  dni: string;
+  cuil: string|null
 };

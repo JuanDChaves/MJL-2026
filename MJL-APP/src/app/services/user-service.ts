@@ -53,7 +53,7 @@ export class UserService {
   async enableOrRejectUser(identifiacion: string, enable: boolean) {
     const response = await this.dbService.update(
       'usuarios',
-      'identificacion',
+      'dni',
       identifiacion,
       { activo: enable }
     );

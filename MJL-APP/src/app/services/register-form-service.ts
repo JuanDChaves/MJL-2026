@@ -23,7 +23,6 @@ export class RegisterFormService {
     Validators.required,
     Validators.minLength(2),
     Validators.pattern(/^[a-zA-ZáéíóúñÁÉÍÓÚÑ\s]+$/),
-
   ]);
 
   name = new FormControl('', [
@@ -58,7 +57,8 @@ export class RegisterFormService {
     apellidos: this.lastname,
     clave: this.pass,
     perfil: this.profiles,
-    identificacion: this.cuil,
+    dni: this.dni,
+    cuil: this.cuil,
   });
 
   profilelist = signal<perfilUser[]>([]);
@@ -100,11 +100,23 @@ export class RegisterFormService {
     }
   }
 
-  async setIdUserInFormControl(user: IUser | null) {
-    if (!user || user.perfil === 'metre') {
-      this.registerForm.setControl('identificacion', this.dni);
+  setValidatorsOnCuilControl() {
+    const cuilControl = this.registerForm.get('cuil');
+    if (
+      (this.userService.isLogged() &&
+        this.userService.userData()?.perfil === 'duenio') ||
+      this.userService.userData()?.perfil === 'supervisor'
+    ) {
+      cuilControl?.setValidators([
+        Validators.required,
+        Validators.minLength(11),
+        Validators.maxLength(11),
+        Validators.pattern(/^\d{11}$/),
+      ]);
+      cuilControl?.updateValueAndValidity();
     } else {
-      this.registerForm.setControl('identificacion', this.cuil);
+      cuilControl?.clearValidators();
+      cuilControl?.updateValueAndValidity();
     }
   }
 
@@ -112,16 +124,15 @@ export class RegisterFormService {
     await this.userService.loadUserData();
     const user = this.userService.userData();
     this.setValidatorsOnPerfilControl();
-    await this.setIdUserInFormControl(user);
+    this.setValidatorsOnCuilControl();
     if (user) {
       this.setPerfilOptions(user);
     }
     this.form.set(this.registerForm);
   }
 
-  cleanForm(){
+  cleanForm() {
     this.registerForm.reset();
     this.profilelist.set([]);
   }
-
 }
