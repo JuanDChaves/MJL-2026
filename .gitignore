@@ -12,3 +12,4 @@ opencode.json
 #supabase
 supabase/.temp
 supabase/migrations
+**/service-account.json

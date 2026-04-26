@@ -267,6 +267,16 @@ export class RegistrationFormComponent implements ViewWillEnter, OnInit {
         console.log(insertError);
         this.errorMessage = `Error al guardar en usuarios`;
       } else {
+        // 5. Si es cliente, notificar a supervisores/duenios
+        if (user.perfil === 'cliente') {
+          await this.dbService.insert('notifications', {
+            user_id: user.user_id,
+            title: 'Nuevo cliente pendiente',
+            body: `${user.nombres} ${user.apellidos} solicita acceso`,
+            data: { cliente_id: userId, tipo: 'registro_pendiente' },
+          });
+        }
+
         this.formService.registerForm.reset();
         this.profilePhotoUrl.set(null);
         this.errorMessage = null;
