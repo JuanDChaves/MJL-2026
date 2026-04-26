@@ -88,11 +88,16 @@ export class DbService<T extends BaseEntity> {
 
   //aca el id es el dni o cuil del usuario
   async userExist(table:string, dni:string,): Promise<boolean>{
-    const responseId = await  this.sbService.client
-      .from(table)
-      .select('*')
-      .eq('dni',dni)
-      .single()      
-    return responseId.data !== null
+    try {
+      const responseId = await  this.sbService.client
+        .from(table)
+        .select('*')
+        .eq('dni', dni)
+        .maybeSingle();      
+      return responseId.data !== null;
+    } catch (error) {
+      console.error('Error checking user existence:', error);
+      return false;
+    }
   }
 }

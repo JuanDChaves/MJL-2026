@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import {
   IonContent,
@@ -70,7 +70,7 @@ type perfilUser = {
     ReactiveFormsModule,
   ],
 })
-export class RegistrationFormComponent implements ViewWillEnter {
+export class RegistrationFormComponent implements ViewWillEnter, OnInit {
   router = inject(Router);
   userService = inject(UserService);
   loginServ = inject(LoginService);
@@ -87,25 +87,11 @@ export class RegistrationFormComponent implements ViewWillEnter {
   profilePhotoUrl = signal<string | null>(null);
   isSubmitting = signal(false);
 
-  errorMessage: string | null = null;
+  errorMessage: string | null = null;  
 
-  identificationLabel = () => {
-    const user = this.userService.userData();
-    if (!user || user.perfil === 'metre') {
-      return 'Número de documento';
-    }
-    return 'CUIL';
-  };
+  constructor() {  }
 
-  identificationPlaceholder = () => {
-    const user = this.userService.userData();
-    if (!user || user.perfil === 'metre') {
-      return 'Ingrese DNI';
-    }
-    return 'Ingrese CUIL';
-  };
-
-  constructor() {
+  ngOnInit(): void {
     addIcons({
       person,
       call,
@@ -182,24 +168,23 @@ export class RegistrationFormComponent implements ViewWillEnter {
     this.router.navigate(['/home']);
   }
 
-  getValuesFromForm(user_id: string): Promise<IUser> {
-    if (!this.userService.isLogged()) {
-      this.form().value.perfil = 'cliente';
+  private getValuesFromForm(user_id: string): IUser {
+    let isClientToRegister: boolean = false;
+    if(!this.userService.isLogged() || this.userService.userData()?.perfil === 'metre') {
+      isClientToRegister = true;
     }
-
-    return new Promise((resolve, reject) => {
-      resolve({
+    return {
         user_id: user_id,
         apellidos: this.form().value.apellidos,
         nombres: this.form().value.nombres,
         dni: this.form().value.dni,
         correo_electronico: this.form().value.correoElectronico,
-        perfil: this.form().value.perfil,
-        activo: this.form().value.perfil !== 'cliente' ? true : false,
+        perfil: this.userService.isLogged() ? this.form().value.perfil : 'cliente',
+        activo: !isClientToRegister,
         url_foto_perfil: this.profilePhotoUrl(),
-        cuil: this.form().value.cuil,
-      });
-    });
+        cuil: this.form().value.cuil
+    }
+      
   }
 
   async onSubmit() {
@@ -212,15 +197,14 @@ export class RegistrationFormComponent implements ViewWillEnter {
     this.isSubmitting.set(true);
     this.errorMessage = null;
 
-    const id = this.form().value.dni!;
+    const dni = this.form().value.dni!;
     let userId: string | null = null;
 
     try {
       // chequeamos que NO exista un usuario con este dni
-      const userExist = await this.userService.userExist(id);
+      const userExist = await this.userService.userExist(dni);
       if (userExist) {
         this.errorMessage = 'Ya existe un usuario con este dni';
-        this.isSubmitting.set(false);
         return;
       }
 
@@ -234,7 +218,6 @@ export class RegistrationFormComponent implements ViewWillEnter {
         if (result.error) {
           this.errorMessage =
             result.error.message || 'Error al crear el usuario';
-          this.isSubmitting.set(false);
           return;
         }
         userId = result.userId;
@@ -247,7 +230,6 @@ export class RegistrationFormComponent implements ViewWillEnter {
         if (error) {
           if (error.code === 'user_already_exists') {
             this.errorMessage = 'El correo ya está registrado';
-            this.isSubmitting.set(false);
             return;
           }
         }
@@ -256,7 +238,7 @@ export class RegistrationFormComponent implements ViewWillEnter {
       }
 
       // 2. Obtener datos del formulario
-      const user = await this.getValuesFromForm(userId!);
+      const user = this.getValuesFromForm(userId!);
 
       // 3 Si es cliente guardamos en solicitudes
       if (user.perfil === 'cliente') {
@@ -271,7 +253,6 @@ export class RegistrationFormComponent implements ViewWillEnter {
           });
         if (solicitudError) {
           this.errorMessage = `Error al guardar en usuarios pendientes de aprobacion`;
-          this.isSubmitting.set(false);
           return;
         }
       }
@@ -289,7 +270,6 @@ export class RegistrationFormComponent implements ViewWillEnter {
         this.formService.registerForm.reset();
         this.profilePhotoUrl.set(null);
         this.errorMessage = null;
-        this.isSubmitting.set(false);
         if (
           this.userService.userData()?.perfil === 'metre' ||
           this.userService.userData()?.perfil === 'duenio' ||
@@ -302,7 +282,10 @@ export class RegistrationFormComponent implements ViewWillEnter {
       }
     } catch (error: any) {
       this.errorMessage = error.message || 'Error al iniciar sesión';
+    } finally{
+      this.isSubmitting.set(false);
     }
+
   }
   scanQr() {
     throw new Error('Method not implemented.');
