@@ -2,10 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import {
   IonCard,
-  IonCardHeader,
-  IonCardTitle,
   IonCardContent,
-  IonCardSubtitle,
   IonAvatar,
   IonButton,
   IonIcon,

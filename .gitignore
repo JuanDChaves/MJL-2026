@@ -3,6 +3,8 @@ skills-lock.json
 AGENTS.md
 .agents
 sesiones.txt
+.opencode
+opencode.json
 
 #vscode 
 .vscode

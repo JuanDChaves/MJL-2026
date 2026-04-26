@@ -177,7 +177,7 @@ export class LoginFormComponent {
         this.router.navigate(['/home']);
       }
     } catch (error: any) {
-      this.errorMessage = error.message || 'Error al iniciar sesión';
+      this.errorMessage = 'Credenciales incorrectas';
     } finally {
       this.isLoading = false;
     }
