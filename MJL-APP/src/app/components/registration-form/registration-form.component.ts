@@ -42,6 +42,7 @@ import { LocalStorageService } from '../../services/local-storage-service';
 import { RegisterFormService } from 'src/app/services/register-form-service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { IUser } from 'src/app/interfaces/IUsers';
+import { PhotoService } from 'src/app/services/photo-service';
 
 type perfilUser = {
   value: perfilRol;
@@ -77,6 +78,7 @@ export class RegistrationFormComponent implements ViewWillEnter, OnInit {
   storageServ = inject(LocalStorageService);
   dbService = inject(DbService);
   formService = inject(RegisterFormService);
+  photoSerice = inject(PhotoService)
 
   form = toSignal(this.formService.form$, {
     initialValue: this.formService.registerForm,
@@ -154,10 +156,11 @@ export class RegistrationFormComponent implements ViewWillEnter, OnInit {
     this.showPassword.set(!this.showPassword());
   }
 
-  onSelectPhoto() {
+  async onSelectPhoto() {
     // TODO: Implementar selección de foto
+    const path = await this.photoSerice.takePicture();    
     // Por ahora simulamos una foto
-    this.profilePhotoUrl.set('foto de la camara');
+    this.profilePhotoUrl.set(path); // URL.createObjectURL(path);
   }
 
   removePhoto() {
