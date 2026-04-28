@@ -43,6 +43,7 @@ import { RegisterFormService } from 'src/app/services/register-form-service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { IUser } from 'src/app/interfaces/IUsers';
 import { PhotoService } from 'src/app/services/photo-service';
+import { BarcodeScannerService } from 'src/app/services/barcode-scanner-service';
 
 type perfilUser = {
   value: perfilRol;
@@ -79,7 +80,7 @@ export class RegistrationFormComponent implements ViewWillEnter, OnInit {
   dbService = inject(DbService);
   formService = inject(RegisterFormService);
   photoService = inject(PhotoService)
-
+  scannerService = inject(BarcodeScannerService)
   form = toSignal(this.formService.form$, {
     initialValue: this.formService.registerForm,
   });
@@ -313,7 +314,17 @@ export class RegistrationFormComponent implements ViewWillEnter, OnInit {
     }
 
   }
-  scanQr() {
-    throw new Error('Method not implemented.');
-  }
+
+  async scanQr() {
+    const {ScanResult,format} = await this.scannerService.scanBarcode();
+    const data = ScanResult.split('@');
+    const apellidos = ScanResult.split('@')[1];
+    const nombre = ScanResult.split('@')[2];
+    const dni = ScanResult.split('@')[4];
+
+    this.form().controls.nombres.setValue(nombre);
+    this.form().controls.apellidos.setValue(apellidos);
+    this.form().controls.dni.setValue(dni);
+    }
+
 }
