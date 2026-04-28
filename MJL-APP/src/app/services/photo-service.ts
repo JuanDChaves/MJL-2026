@@ -1,9 +1,13 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable, OnInit } from '@angular/core';
 import { Camera  } from '@capacitor/camera';
+import { SupabaseService } from './supabase-service';
+import { environment } from 'src/environments/environment.prod';
 @Injectable({
   providedIn: 'root',
 })
 export class PhotoService {
+  sbservice = inject(SupabaseService);
+
   async takePicture(): Promise<any> {
     try {
       const result = await Camera.takePhoto({
@@ -11,7 +15,6 @@ export class PhotoService {
         includeMetadata: true,
       });
 
-      console.log(result.webPath?.slice(5));
       // result.webPath can be set directly as the src of an image element
 
       // On native: pass result.uri to the Filesystem API to get the full-resolution base64,
@@ -31,4 +34,31 @@ export class PhotoService {
       console.error('takePhoto failed:', message);
     }
   }
+
+  async uploadImage(file:Blob, dni:string): Promise<string> {
+    const imgPath = environment.bucketName + '/' + dni;
+    const {data,error} =  await this.sbservice.client.storage
+      .from(environment.bucketName)
+      .upload(imgPath, file);
+    if (error) {
+      console.error('Error al subir el archivo: ', error);
+    }
+
+    return await this.getPublicUrl(imgPath);
+
+  }
+
+  async getPublicUrl( filePath: string) {
+    const { data } = this.sbservice.client.storage
+      .from(environment.bucketName)
+      .getPublicUrl(filePath);
+
+    return data.publicUrl;
+  }
+
+  async getPhotoBlob(webPath:string){
+    const resp = await fetch(webPath);
+    return await resp.blob();
+  }
+
 }

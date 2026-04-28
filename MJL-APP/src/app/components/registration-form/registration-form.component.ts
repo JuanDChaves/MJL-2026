@@ -78,7 +78,7 @@ export class RegistrationFormComponent implements ViewWillEnter, OnInit {
   storageServ = inject(LocalStorageService);
   dbService = inject(DbService);
   formService = inject(RegisterFormService);
-  photoSerice = inject(PhotoService)
+  photoService = inject(PhotoService)
 
   form = toSignal(this.formService.form$, {
     initialValue: this.formService.registerForm,
@@ -86,6 +86,7 @@ export class RegistrationFormComponent implements ViewWillEnter, OnInit {
   profilelist = toSignal(this.formService.profileList$, { initialValue: [] });
 
   showPassword = signal(false);
+  viewProfilePhoto = signal<string | null>(null);
   profilePhotoUrl = signal<string | null>(null);
   isSubmitting = signal(false);
 
@@ -114,7 +115,7 @@ export class RegistrationFormComponent implements ViewWillEnter, OnInit {
 
   async ionViewWillEnter() {
     this.formService.cleanForm();
-    this.profilePhotoUrl.set(null);
+    this.viewProfilePhoto.set(null);
     this.errorMessage = null;
     await this.userService.loadUserData();
     await this.formService.buildForm();
@@ -156,15 +157,24 @@ export class RegistrationFormComponent implements ViewWillEnter, OnInit {
     this.showPassword.set(!this.showPassword());
   }
 
-  async onSelectPhoto() {
+  async onSelectPhoto(): Promise<void> {
     // TODO: Implementar selección de foto
-    const path = await this.photoSerice.takePicture();    
+    const path = await this.photoService.takePicture();
     // Por ahora simulamos una foto
-    this.profilePhotoUrl.set(path); // URL.createObjectURL(path);
+    this.viewProfilePhoto.set(path);
+    return path;
+  }
+
+  async loadPhoto() {
+    if (this.viewProfilePhoto()) {
+      const blobImg = await this.photoService.getPhotoBlob(this.viewProfilePhoto()!);
+      const publicUrl = await this.photoService.uploadImage(blobImg,this.form().value.dni);
+      this.profilePhotoUrl.set(publicUrl);
+    }
   }
 
   removePhoto() {
-    this.profilePhotoUrl.set(null);
+    this.viewProfilePhoto.set(null);
   }
 
   goBack() {
@@ -191,7 +201,7 @@ export class RegistrationFormComponent implements ViewWillEnter, OnInit {
   }
 
   async onSubmit() {
-    if (this.form().invalid) {
+    if (this.form().invalid || !this.viewProfilePhoto() ) {
       this.form().markAllAsTouched();
       this.errorMessage = 'Por favor, complete todos los campos';
       return;
@@ -240,6 +250,8 @@ export class RegistrationFormComponent implements ViewWillEnter, OnInit {
         this.loginServ.closeSession();
       }
 
+      await this.loadPhoto();
+
       // 2. Obtener datos del formulario
       const user = this.getValuesFromForm(userId!);
 
@@ -282,6 +294,7 @@ export class RegistrationFormComponent implements ViewWillEnter, OnInit {
 
         this.formService.registerForm.reset();
         this.profilePhotoUrl.set(null);
+        this.viewProfilePhoto.set(null);
         this.errorMessage = null;
         if (
           this.userService.userData()?.perfil === 'metre' ||

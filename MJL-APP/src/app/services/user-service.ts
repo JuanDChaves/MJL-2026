@@ -33,7 +33,7 @@ export class UserService {
   async loadUserAuthorization(
     user: IUserUnauthorized
   ): Promise<{ data: any | null; error: any }> {
-    const response = await this.dbService.insert('solicitudes', { apellidos: user.apellidos, nombres: user.nombres, identificacion: user.identificacion });
+    const response = await this.dbService.insert('solicitudes', { apellidos: user.apellidos, nombres: user.nombres, identificacion: user.identificacion,url_foto_perfil: user.url_foto_perfil });
     if (response.error) {
       console.log(response.error);
       return { data: null, error: response.error };
