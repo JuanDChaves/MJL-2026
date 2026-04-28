@@ -43,6 +43,7 @@ import { LoginService } from '../../services/login-service';
 import { DbService } from 'src/app/services/db-service';
 import { LocalStorageService } from 'src/app/services/local-storage-service';
 import { IUser } from 'src/app/interfaces/IUsers';
+import { PushNotificationService } from 'src/app/services/push-notification-service';
 
 @Component({
   selector: 'app-login-form',
@@ -70,6 +71,7 @@ export class LoginFormComponent {
   private loginServ = inject(LoginService);
   private dbServ = inject(DbService);
   private storageServ = inject(LocalStorageService);
+  private pushServ = inject(PushNotificationService);
 
   router = inject(Router);
 
@@ -174,6 +176,15 @@ export class LoginFormComponent {
         await this.storageServ.saveData('perfil', response.data.perfil);
         await this.storageServ.saveData('user', response.data!);
         console.log('guardado en el local storage exitoso');
+
+        // Inicializar push notifications para supervisor/duenio
+        const perfil = response.data.perfil;
+        if (perfil === 'supervisor' || perfil === 'duenio') {
+          this.pushServ.init().catch((err: any) =>
+            console.warn('Push notifications not available:', err)
+          );
+        }
+
         this.router.navigate(['/home']);
       }
     } catch (error: any) {

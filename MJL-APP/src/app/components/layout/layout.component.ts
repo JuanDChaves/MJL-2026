@@ -4,6 +4,7 @@ import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, Ion
 import { UserService } from '../../services/user-service';
 import { LoginService } from '../../services/login-service';
 import { LocalStorageService } from '../../services/local-storage-service';
+import { PushNotificationService } from '../../services/push-notification-service';
 import { addIcons } from 'ionicons';
 import { powerSharp } from 'ionicons/icons';
 
@@ -21,6 +22,7 @@ export class LayoutComponent {
   userServ = inject(UserService);
   loginServ = inject(LoginService);
   storageServ = inject(LocalStorageService);
+  pushServ = inject(PushNotificationService);
   router = inject(Router);
 
   constructor() {
@@ -29,6 +31,7 @@ export class LayoutComponent {
 
   async closeSession() {
     console.log('cerrar session');
+    await this.pushServ.removeTokenFromDb();
     await this.loginServ.closeSession();
     await this.storageServ.clearData();
     await this.userServ.loadUserData();
