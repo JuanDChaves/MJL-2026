@@ -1,4 +1,5 @@
 export const environment = {
   production: true,
-  bucketName: 'ProfilePhoto'
+  bucketName: 'ProfilePhoto',
+  defaultProfilePhoto:'https://ionicframework.com/docs/img/demos/avatar.svg'
 };

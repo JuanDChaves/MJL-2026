@@ -65,4 +65,12 @@ export class UserService {
       { estado: false }
     )
   }
+
+  async insert(user: IUser){
+    return await this.dbService.insert(
+        'usuarios',
+        user
+      );
+  }
+
 }
