@@ -3,8 +3,7 @@ import { AbstractControl } from '@angular/forms';
 
 @Pipe({
   name: 'errorMessage',
-  standalone: true,
-  pure: true,
+  pure: false
 })
 export class ErrorMessagePipe implements PipeTransform {
   transform(control: AbstractControl | null, fieldName?: string): string | null {
