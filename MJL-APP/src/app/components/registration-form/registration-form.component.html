@@ -60,9 +60,9 @@
               class="field-input"
             ></ion-input>
           </ion-item>
-          @if (f['apellidos'].touched && getErrorMessage('apellidos')) {
+          @if (f['apellidos'].touched && (f['apellidos'] | errorMessage:"apellidos")) {
           <ion-text color="danger" class="field-error">
-            {{ getErrorMessage("apellidos") }}
+            {{ f["apellidos"] | errorMessage:"apellidos" }}
           </ion-text>
           }
         </div>
@@ -82,9 +82,9 @@
               class="field-input"
             ></ion-input>
           </ion-item>
-          @if (f['nombres'].touched && getErrorMessage('nombres')) {
+          @if (f['nombres'].touched && (f['nombres'] | errorMessage:"nombres")) {
           <ion-text color="danger" class="field-error">
-            {{ getErrorMessage("nombres") }}
+            {{ f["nombres"] | errorMessage:"nombres" }}
           </ion-text>
           }
         </div>
@@ -108,9 +108,9 @@
               class="field-input"
             ></ion-input>
           </ion-item>
-          @if (f['dni'].touched && getErrorMessage('dni')) {
+          @if (f['dni'].touched && (f['dni'] | errorMessage:"dni")) {
           <ion-text color="danger" class="field-error">
-            {{ getErrorMessage("dni") }}
+            {{ f["dni"] | errorMessage:"dni" }}
           </ion-text>
           }
         </div>
@@ -136,9 +136,9 @@
               class="field-input"
             ></ion-input>
           </ion-item>
-          @if (f['cuil'].touched && getErrorMessage('cuil')) {
+          @if (f['cuil'].touched && (f['cuil'] | errorMessage:"cuil")) {
           <ion-text color="danger" class="field-error">
-            {{ getErrorMessage("cuil") }}
+            {{ f["cuil"] | errorMessage:"cuil" }}
           </ion-text>
           }
         </div>
@@ -160,9 +160,9 @@
             ></ion-input>
           </ion-item>
           @if (f['correoElectronico'].touched &&
-          getErrorMessage('correoElectronico')) {
+          (f['correoElectronico'] | errorMessage:"correoElectronico")) {
           <ion-text color="danger" class="field-error">
-            {{ getErrorMessage("correoElectronico") }}
+            {{ f["correoElectronico"] | errorMessage:"correoElectronico" }}
           </ion-text>
           }
         </div>
@@ -197,9 +197,9 @@
               ></ion-icon>
             </ion-button>
           </ion-item>
-          @if (f['clave'].touched && getErrorMessage('clave')) {
+          @if (f['clave'].touched && (f['clave'] | errorMessage:"clave")) {
           <ion-text color="danger" class="field-error">
-            {{ getErrorMessage("clave") }}
+            {{ f["clave"] | errorMessage:"clave" }}
           </ion-text>
           }
         </div>
@@ -225,9 +225,9 @@
               }
             </ion-select>
           </ion-item>
-          @if (f['perfil'].touched && getErrorMessage('perfil')) {
+          @if (f['perfil'].touched && (f['perfil'] | errorMessage:"perfil")) {
           <ion-text color="danger" class="field-error">
-            {{ getErrorMessage("perfil") }}
+            {{ f["perfil"] | errorMessage:"perfil" }}
           </ion-text>
           }
         </div>

@@ -44,6 +44,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { IUser } from 'src/app/interfaces/IUsers';
 import { PhotoService } from 'src/app/services/photo-service';
 import { BarcodeScannerService } from 'src/app/services/barcode-scanner-service';
+import { ErrorMessagePipe } from 'src/app/pipes/error-message.pipe';
 
 type perfilUser = {
   value: perfilRol;
@@ -70,6 +71,7 @@ type perfilUser = {
     IonSelectOption,
     IonSpinner,
     ReactiveFormsModule,
+    ErrorMessagePipe,
   ],
 })
 export class RegistrationFormComponent implements ViewWillEnter, OnInit {
@@ -126,34 +128,6 @@ export class RegistrationFormComponent implements ViewWillEnter, OnInit {
     return this.form().controls;
   }
 
-  getErrorMessage(field: string): string | null {
-    const control = this.formService.registerForm.get(field);
-    if (!control || !control.touched || !control.errors) return null;
-
-    if (control.hasError('required')) {
-      return 'Campo obligatorio';
-    }
-    if (control.hasError('minlength')) {
-      return `Mínimo ${control.errors?.['minlength']?.requiredLength} caracteres`;
-    }
-    if (control.hasError('maxlength')) {
-      return `Máximo ${control.errors?.['maxlength']?.requiredLength} caracteres`;
-    }
-    if (control.hasError('email')) {
-      return 'Correo inválido';
-    }
-    if (control.hasError('pattern')) {
-      if (field === 'dni') {
-        return 'Solo números (7-8 dígitos)';
-      } else if (field === 'cuil') {
-        return 'Solo numeros de 11 digitos';
-      } else if (field === 'apellidos' || field === 'nombres') {
-        return 'Solo letras';
-      }
-    }
-    return null;
-  }
-
   togglePassword() {
     this.showPassword.set(!this.showPassword());
   }
@@ -163,7 +137,6 @@ export class RegistrationFormComponent implements ViewWillEnter, OnInit {
     const path = await this.photoService.takePicture();
     // Por ahora simulamos una foto
     this.viewProfilePhoto.set(path);
-    return path;
   }
 
   async loadPhoto() {
@@ -318,9 +291,9 @@ export class RegistrationFormComponent implements ViewWillEnter, OnInit {
   async scanQr() {
     const {ScanResult,format} = await this.scannerService.scanBarcode();
     const data = ScanResult.split('@');
-    const apellidos = ScanResult.split('@')[1];
-    const nombre = ScanResult.split('@')[2];
-    const dni = ScanResult.split('@')[4];
+    const apellidos =data[1];
+    const nombre =data[2];
+    const dni =data[4];
 
     this.form().controls.nombres.setValue(nombre);
     this.form().controls.apellidos.setValue(apellidos);
