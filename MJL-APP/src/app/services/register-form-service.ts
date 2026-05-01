@@ -51,6 +51,8 @@ export class RegisterFormService {
 
   profiles = new FormControl('');
 
+  profileImage = new FormControl(null, [Validators.required]);
+
   registerForm = new FormGroup({
     correoElectronico: this.email,
     nombres: this.name,
@@ -59,6 +61,7 @@ export class RegisterFormService {
     perfil: this.profiles,
     dni: this.dni,
     cuil: this.cuil,
+    profileImg: this.profileImage
   });
 
   profilelist = signal<perfilUser[]>([]);

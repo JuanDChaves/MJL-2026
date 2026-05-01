@@ -37,7 +37,6 @@ import { Router } from '@angular/router';
 import { UserService } from '../../services/user-service';
 import { LoginService } from '../../services/login-service';
 import { DbService } from '../../services/db-service';
-import { perfilRol } from '../../types/typeRol';
 import { LocalStorageService } from '../../services/local-storage-service';
 import { RegisterFormService } from 'src/app/services/register-form-service';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -45,12 +44,7 @@ import { IUser } from 'src/app/interfaces/IUsers';
 import { PhotoService } from 'src/app/services/photo-service';
 import { BarcodeScannerService } from 'src/app/services/barcode-scanner-service';
 import { ErrorMessagePipe } from 'src/app/pipes/error-message.pipe';
-
-type perfilUser = {
-  value: perfilRol;
-  label: string;
-  icon: string;
-};
+import { RegistrationService } from 'src/app/services/registration-service';
 
 @Component({
   selector: 'app-registration-form',
@@ -81,8 +75,10 @@ export class RegistrationFormComponent implements ViewWillEnter, OnInit {
   storageServ = inject(LocalStorageService);
   dbService = inject(DbService);
   formService = inject(RegisterFormService);
-  photoService = inject(PhotoService)
-  scannerService = inject(BarcodeScannerService)
+  photoService = inject(PhotoService);
+  scannerService = inject(BarcodeScannerService);
+  registrationService = inject(RegistrationService);
+
   form = toSignal(this.formService.form$, {
     initialValue: this.formService.registerForm,
   });
@@ -93,9 +89,9 @@ export class RegistrationFormComponent implements ViewWillEnter, OnInit {
   profilePhotoUrl = signal<string | null>(null);
   isSubmitting = signal(false);
 
-  errorMessage: string | null = null;  
+  errorMessage: string | null = null;
 
-  constructor() {  }
+  constructor() {}
 
   ngOnInit(): void {
     addIcons({
@@ -117,11 +113,17 @@ export class RegistrationFormComponent implements ViewWillEnter, OnInit {
   }
 
   async ionViewWillEnter() {
-    this.formService.cleanForm();
-    this.viewProfilePhoto.set(null);
-    this.errorMessage = null;
+    this.resetForm();
     await this.userService.loadUserData();
     await this.formService.buildForm();
+  }
+
+  
+  resetForm() {
+    this.formService.cleanForm();
+    this.profilePhotoUrl.set(null);
+    this.viewProfilePhoto.set(null);
+    this.errorMessage = null;
   }
 
   get f() {
@@ -133,18 +135,9 @@ export class RegistrationFormComponent implements ViewWillEnter, OnInit {
   }
 
   async onSelectPhoto(): Promise<void> {
-    // TODO: Implementar selección de foto
     const path = await this.photoService.takePicture();
-    // Por ahora simulamos una foto
     this.viewProfilePhoto.set(path);
-  }
-
-  async loadPhoto() {
-    if (this.viewProfilePhoto()) {
-      const blobImg = await this.photoService.getPhotoBlob(this.viewProfilePhoto()!);
-      const publicUrl = await this.photoService.uploadImage(blobImg,this.form().value.dni);
-      this.profilePhotoUrl.set(publicUrl);
-    }
+    this.form().controls.profileImg.setValue(path);
   }
 
   removePhoto() {
@@ -155,27 +148,8 @@ export class RegistrationFormComponent implements ViewWillEnter, OnInit {
     this.router.navigate(['/home']);
   }
 
-  private getValuesFromForm(user_id: string): IUser {
-    let isClientToRegister: boolean = false;
-    if(!this.userService.isLogged() || this.userService.userData()?.perfil === 'metre') {
-      isClientToRegister = true;
-    }
-    return {
-        user_id: user_id,
-        apellidos: this.form().value.apellidos,
-        nombres: this.form().value.nombres,
-        dni: this.form().value.dni,
-        correo_electronico: this.form().value.correoElectronico,
-        perfil: this.userService.isLogged() ? this.form().value.perfil : 'cliente',
-        activo: !isClientToRegister,
-        url_foto_perfil: this.profilePhotoUrl(),
-        cuil: this.form().value.cuil
-    }
-      
-  }
-
   async onSubmit() {
-    if (this.form().invalid || !this.viewProfilePhoto() ) {
+    if (this.form().invalid || !this.viewProfilePhoto()) {
       this.form().markAllAsTouched();
       this.errorMessage = 'Por favor, complete todos los campos';
       return;
@@ -184,120 +158,40 @@ export class RegistrationFormComponent implements ViewWillEnter, OnInit {
     this.isSubmitting.set(true);
     this.errorMessage = null;
 
-    const dni = this.form().value.dni!;
-    let userId: string | null = null;
-
     try {
-      // chequeamos que NO exista un usuario con este dni
-      const userExist = await this.userService.userExist(dni);
-      if (userExist) {
-        this.errorMessage = 'Ya existe un usuario con este dni';
+      const result = await this.registrationService.registerUser(
+        this.form().controls
+      );
+      if (!result.success) {
+        this.errorMessage = result.error?.message ?? 'Error desconocido';
         return;
       }
-
-      if (this.userService.isLogged()) {
-        //si esta logueado registrar sin cerrar la sesion actual
-        const result = await this.loginServ.createUserViaEdgeFunction(
-          this.form().value.correoElectronico!,
-          this.form().value.clave!
-        );
-
-        if (result.error) {
-          this.errorMessage =
-            result.error.message || 'Error al crear el usuario';
-          return;
-        }
-        userId = result.userId;
-      } else {
-        // Sino esta logueado, crear usuario y cerrar sesion
-        const { data, error } = await this.loginServ.createAccount(
-          this.form().value.correoElectronico!,
-          this.form().value.clave!
-        );
-        if (error) {
-          if (error.code === 'user_already_exists') {
-            this.errorMessage = 'El correo ya está registrado';
-            return;
-          }
-        }
-        userId = data.user.id;
-        this.loginServ.closeSession();
-      }
-
-      await this.loadPhoto();
-
-      // 2. Obtener datos del formulario
-      const user = this.getValuesFromForm(userId!);
-
-      // 3 Si es cliente guardamos en solicitudes
-      if (user.perfil === 'cliente') {
-        const { error: solicitudError } =
-          await this.userService.loadUserAuthorization({
-            identificacion: user.dni,
-            estado: null,
-            apellidos: user.apellidos,
-            nombres: user.nombres,
-            url_foto_perfil: user.url_foto_perfil,
-            fecha_registro: null,
-          });
-        if (solicitudError) {
-          this.errorMessage = `Error al guardar en usuarios pendientes de aprobacion`;
-          return;
-        }
-      }
-
-      // 4. Guardar datos en tabla usuarios
-      const { error: insertError } = await this.dbService.insert(
-        'usuarios',
-        user
-      );
-
-      if (insertError) {
-        console.log(insertError);
-        this.errorMessage = `Error al guardar en usuarios`;
-      } else {
-        // 5. Si es cliente, notificar a supervisores/duenios
-        if (user.perfil === 'cliente') {
-          await this.dbService.insert('notifications', {
-            user_id: user.user_id,
-            title: 'Nuevo cliente pendiente',
-            body: `${user.nombres} ${user.apellidos} solicita acceso`,
-            data: { cliente_id: userId, tipo: 'registro_pendiente' },
-          });
-        }
-
-        this.formService.registerForm.reset();
-        this.profilePhotoUrl.set(null);
-        this.viewProfilePhoto.set(null);
-        this.errorMessage = null;
-        if (
-          this.userService.userData()?.perfil === 'metre' ||
-          this.userService.userData()?.perfil === 'duenio' ||
-          this.userService.userData()?.perfil === 'supervisor'
-        ) {
-          this.router.navigate(['/home']);
-        } else {
-          this.router.navigate(['/login']);
-        }
-      }
-    } catch (error: any) {
-      this.errorMessage = error.message || 'Error al iniciar sesión';
-    } finally{
+      this.resetForm();
+      this.redirection();
+    } catch (err: any) {
+      this.errorMessage = err.message || 'Error inesperado';
+    } finally {
       this.isSubmitting.set(false);
     }
+  }
 
+  redirection() {
+    if (this.userService.isLogged()) {
+      this.router.navigate(['/home']);
+    } else {
+      this.router.navigate(['/login']);
+    }
   }
 
   async scanQr() {
-    const {ScanResult,format} = await this.scannerService.scanBarcode();
+    const { ScanResult, format } = await this.scannerService.scanBarcode();
     const data = ScanResult.split('@');
-    const apellidos =data[1];
-    const nombre =data[2];
-    const dni =data[4];
+    const apellidos = data[1];
+    const nombre = data[2];
+    const dni = data[4];
 
     this.form().controls.nombres.setValue(nombre);
     this.form().controls.apellidos.setValue(apellidos);
     this.form().controls.dni.setValue(dni);
-    }
-
+  }
 }
