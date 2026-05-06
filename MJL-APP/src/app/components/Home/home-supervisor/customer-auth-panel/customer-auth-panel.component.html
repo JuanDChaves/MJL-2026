@@ -1,6 +1,6 @@
 <app-layout [title]="'Solicitudes pendientes'" [showBackButton]="true" [backUrl]="'/home'">
   <div class="auth-panel-content">
-    @for (item of unauthorizedUsersList(); track item.identificacion) {
+    @for (item of unauthorizedUsersList(); track item.dni) {
       <ion-card class="user-card">
         <ion-card-content>
           <div class="user-info">
@@ -12,18 +12,18 @@
             </ion-avatar>
             <div class="user-details">
               <h2 class="user-name">{{ item.nombres }} {{ item.apellidos }}</h2>
-              <p class="user-dni">{{item.identificacion.toString().length > 8 ? 'CUIL' : 'DNI'}}: {{ item.identificacion }}</p>
+              <p class="user-dni">DNI: {{ item.dni }}</p>
               <p class="user-date">Registrado: {{ item.fecha_registro | date:'dd/MM/yyyy' }}</p>
             </div>
           </div>
           <div class="actions">
-            <ion-button fill="solid" color="success" class="action-btn" (click)="enableUser(item)">
+            <ion-button fill="solid" class="action-btn approve" (click)="enableUser(item)">
               <ion-icon slot="start" name="checkmark"></ion-icon>
-              Aprobar
+              <span>Aprobar</span>
             </ion-button>
-            <ion-button fill="solid" color="danger" class="action-btn" (click)="rejectUser(item)">
+            <ion-button fill="solid" class="action-btn reject" (click)="rejectUser(item)">
               <ion-icon slot="start" name="close"></ion-icon>
-              Rechazar
+              <span>Rechazar</span>
             </ion-button>
           </div>
         </ion-card-content>

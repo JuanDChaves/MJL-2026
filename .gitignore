@@ -3,6 +3,8 @@ skills-lock.json
 AGENTS.md
 .agents
 sesiones.txt
+.opencode
+opencode.json
 
 #vscode 
 .vscode
@@ -10,3 +12,4 @@ sesiones.txt
 #supabase
 supabase/.temp
 supabase/migrations
+**/service-account.json

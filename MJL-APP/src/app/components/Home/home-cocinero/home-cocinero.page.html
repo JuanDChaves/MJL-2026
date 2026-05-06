@@ -1,20 +1,7 @@
-<!-- <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>home-cocinero</ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">home-cocinero</ion-title>
-    </ion-toolbar>
-  </ion-header>
-</ion-content> -->
 <div class="home-cocinero-container">
   <!-- Header del cocinero -->
   <div class="home-header">
-    <h1 class="home-title">Bienvenido a nuestra aplicacion para cocineros</h1>
+    <h1 class="home-title">Panel de cocineros</h1>
   </div>
 
   <div class="main-container">
@@ -28,20 +15,20 @@
     <!-- Buttons -->
     <div class="buttons-container">
 
-      <button class="menu-btn" (click)="agregarPlato()">
-        <ion-icon name="add-circle-outline"></ion-icon>
+      <ion-button expand="block" class="menu-btn" (click)="agregarPlato()">
+        <ion-icon slot="start" name="add-circle-outline"></ion-icon>
         <span>Agregar Nuevo Plato</span>
-      </button>
+      </ion-button>
 
-      <button class="menu-btn" (click)="verificarPedido()">
-        <ion-icon name="checkmark-circle-outline"></ion-icon>
+      <ion-button expand="block" class="menu-btn" (click)="verificarPedido()">
+        <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
         <span>Verificar Pedido</span>
-      </button>
+      </ion-button>
 
-      <button class="menu-btn" (click)="entregarPedido()">
-        <ion-icon name="bicycle-outline"></ion-icon>
+      <ion-button expand="block" class="menu-btn" (click)="entregarPedido()">
+        <ion-icon slot="start" name="bicycle-outline"></ion-icon>
         <span>Entregar Pedido</span>
-      </button>
+      </ion-button>
 
     </div>
   </div>

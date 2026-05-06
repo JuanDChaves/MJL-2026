@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { RegistrationFormComponent } from './registration-form.component';
+import { SplashScreenComponent } from './splash-screen.component';
 
-describe('RegistrationFormComponent', () => {
-  let component: RegistrationFormComponent;
-  let fixture: ComponentFixture<RegistrationFormComponent>;
+describe('SplashScreenComponent', () => {
+  let component: SplashScreenComponent;
+  let fixture: ComponentFixture<SplashScreenComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ RegistrationFormComponent ],
+      declarations: [ SplashScreenComponent ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(RegistrationFormComponent);
+    fixture = TestBed.createComponent(SplashScreenComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

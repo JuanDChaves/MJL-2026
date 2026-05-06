@@ -2,10 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import {
   IonCard,
-  IonCardHeader,
-  IonCardTitle,
   IonCardContent,
-  IonCardSubtitle,
   IonAvatar,
   IonButton,
   IonIcon,
@@ -16,6 +13,8 @@ import { checkmark, close, checkmarkCircle } from 'ionicons/icons';
 import { IUserUnauthorized } from '../../../../interfaces/IUserUnauthorized';
 import { UserService } from '../../../../services/user-service';
 import { LayoutComponent } from '../../../../components/layout/layout.component';
+import { SendEmailService } from 'src/app/services/send-email-service';
+import { IEmailData } from 'src/app/interfaces/IEmailData';
 
 @Component({
   selector: 'app-customer-auth-panel',
@@ -34,6 +33,7 @@ import { LayoutComponent } from '../../../../components/layout/layout.component'
 export class CustomerAuthPanelComponent implements ViewWillEnter {
   unauthorizedUsersList = signal<IUserUnauthorized[]>([]);
   userServ = inject(UserService);
+  sendEmailServ = inject(SendEmailService);
 
   constructor() {
     addIcons({ checkmark, close, checkmarkCircle });
@@ -44,16 +44,32 @@ export class CustomerAuthPanelComponent implements ViewWillEnter {
   }
 
   async rejectUser(user: IUserUnauthorized) {
+    const emailData: IEmailData  = {
+      emailToSend: user.correo_electronico,
+      nombre: user.nombres,
+      apellido: user.apellidos,
+      resultado: false
+    }
+    const result = await this.sendEmailServ.sendEmail(emailData,false);
+    console.log(result);
     await this.userServ.enableOrRejectUser(
-      user.identificacion.toString(),
+      user.dni.toString(),
       false
     );
     await this.reloadUsersList(user);
   }
 
   async enableUser(user: IUserUnauthorized) {
+    const emailData: IEmailData  = {
+      emailToSend: user.correo_electronico,
+      nombre: user.nombres,
+      apellido: user.apellidos,
+      resultado: true
+    }
+    const result = await this.sendEmailServ.sendEmail(emailData,true);
+    console.log(result);
     await this.userServ.enableOrRejectUser(
-      user.identificacion.toString(),
+      user.dni.toString(),
       true
     );
     await this.reloadUsersList(user);
@@ -62,7 +78,7 @@ export class CustomerAuthPanelComponent implements ViewWillEnter {
   private reloadUsersList(user: IUserUnauthorized): Promise<void> {
     return new Promise(() => {
       this.unauthorizedUsersList.update((users) =>
-        users.filter((u) => u.identificacion !== user.identificacion)
+        users.filter((u) => u.dni !== user.dni)
       );
     });
   }

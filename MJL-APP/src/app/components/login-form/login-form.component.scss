@@ -1,42 +1,69 @@
-.login-container {
+// ─── Variables (mismas que home-supervisor) ───────────────────────────────────
+$bg-color:      #F5A623;   // warm amber
+$btn-color:     #B71C1C;   // deep red buttons
+$btn-hover:     #D32F2F;
+$btn-text:      #FFFFFF;
+$title-color:   #1A1A1A;
+$bg-form:       #f3e9da;
+$shadow:        0 4px 12px rgba(0, 0, 0, 0.25);
+
+// ─── Container principal (fondo ámbar) ────────────────────────────────────────
+.login-page-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  padding: 1rem;
-  background: var(--ion-background-color, #ffffff);
+  padding: 16px;
+  background: $bg-color;
 }
 
-.login-logo {
+// ─── Sección del logo ─────────────────────────────────────────────────────────
+.login-logo-section {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 24px;
   animation: fadeInDown 0.6s ease-out;
+
+  .app-logo {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+    margin-bottom: 12px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  }
+
+  .brand-name {
+    font-family: 'Georgia', serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: $title-color;
+    margin: 0;
+    letter-spacing: 0.5px;
+  }
 }
 
-.logo-icon {
-  font-size: 4rem;
-  margin-bottom: 0.5rem;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-}
-
-.brand-name {
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: var(--ion-color-primary, #3880ff);
-  margin: 0;
-  letter-spacing: 0.5px;
-}
-
+// ─── Card beige ──────────────────────────────────────────────────────────────
 .login-card {
   width: 100%;
   max-width: 400px;
   border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: $shadow;
+  background: #f3e9da;
   animation: fadeInUp 0.6s ease-out 0.2s both;
   overflow: hidden;
+
+  ion-card-content {
+    background: #f3e9da;
+    --background: #f3e9da;
+  }
+
+  ion-list {
+    background: #f3e9da;
+    --ion-background-color: #f3e9da;
+    padding: 0;
+  }
 }
 
 ion-card-header {
@@ -44,22 +71,38 @@ ion-card-header {
 }
 
 ion-card-title {
+  font-family: 'Georgia', serif;
   font-size: 1.5rem;
-  font-weight: 600;
+  font-weight: 700;
   text-align: center;
-  color: var(--ion-text-color, #000000);
+  color: $title-color;
 }
 
+// ─── Inputs (como en registro) ────────────────────────────────────────────────
 ion-item {
   --padding-start: 1rem;
   --inner-padding-end: 1rem;
-  --border-radius: 8px;
-  margin-bottom: 0.5rem;
-  --background: var(--ion-color-light, #f4f5f8);
+  --border-radius: 12px;
+  --background: #f3e9da;
   --border-color: transparent;
+  --ion-item-background: #f3e9da;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+
+  &.item-has-focus {
+    --border-color: #{$btn-color};
+    --border-width: 2px;
+    --border-style: solid;
+    box-shadow: 0 4px 12px rgba(183, 28, 28, 0.2);
+  }
+
+  ion-icon {
+    color: #{$btn-color};
+    font-size: 1.25rem;
+    margin-right: 0.5rem;
+  }
 }
-
-
 
 .error-item {
   --padding-start: 1rem;
@@ -67,11 +110,13 @@ ion-item {
   --min-height: auto;
   margin-top: -0.5rem;
   margin-bottom: 0.5rem;
+  box-shadow: none;
 }
 
 .error-text {
   font-size: 0.875rem;
   font-weight: 500;
+  color: #{$btn-color};
 }
 
 .toggle-password-btn {
@@ -82,40 +127,101 @@ ion-item {
   min-width: 44px;
   min-height: 44px;
   --color: var(--ion-color-medium, #999999);
-}
 
-.remember-checkbox {
-  margin: 1rem 0;
-  display: flex;
-  align-items: center;
-  --size: 20px;
+  &:active {
+    --color: #{$btn-color};
+  }
 }
 
 .global-error {
   display: block;
   margin-bottom: 1rem;
   padding: 0.75rem 1rem;
-  background: var(--ion-color-danger-contrast, #fff5f5);
+  background: #ffffff;
   border-radius: 8px;
   font-size: 0.875rem;
   font-weight: 500;
   text-align: center;
+  color: #{$btn-color};
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+// ─── Botones (estilo home-supervisor) ─────────────────────────────────────────
+.register-button,
 .submit-button {
-  margin-top: 1rem;
-  --border-radius: 8px;
-  --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  --padding-top: 0.75rem;
-  --padding-bottom: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.5px;
+  // Ionic CSS Custom Properties
+  --background: #{$btn-color};
+  --background-hover: #{$btn-hover};
+  --background-activated: #{$btn-hover};
+  --background-focused: #{$btn-hover};
+  --color: #{$btn-text};
+  --border-radius: 12px;
+  --box-shadow: #{$shadow};
+  
+  width: 100%;
+  height: auto;
+  min-height: 56px;
+  margin: 8px 0;
+  
+  font-family: 'Georgia', serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  
+  // Layout interno: icono a la izquierda, texto centrado
+  &::part(native) {
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  
+  ion-icon {
+    font-size: 1.4rem;
+    flex-shrink: 0;
+    color: #{$btn-text};
+    margin-right: 16px;
+  }
+  
+  span {
+    flex: 1;
+    text-align: center;
+    padding-right: 40px; // Compensar el espacio del icono para centrar visualmente
+  }
+  
+  &:hover {
+    --background: #{$btn-hover};
+    --box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+    transform: translateY(-2px);
+  }
+  
+  &:active {
+    transform: translateY(1px);
+    --box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  }
 }
 
-.submit-button:active {
-  transform: scale(0.98);
+.register-button {
+  --background: transparent;
+  --color: #{$btn-color};
+  --border-color: #{$btn-color};
+  --border-width: 2px;
+  --border-style: solid;
+  --box-shadow: none;
+  
+  &:hover {
+    --background: #{$btn-color};
+    --color: #{$btn-text};
+    --box-shadow: #{$shadow};
+  }
+  
+  ion-icon {
+    color: inherit;
+  }
 }
 
+// Animaciones
 @keyframes fadeInDown {
   from {
     opacity: 0;
@@ -138,21 +244,55 @@ ion-item {
   }
 }
 
+// ─── Ion Fab (paleta de colores) ─────────────────────────────────────────────
+ion-fab {
+  ion-fab-button {
+    --background: #{$btn-color};
+    --background-activated: #{$btn-hover};
+    --background-hover: #{$btn-hover};
+    --color: #{$btn-text};
+    --box-shadow: #{$shadow};
+  }
+
+  ion-fab-list {
+    ion-fab-button {
+      --background: #f3e9da;
+      --background-activated: #{$bg-color};
+      --background-hover: #{$bg-color};
+      --color: #{$title-color};
+      --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+
+      &:hover {
+        --background: #{$bg-color};
+      }
+
+      ion-icon {
+        color: #{$title-color};
+      }
+    }
+  }
+}
+
+// Responsive
 @media (max-width: 480px) {
-  .login-container {
-    padding: 0.75rem;
+  .login-page-container {
+    padding: 12px;
+  }
+
+  .login-logo-section {
+    margin-bottom: 16px;
+
+    .app-logo {
+      width: 80px;
+      height: 80px;
+    }
+
+    .brand-name {
+      font-size: 1.5rem;
+    }
   }
 
   .login-card {
-    box-shadow: none;
-    border-radius: 0;
-  }
-
-  .logo-icon {
-    font-size: 3rem;
-  }
-
-  .brand-name {
-    font-size: 1.5rem;
+    border-radius: 12px;
   }
 }
