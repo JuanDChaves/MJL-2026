@@ -12,6 +12,7 @@ const corsHeaders = {
 }
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
+const GMAIL_RESEND = Deno.env.get('GMAIL_RESEND');
 
 Deno.serve(async (request: Request) => {
 
@@ -81,7 +82,7 @@ Deno.serve(async (request: Request) => {
       },
       body: JSON.stringify({
         from: 'HTN Bar <htn.app.bar@resend.dev>',
-        to: [emailToSend],
+        to: [GMAIL_RESEND],
         subject: 'Solicitud de registro',
         html: html,
       }),
