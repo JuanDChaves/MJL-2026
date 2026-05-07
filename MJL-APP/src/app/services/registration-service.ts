@@ -6,6 +6,8 @@ import { LoginService } from './login-service';
 import { IResult } from '../interfaces/IResult';
 import { PhotoService } from './photo-service';
 import { NotificationsService } from './notifications-service';
+import { IUserUnauthorized } from '../interfaces/IUserUnauthorized';
+import { IUserUnauthorizedToRegister } from '../interfaces/IUserUnauthorizedToRegister';
 
 @Injectable({
   providedIn: 'root',
@@ -75,7 +77,7 @@ export class RegistrationService {
         controls['profileImg'].value,
         controls['dni'].value
       );
-      
+
       user.user_id = resultCreateAccount.data!;
       user.url_foto_perfil = url;
 
@@ -148,7 +150,10 @@ export class RegistrationService {
     return { success: true, error: null, data: data.user.id };
   }
 
-  private async loadPhoto(photoUrl: string, dni: string): Promise<string | null> {
+  private async loadPhoto(
+    photoUrl: string,
+    dni: string
+  ): Promise<string | null> {
     try {
       const blobImg = await this.photoService.getPhotoBlob(photoUrl);
       const publicUrl = await this.photoService.uploadImage(blobImg, dni);
@@ -160,15 +165,15 @@ export class RegistrationService {
   }
 
   private async loadUserAuthorization(user: IUser): Promise<IResult<void>> {
+    const userUnauthorized: IUserUnauthorizedToRegister = {
+      apellidos: user.apellidos,
+      nombres: user.nombres,
+      dni: user.dni,
+      url_foto_perfil: user.url_foto_perfil,
+      correo_electronico: user.correo_electronico,
+    };
     const { error: solicitudError } =
-      await this.userService.loadUserAuthorization({
-        identificacion: user.dni,
-        estado: null,
-        apellidos: user.apellidos,
-        nombres: user.nombres,
-        url_foto_perfil: user.url_foto_perfil,
-        fecha_registro: null,
-      });
+      await this.userService.loadUserAuthorization(userUnauthorized);
     if (solicitudError) {
       return {
         success: false,
@@ -181,7 +186,9 @@ export class RegistrationService {
     return { success: true, error: null, data: null };
   }
 
-  private async loadNotificationToSuperOrDuenio(user: IUser): Promise<IResult<void>> {
+  private async loadNotificationToSuperOrDuenio(
+    user: IUser
+  ): Promise<IResult<void>> {
     const { error } = await this.notificationsService.insertNotification(user);
     if (error) {
       return {
