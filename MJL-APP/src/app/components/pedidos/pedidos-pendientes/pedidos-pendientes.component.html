@@ -1,0 +1,40 @@
+<app-layout [title]="'Pedidos pendientes'" [showBackButton]="true" [backUrl]="'/home'">
+  <div class="auth-panel-content">
+    @for (item of unauthorizedUsersList(); track item.identificacion) {
+      <ion-card class="user-card">
+        <ion-card-content>
+          <div class="user-info">
+            <ion-avatar class="user-avatar">
+              <img
+                [src]="item.url_foto_perfil || 'https://ionicframework.com/docs/img/demos/avatar.svg'"
+                [alt]="'Foto de ' + item.nombres + ' ' + item.apellidos"
+              />
+            </ion-avatar>
+            <div class="user-details">
+              <h2 class="user-name">{{ item.nombres }} {{ item.apellidos }}</h2>
+              <p class="user-dni">DNI: {{ item.identificacion }}</p>
+              <p class="user-date">Registrado: {{ item.fecha_registro | date:'dd/MM/yyyy' }}</p>
+            </div>
+          </div>
+          <div class="actions">
+            <ion-button fill="solid" class="action-btn approve" (click)="enableUser(item)">
+              <ion-icon slot="start" name="checkmark"></ion-icon>
+              <span>Aprobar</span>
+            </ion-button>
+            <ion-button fill="solid" class="action-btn reject" (click)="rejectUser(item)">
+              <ion-icon slot="start" name="close"></ion-icon>
+              <span>Rechazar</span>
+            </ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    }
+
+    @empty {
+      <div class="empty-state">
+        <ion-icon name="checkmark-circle" class="empty-icon"></ion-icon>
+        <p>No hay solicitudes pendientes</p>
+      </div>
+    }
+  </div>
+</app-layout>

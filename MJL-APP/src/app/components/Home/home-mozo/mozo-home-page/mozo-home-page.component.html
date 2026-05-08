@@ -14,24 +14,29 @@
 
     <!-- Buttons -->
     <div class="buttons-container">
-      <ion-button expand="block" routerLink="/pedidos-para-aprobar" class="menu-btn">
+      <ion-button expand="block" routerLink="/pedidos-pendientes" class="menu-btn">
         <ion-icon slot="start" name="clipboard-outline"></ion-icon>
         <span>Ver Pedidos para Aprobar</span>
       </ion-button>
 
-      <ion-button expand="block" routerLink="/pedidos-pendientes" class="menu-btn">
+      <ion-button expand="block" routerLink="/pedidos-en-preparacion" class="menu-btn">
         <ion-icon slot="start" name="hourglass-outline"></ion-icon>
         <span>Ver Pedidos Pendientes</span>
       </ion-button>
 
-      <ion-button expand="block" routerLink="/chat" class="menu-btn">
+      <ion-button expand="block" routerLink="/chat-room" class="menu-btn">
         <ion-icon slot="start" name="chatbubble-ellipses-outline"></ion-icon>
         <span>Ver Chat</span>
       </ion-button>
 
       <ion-button expand="block" routerLink="/pagos" class="menu-btn">
         <ion-icon slot="start" name="cash-outline"></ion-icon>
-        <span>Pagos</span>
+        <span>**** Pagos ****</span>
+      </ion-button>
+      
+      <ion-button expand="block" class="menu-btn">
+        <ion-icon slot="start" name="cash-outline"></ion-icon>
+        <span>Escanear QR-Mesa</span>
       </ion-button>
     </div>
   </div>
