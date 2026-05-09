@@ -38,6 +38,7 @@ import {
   restaurant,
   beer,
   person,
+  fastFoodOutline,
 } from 'ionicons/icons';
 import { LoginService } from '../../services/login-service';
 import { DbService } from 'src/app/services/db-service';
@@ -105,6 +106,7 @@ export class LoginFormComponent {
       restaurant,
       beer,
       person,
+      fastFoodOutline,
     });
   }
 
@@ -153,22 +155,26 @@ export class LoginFormComponent {
 
     try {
       const { email, password } = this.loginForm.value;
-      const {data,error} = await this.dbServ.getOneByEmail('usuarios', email!);
+      const { data, error } = await this.dbServ.getOneByEmail(
+        'usuarios',
+        email!
+      );
       const user = data as IUser;
-      if(!user){
+      if (!user) {
         this.errorMessage = 'Credenciales incorrectas';
         return;
       }
-      if(user.perfil === 'cliente' && !user.activo) {
-        this.errorMessage = 'El usuario no ha sido aprobado por el administrador';
+      if (user.perfil === 'cliente' && !user.activo) {
+        this.errorMessage =
+          'El usuario no ha sido aprobado por el administrador';
         return;
       }
       const response = await this.loginServ.initSession(email!, password!);
       console.log(response);
       if (response.error) {
-        if (response.error.code === "invalid_credentials") {
+        if (response.error.code === 'invalid_credentials') {
           this.errorMessage = 'Credenciales incorrectas';
-        }else{
+        } else {
           this.errorMessage = 'Error al iniciar sesión';
         }
       } else {
@@ -180,9 +186,11 @@ export class LoginFormComponent {
         // Inicializar push notifications para supervisor/duenio
         const perfil = response.data.perfil;
         if (perfil === 'supervisor' || perfil === 'duenio') {
-          this.pushServ.init().catch((err: any) =>
-            console.warn('Push notifications not available:', err)
-          );
+          this.pushServ
+            .init()
+            .catch((err: any) =>
+              console.warn('Push notifications not available:', err)
+            );
         }
 
         this.router.navigate(['/home']);
@@ -225,6 +233,11 @@ export class LoginFormComponent {
 
   autocompleteCliente() {
     this.email.setValue('fatu123@gmail.com');
+    this.password.setValue('12345678');
+  }
+
+  autocompleteCantinero() {
+    this.email.setValue('cantinero@gmail.com');
     this.password.setValue('12345678');
   }
 }

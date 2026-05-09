@@ -1,3 +1,4 @@
+
 import { Routes } from '@angular/router';
 import { isLoggedGuard } from './guards/is-logged-guard';
 
@@ -40,16 +41,16 @@ export const routes: Routes = [
     loadComponent: () => import('./components/Home/home-mozo/mozo-home-page/mozo-home-page.component').then((m) => m.MozoHomePageComponent),
   },
   {
-    path: 'pedidos-para-aprobar',
-    loadComponent: () => import('./components/Home/home-mozo/pedidos-para-aprobar/pedidos-para-aprobar.component').then((m) => m.PedidosParaAprobarComponent),
-  },
-  {
     path: 'pedidos-pendientes',
-    loadComponent: () => import('./components/Home/home-mozo/pedidos-pendientes/pedidos-pendientes.component').then((m) => m.PedidosPendientesComponent),
+    loadComponent: () => import('./components/pedidos/pedidos-pendientes/pedidos-pendientes.component').then((m) => m.PedidosPendientesComponent),
   },
   {
-    path: 'chat',
-    loadComponent: () => import('./components/Home/home-mozo/chat/chat.component').then((m) => m.ChatComponent),
+    path: 'pedidos-en-preparacion',
+    loadComponent: () => import('./components/pedidos/pedidos-en-preparacion/pedidos-en-preparacion.component').then((m) => m.PedidosEnPreparacionComponent),
+  },
+  {
+    path: 'chat-room',
+    loadComponent: () => import('./components/chat-room/chat-room.component').then((m) => m.ChatRoomComponent),
   },
   {
     path: 'pagos',
@@ -63,9 +64,10 @@ export const routes: Routes = [
     path: 'home-cantinero',
     loadComponent: () => import('./components/Home/home-cantinero/home-cantinero.page').then( m => m.HomeCantineroPage)
   },
-  {
+    {
     path: 'alta-producto',
     loadComponent: () => import('./components/alta-producto/alta-producto.component').then((m) => m.AltaProductoComponent)
   },
 
 ];
+

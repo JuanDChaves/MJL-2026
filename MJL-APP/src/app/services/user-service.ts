@@ -5,6 +5,7 @@ import { LocalStorageService } from './local-storage-service';
 import { IUser } from '../interfaces/IUsers';
 import { DbService } from './db-service';
 import { IUserUnauthorized } from '../interfaces/IUserUnauthorized';
+import { IUserUnauthorizedToRegister } from '../interfaces/IUserUnauthorizedToRegister';
 
 @Injectable({
   providedIn: 'root',
@@ -31,9 +32,9 @@ export class UserService {
   }
 
   async loadUserAuthorization(
-    user: IUserUnauthorized
+    user: IUserUnauthorizedToRegister
   ): Promise<{ data: any | null; error: any }> {
-    const response = await this.dbService.insert('solicitudes', { apellidos: user.apellidos, nombres: user.nombres, identificacion: user.identificacion,url_foto_perfil: user.url_foto_perfil });
+    const response = await this.dbService.insert('solicitudes', user);
     if (response.error) {
       console.log(response.error);
       return { data: null, error: response.error };
@@ -60,7 +61,7 @@ export class UserService {
 
     const response_req = await this.dbService.update(
       'solicitudes',
-      'identificacion',
+      'dni',
       identifiacion,
       { estado: false }
     )
