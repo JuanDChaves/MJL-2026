@@ -1,0 +1,99 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="custom-toolbar">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home-cocinero" color="dark"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="custom-title">Añadir {{ tipoProducto | titlecase }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding custom-background">
+  <div class="form-wrapper">
+    
+    <form [formGroup]="productoForm" (ngSubmit)="onSubmit()">
+      <ion-list class="transparent-list" lines="none">
+        
+        <ion-item class="custom-input">
+          <ion-icon name="restaurant" slot="start" class="input-icon"></ion-icon>
+          <ion-input type="text" placeholder="Nombre" formControlName="nombre"></ion-input>
+        </ion-item>
+        @if (errorControl['nombre'].touched && errorControl['nombre'].invalid) {
+          <div class="error-msg">
+            <span>Mínimo 3 caracteres</span>
+          </div>
+        }
+
+        <ion-item class="custom-input">
+          <ion-icon name="document-text" slot="start" class="input-icon"></ion-icon>
+          <ion-input type="text" placeholder="Descripción" formControlName="descripcion"></ion-input>
+        </ion-item>
+        @if (errorControl['descripcion'].touched && errorControl['descripcion'].invalid) {
+          <div class="error-msg">
+            <span>Descripción muy corta</span>
+          </div>
+        }
+
+        <ion-item class="custom-input">
+          <ion-icon name="time" slot="start" class="input-icon"></ion-icon>
+          <ion-input type="number" placeholder="Tiempo (min)" formControlName="tiempoElaboracion"></ion-input>
+        </ion-item>
+        @if (errorControl['tiempoElaboracion'].touched && errorControl['tiempoElaboracion'].invalid) {
+          <div class="error-msg">
+            <span>Tiempo inválido</span>
+          </div>
+        }
+
+        <ion-item class="custom-input">
+          <ion-icon name="cash" slot="start" class="input-icon"></ion-icon>
+          <ion-input type="number" step="0.01" placeholder="Precio ($)" formControlName="precio"></ion-input>
+        </ion-item>
+        @if (errorControl['precio'].touched && errorControl['precio'].invalid) {
+          <div class="error-msg">
+            <span>Precio requerido</span>
+          </div>
+        }
+
+      </ion-list>
+
+      <div class="fotos-seccion">
+        <h3 class="fotos-title">
+          <ion-icon name="camera"></ion-icon>
+          Fotografías Obligatorias (3)
+        </h3>
+        
+        <ion-grid class="ion-no-padding">
+          <ion-row>
+            @for (foto of fotos; track $index) {
+              <ion-col size="4" class="foto-col">
+                <div class="foto-card" (click)="tomarFoto($index)">
+                  
+                  @if (!foto) {
+                    <div class="placeholder">
+                      <ion-icon name="add-circle"></ion-icon>
+                    </div>
+                  } @else {
+                    <img [src]="foto" alt="Foto {{ $index + 1 }}" />
+                    <div class="edit-overlay">
+                      <ion-icon name="pencil"></ion-icon>
+                    </div>
+                  }
+
+                </div>
+              </ion-col>
+            }
+          </ion-row>
+        </ion-grid>
+      </div>
+
+      <ion-button expand="block" type="submit" class="submit-btn" [disabled]="cargando">
+        @if (cargando) {
+          <ion-spinner name="crescent"></ion-spinner>
+        } @else {
+          <ion-icon slot="start" name="save"></ion-icon>
+          <span>GUARDAR {{ tipoProducto | uppercase }}</span>
+        }
+      </ion-button>
+
+    </form>
+  </div>
+</ion-content>

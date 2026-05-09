@@ -26,7 +26,7 @@ export class HomeCocineroPage implements OnInit {
   }
  
   agregarPlato() {
-    this.router.navigate(['/agregar-plato']);
+    this.router.navigate(['/alta-producto']); 
   }
  
   verificarPedido() {

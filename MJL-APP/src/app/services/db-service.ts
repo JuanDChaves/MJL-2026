@@ -100,4 +100,38 @@ export class DbService<T extends BaseEntity> {
       return false;
     }
   }
+
+  // 1. Verifica si ya existe un plato/bebida con ese nombre
+  async verificarProductoExistente(nombre: string, tipo: 'plato' | 'bebida'): Promise<boolean> {
+    const { data, error } = await this.sbService.client 
+      .from('productos')
+      .select('nombre')
+      .ilike('nombre', nombre) // ilike hace la búsqueda ignorando mayúsculas/minúsculas
+      .eq('tipo', tipo)
+      .maybeSingle();
+
+    if (error) {
+      console.error('Error al verificar producto:', error);
+      throw error;
+    }
+
+    return data !== null; // Devuelve true si encontró algo
+  }
+
+  // 2. Guarda el producto final en la base de datos
+  async agregarProducto(producto: any): Promise<void> {
+    const { error } = await this.sbService.client.from('productos').insert([
+      {
+        nombre: producto.nombre,
+        descripcion: producto.descripcion,
+        tiempo_elaboracion: producto.tiempoElaboracion, // <--- REVISA ESTA LÍNEA
+        precio: producto.precio,
+        tipo: producto.tipo,
+        fotos: producto.fotos, 
+      }
+    ]);
+
+    if (error) throw error;
+  }
+
 }

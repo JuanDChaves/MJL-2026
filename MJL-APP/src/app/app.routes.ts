@@ -58,9 +58,14 @@ export const routes: Routes = [
     {
     path: 'home-cocinero',
     loadComponent: () => import('./components/Home/home-cocinero/home-cocinero.page').then( m => m.HomeCocineroPage)
-  },  {
+  },
+  {
     path: 'home-cantinero',
     loadComponent: () => import('./components/Home/home-cantinero/home-cantinero.page').then( m => m.HomeCantineroPage)
-  }
+  },
+  {
+    path: 'alta-producto',
+    loadComponent: () => import('./components/alta-producto/alta-producto.component').then((m) => m.AltaProductoComponent)
+  },
 
 ];
