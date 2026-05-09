@@ -7,7 +7,8 @@ import { UserService } from 'src/app/services/user-service';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonItem,
   IonLabel, IonInput, IonTextarea, IonGrid, IonRow, IonCol,
-  IonIcon, IonButton, IonSpinner, IonList, IonButtons, IonBackButton
+  IonIcon, IonButton, IonSpinner, IonList, IonButtons, IonBackButton,
+  ViewWillEnter
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
@@ -30,7 +31,7 @@ import {
     IonIcon, IonButton, IonSpinner, IonList, IonButtons, IonBackButton
   ]
 })
-export class AltaProductoComponent implements OnInit {
+export class AltaProductoComponent implements ViewWillEnter {
   private fb = inject(FormBuilder);
   private photoService = inject(PhotoService);
   private dbService = inject(DbService<any>); 
@@ -52,7 +53,7 @@ export class AltaProductoComponent implements OnInit {
     addIcons({ camera, restaurant, documentText, time, cash, alertCircle, addCircle, pencil, save, imagesOutline });
   }
 
-  ngOnInit() {
+  ionViewWillEnter() {
     const usuarioActual = this.userService.userData();
     const rolUsuario = usuarioActual?.perfil; 
     this.tipoProducto = rolUsuario === 'cantinero' ? 'bebida' : 'plato';
