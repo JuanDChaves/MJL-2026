@@ -1,5 +1,10 @@
 import { inject, Injectable } from '@angular/core';
-import { Camera, CameraSource, CameraResultType } from '@capacitor/camera';
+import {
+  Camera,
+  CameraSource,
+  CameraResultType,
+  MediaTypeSelection,
+} from '@capacitor/camera';
 import { SupabaseService } from './supabase-service';
 import { environment } from 'src/environments/environment.prod';
 
@@ -14,7 +19,9 @@ export class PhotoService {
    * @param origen Define si se abre la cámara directamente o se da opción a la galería.
    * Por defecto usa 'Prompt' (Cámara o Galería).
    */
-  async takePicture(origen: CameraSource = CameraSource.Prompt): Promise<string | null> {
+  async takePicture(
+    origen: CameraSource = CameraSource.Prompt
+  ): Promise<string | null> {
     try {
       const result = await Camera.getPhoto({
         quality: 90,
@@ -27,6 +34,57 @@ export class PhotoService {
     } catch (e) {
       console.error('Error al capturar imagen:', e);
       return null;
+    }
+  }
+
+  async takePictureOld(): Promise<any> {
+    try {
+      const result = await Camera.takePhoto({
+        quality: 90,
+        includeMetadata: true,
+      });
+
+      // result.webPath can be set directly as the src of an image element
+
+      // On native: pass result.uri to the Filesystem API to get the full-resolution base64,
+      // or use result.thumbnail for a lower-resolution base64 preview.
+      // On Web: result.thumbnail contains the full image base64 encoded.
+
+      console.log('Format:', result.metadata?.format);
+      console.log('Resolution:', result.metadata?.resolution);
+      return result.webPath;
+    } catch (e) {
+      const error = e as any;
+      // error.code contains the structured error code (e.g. 'OS-PLUG-CAMR-0003')
+      // when thrown by the native layer. See the Errors section for all codes.
+      const message = error.code
+        ? `[${error.code}] ${error.message}`
+        : error.message;
+      console.error('takePhoto failed:', message);
+    }
+  }
+
+  async pickMedia() {
+    try {
+      const { results } = await Camera.chooseFromGallery({
+        mediaType: MediaTypeSelection.All, // photos, videos, or both
+        allowMultipleSelection: true,
+        limit: 5,
+        includeMetadata: true,
+      });
+
+      for (const item of results) {
+        console.log('Type:', item.type); // MediaType.Photo or MediaType.Video
+        console.log('webPath:', item.webPath);
+        console.log('Format:', item.metadata?.format);
+        console.log('Size:', item.metadata?.size);
+      }
+    } catch (e) {
+      const error = e as any;
+      const message = error.code
+        ? `[${error.code}] ${error.message}`
+        : error.message;
+      console.error('chooseFromGallery failed:', message);
     }
   }
 
@@ -45,7 +103,7 @@ export class PhotoService {
    */
   async uploadImage(file: Blob, nombreArchivo: string): Promise<string> {
     const imgPath = `${environment.bucketName}/${nombreArchivo}`;
-    
+
     const { data, error } = await this.sbservice.client.storage
       .from(environment.bucketName)
       .upload(imgPath, file);
@@ -58,13 +116,19 @@ export class PhotoService {
   /**
    * Gestión masiva: Sube las 3 fotos obligatorias de un producto (plato/bebida).
    */
-  async uploadProductPhotos(fotosPaths: (string | null)[], nombreProd: string): Promise<string[]> {
+  async uploadProductPhotos(
+    fotosPaths: (string | null)[],
+    nombreProd: string
+  ): Promise<string[]> {
     const urls: string[] = [];
     for (let i = 0; i < fotosPaths.length; i++) {
       const path = fotosPaths[i];
       if (path) {
         const blob = await this.getPhotoBlob(path);
-        const fileName = `productos/${nombreProd.replace(/\s+/g, '_')}_${i}_${Date.now()}.jpeg`;
+        const fileName = `productos/${nombreProd.replace(
+          /\s+/g,
+          '_'
+        )}_${i}_${Date.now()}.jpeg`;
         const url = await this.uploadImage(blob, fileName);
         urls.push(url);
       }

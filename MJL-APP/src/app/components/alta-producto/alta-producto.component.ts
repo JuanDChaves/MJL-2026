@@ -119,4 +119,12 @@ export class AltaProductoComponent implements OnInit {
   get errorControl() {
     return this.productoForm.controls;
   }
+
+  async fromGallery(){
+    try {
+      const result = this.photoService.pickMedia();
+    } catch (error) {
+      console.log('error');
+    }
+  }
 }
