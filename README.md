@@ -17,37 +17,64 @@ _Completar_
 
 #### Paleta de Color
 <div align="center">
-    <img src="./MJL-APP/docs/images/color-scheme.png" alt="Logo"/>
+    <img src="./MJL-APP/docs/images/color-scheme.png" alt=""/>
 </div>
 
 #### Splash Screen Estático
 <div align="center">
-    <img src="./MJL-APP/docs/images/static-splash-screen.png" alt="Logo"/>
+    <img src="./MJL-APP/docs/images/static-splash-screen.png" alt=""/>
 </div>
 
 #### Login
 <div align="center">
-    <img src="./MJL-APP/docs/images/login.png" alt="Logo"/>
-    <img src="./MJL-APP/docs/images/accesos-directos.png" alt="Logo"/>
+    <img src="./MJL-APP/docs/images/login.png" alt=""/>
+    <img src="./MJL-APP/docs/images/accesos-directos.png" alt=""/>
 </div>
 
 #### Home Supervisor-Dueño 
 <div align="center">
-    <img src="./MJL-APP/docs/images/home-supervisor.png" alt="Logo"/>
+    <img src="./MJL-APP/docs/images/home-supervisor.png" alt=""/>
 </div>
 
 #### Home Cocinero
 <div align="center">
-    <img src="./MJL-APP/docs/images/home-cocinero.png" alt="Logo"/>
+    <img src="./MJL-APP/docs/images/home-cocinero.png" alt=""/>
+</div>
+
+#### Form Agregar Plato 
+<div align="center">
+    <img src="./MJL-APP/docs/images/form-agregar-plato.png" alt=""/>
 </div>
 
 #### Home Mozo
 <div align="center">
-    <img src="./MJL-APP/docs/images/home-mozo.png" alt="Logo"/>
+    <img src="./MJL-APP/docs/images/home-mozo.png" alt=""/>
+</div>
+
+#### Pedidos Pendientes
+<div align="center">
+    <img src="./MJL-APP/docs/images/lista-pedidos-pendientes.png" alt=""/>
 </div>
 
 ## Tareas del equipo
 
+### Entrega Preliminar 4 - 09/05 
+### Briceño Castillo, Matías Emanuel 
+- Módulo: Envio de correo electrónico.  
+- Inicio y fin: 25/04 - 08/05 
+- Branch: feature/sending-mail
+
+### Pokoik, Lucia Laura 
+- Módulo: Form alta al menú 
+- Inicio y fin: 25/04 - 08/05 
+- Branch: feature/form-agregar-a-menu 
+
+### Chaves Rodriguez, Juan David 
+- Módulo: Home del Mozo, pedidos
+- Inicio y fin: 25/04 - 08/05 
+- Branch: feature/home-mozo
+
+---
 ### Entrega Preliminar 3 - 25/04 
 ### Briceño Castillo, Matías Emanuel 
 - Módulo: Home del Dueño y Supervisor  
