@@ -5,6 +5,8 @@
      <app-home-cocinero></app-home-cocinero> 
   }@else if (userServ.userData()?.perfil === 'supervisor' || userServ.userData()?.perfil === 'duenio') {
     <app-home-supervisor></app-home-supervisor>
+  }@else if (userServ.userData()?.perfil === 'cantinero') {
+    <app-home-cantinero></app-home-cantinero>
   } @else{
     <app-home-cantinero></app-home-cantinero>
   }
