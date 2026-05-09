@@ -1,7 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms'; 
-import { CameraSource } from '@capacitor/camera';
 import { PhotoService } from 'src/app/services/photo-service';
 import { DbService } from 'src/app/services/db-service';
 import { UserService } from 'src/app/services/user-service';
@@ -14,7 +13,8 @@ import {
 import { addIcons } from 'ionicons';
 import {
   camera, restaurant, documentText, time,
-  cash, alertCircle, addCircle, pencil, save
+  cash, alertCircle, addCircle, pencil, save,
+  imagesOutline
 } from 'ionicons/icons';
 
 @Component({
@@ -49,7 +49,7 @@ export class AltaProductoComponent implements OnInit {
 
   constructor() {
     // Registramos los íconos visuales
-    addIcons({ camera, restaurant, documentText, time, cash, alertCircle, addCircle, pencil, save });
+    addIcons({ camera, restaurant, documentText, time, cash, alertCircle, addCircle, pencil, save, imagesOutline });
   }
 
   ngOnInit() {
@@ -60,7 +60,7 @@ export class AltaProductoComponent implements OnInit {
 
   async tomarFoto(index: number) {
     try {
-      const fotoUrl = await this.photoService.takePicture(CameraSource.Prompt); 
+      const fotoUrl = await this.photoService.takePicture(); 
       if (fotoUrl) {
         this.fotos[index] = fotoUrl;
       }
@@ -122,7 +122,11 @@ export class AltaProductoComponent implements OnInit {
 
   async fromGallery(){
     try {
-      const result = this.photoService.pickMedia();
+      const result = await this.photoService.chooseFromGallery();
+      console.log(result);
+      for (let i = 0; i < result.length; i++) {
+        this.fotos[i] = result[i].webPath !;
+      }
     } catch (error) {
       console.log('error');
     }

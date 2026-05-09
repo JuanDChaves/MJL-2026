@@ -151,7 +151,7 @@ export class RegistrationService {
   private async loadPhoto(photoUrl: string, dni: string): Promise<string | null> {
     try {
       const blobImg = await this.photoService.getPhotoBlob(photoUrl);
-      const publicUrl = await this.photoService.uploadImage(blobImg, dni);
+      const publicUrl = await this.photoService.uploadProfilePhoto(blobImg, dni);
       return publicUrl;
     } catch (error) {
       console.error('Error uploading photo:', error);
