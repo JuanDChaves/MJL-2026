@@ -1,6 +1,6 @@
 <app-layout [title]="'Solicitudes pendientes'" [showBackButton]="true" [backUrl]="'/home'">
   <div class="auth-panel-content">
-    @for (item of unauthorizedUsersList(); track item.identificacion) {
+    @for (item of unauthorizedUsersList(); track item.dni) {
       <ion-card class="user-card">
         <ion-card-content>
           <div class="user-info">
@@ -12,7 +12,7 @@
             </ion-avatar>
             <div class="user-details">
               <h2 class="user-name">{{ item.nombres }} {{ item.apellidos }}</h2>
-              <p class="user-dni">DNI: {{ item.identificacion }}</p>
+              <p class="user-dni">DNI: {{ item.dni }}</p>
               <p class="user-date">Registrado: {{ item.fecha_registro | date:'dd/MM/yyyy' }}</p>
             </div>
           </div>
