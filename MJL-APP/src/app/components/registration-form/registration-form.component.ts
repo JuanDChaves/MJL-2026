@@ -34,6 +34,7 @@ import {
   qrCodeOutline,
 } from 'ionicons/icons';
 import { Router } from '@angular/router';
+import { CameraSource } from '@capacitor/camera';
 import { UserService } from '../../services/user-service';
 import { LoginService } from '../../services/login-service';
 import { DbService } from '../../services/db-service';
@@ -135,9 +136,17 @@ export class RegistrationFormComponent implements ViewWillEnter, OnInit {
   }
 
   async onSelectPhoto(): Promise<void> {
-    const path = await this.photoService.takePicture();
-    this.viewProfilePhoto.set(path);
-    this.form().controls.profileImg.setValue(path);
+    // Forzamos la apertura de la cámara (sin galería)
+    const path = await this.photoService.takePicture(CameraSource.Camera);
+
+    if (path) {
+      this.viewProfilePhoto.set(path);
+      
+      // patchValue actualiza el campo de forma segura
+      this.form().patchValue({
+        profileImg: path as any
+      });
+    }
   }
 
   removePhoto() {

@@ -1,3 +1,4 @@
+
 import { Routes } from '@angular/router';
 import { isLoggedGuard } from './guards/is-logged-guard';
 
@@ -62,6 +63,11 @@ export const routes: Routes = [
   {
     path: 'home-cantinero',
     loadComponent: () => import('./components/Home/home-cantinero/home-cantinero.page').then( m => m.HomeCantineroPage)
-  }
+  },
+    {
+    path: 'alta-producto',
+    loadComponent: () => import('./components/alta-producto/alta-producto.component').then((m) => m.AltaProductoComponent)
+  },
 
 ];
+
