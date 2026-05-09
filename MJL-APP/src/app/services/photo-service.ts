@@ -1,8 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import {
   Camera,
-  CameraSource,
-  CameraResultType,
   MediaTypeSelection,
 } from '@capacitor/camera';
 import { SupabaseService } from './supabase-service';
@@ -13,29 +11,7 @@ import { environment } from 'src/environments/environment.prod';
 })
 export class PhotoService {
   private sbservice = inject(SupabaseService);
-
-  /**
-   * Toma una fotografía utilizando la cámara del dispositivo.
-   * @param origen Define si se abre la cámara directamente o se da opción a la galería.
-   * Por defecto usa 'Prompt' (Cámara o Galería).
-   */
-  // async takePicture(
-  //   origen: CameraSource = CameraSource.Prompt
-  // ): Promise<string | null> {
-  //   try {
-  //     const result = await Camera.getPhoto({
-  //       quality: 90,
-  //       allowEditing: false,
-  //       resultType: CameraResultType.Uri,
-  //       source: origen, // Parámetro clave para cumplir con las restricciones del TP
-  //     });
-
-  //     return result.webPath || null;
-  //   } catch (e) {
-  //     console.error('Error al capturar imagen:', e);
-  //     return null;
-  //   }
-  // }
+  
 
   async takePicture(): Promise<any> {
     try {
@@ -104,7 +80,7 @@ export class PhotoService {
    * @param file Archivo en formato Blob.
    * @param nombreArchivo Ruta y nombre dentro del storage.
    */
-  async uploadImage(file: Blob, nombreArchivo: string,folderName: string): Promise<string> {
+  private async uploadImage(file: Blob, nombreArchivo: string,folderName: string): Promise<string> {
     const imgPath = `${folderName}/${nombreArchivo}`;
 
     const { data, error } = await this.sbservice.client.storage
