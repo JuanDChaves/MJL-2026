@@ -1,29 +1,24 @@
 <app-layout [title]="'Pedidos pendientes'" [showBackButton]="true" [backUrl]="'/home'">
   <div class="auth-panel-content">
-    @for (item of unauthorizedUsersList(); track item.identificacion) {
+    @for (item of pedidosPendientesList(); track item.id_cliente) {
       <ion-card class="user-card">
         <ion-card-content>
           <div class="user-info">
             <ion-avatar class="user-avatar">
-              <img
-                [src]="item.url_foto_perfil || 'https://ionicframework.com/docs/img/demos/avatar.svg'"
-                [alt]="'Foto de ' + item.nombres + ' ' + item.apellidos"
-              />
             </ion-avatar>
             <div class="user-details">
-              <h2 class="user-name">{{ item.nombres }} {{ item.apellidos }}</h2>
-              <p class="user-dni">DNI: {{ item.identificacion }}</p>
-              <p class="user-date">Registrado: {{ item.fecha_registro | date:'dd/MM/yyyy' }}</p>
+              <h2 class="user-name">Nombre del Cliente: {{ item.nombre_cliente }}</h2>
+              <h2 class="user-name">Mesa: #{{ item.mesa }}</h2>
             </div>
           </div>
           <div class="actions">
-            <ion-button fill="solid" class="action-btn approve" (click)="enableUser(item)">
+            <ion-button fill="solid" class="action-btn approve" (click)="aprobarPedido()">
               <ion-icon slot="start" name="checkmark"></ion-icon>
-              <span>Aprobar</span>
+              <span>Enviar a Cocina</span>
             </ion-button>
-            <ion-button fill="solid" class="action-btn reject" (click)="rejectUser(item)">
+            <ion-button fill="solid" class="action-btn reject" (click)="rechazarPedido()">
               <ion-icon slot="start" name="close"></ion-icon>
-              <span>Rechazar</span>
+              <span>Devolver</span>
             </ion-button>
           </div>
         </ion-card-content>

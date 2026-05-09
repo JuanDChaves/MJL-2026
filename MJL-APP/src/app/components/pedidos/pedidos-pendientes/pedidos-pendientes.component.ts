@@ -1,11 +1,12 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { addIcons } from 'ionicons';
-import { IUserUnauthorized } from 'src/app/interfaces/IUserUnauthorized';
 import { checkmark, close, checkmarkCircle } from 'ionicons/icons';
-import { UserService } from 'src/app/services/user-service';
 import { LayoutComponent } from '../../layout/layout.component';
 import { IonAvatar, IonButton, IonCard, IonCardContent, IonIcon, ViewWillEnter } from '@ionic/angular/standalone';
 import { DatePipe } from '@angular/common';
+import { IPedido } from 'src/app/interfaces/IPedido';
+import { SupabaseService } from 'src/app/services/supabase-service';
+import { DbService } from 'src/app/services/db-service';
 
 @Component({
   selector: 'app-pedidos-pendientes',
@@ -21,50 +22,68 @@ import { DatePipe } from '@angular/common';
     LayoutComponent]
 })
 export class PedidosPendientesComponent  implements ViewWillEnter {
-unauthorizedUsersList = signal<IUserUnauthorized[]>([]);
-  userServ = inject(UserService);
+  pedidosPendientesList = signal<IPedido[]>([]);
+  supabaseService = inject(SupabaseService);
+  dbService = inject(DbService);
 
   constructor() {
     addIcons({ checkmark, close, checkmarkCircle });
   }
-  ngOnInit(): void {
-    throw new Error('Method not implemented.');
-  }
+  //ngOnInit(): void {
+  //  throw new Error('Method not implemented.');
+  //}
 
   async ionViewWillEnter(): Promise<void> {
-    await this.loadUser();
+    await this.cargarPedidos();
   }
 
-  async rejectUser(user: IUserUnauthorized) {
-    await this.userServ.enableOrRejectUser(
-      user.identificacion.toString(),
-      false
-    );
-    await this.reloadUsersList(user);
+  aprobarPedido() {
+    console.log("aprobar")
   }
 
-  async enableUser(user: IUserUnauthorized) {
-    await this.userServ.enableOrRejectUser(
-      user.identificacion.toString(),
-      true
-    );
-    await this.reloadUsersList(user);
+  rechazarPedido() {
+    console.log("rechazar")
   }
 
-  private reloadUsersList(user: IUserUnauthorized): Promise<void> {
-    return new Promise(() => {
-      this.unauthorizedUsersList.update((users) =>
-        users.filter((u) => u.identificacion !== user.identificacion)
-      );
-    });
-  }
+  //async rejectUser(user: IUserUnauthorized) {
+  //  await this.userServ.enableOrRejectUser(
+  //    user.identificacion.toString(),
+  //    false
+  //  );
+  //  await this.reloadUsersList(user);
+  //}
 
-  private async loadUser() {
-    const response = await this.userServ.getUnauthorizedUsers();
+  //async enableUser(user: IUserUnauthorized) {
+  //  await this.userServ.enableOrRejectUser(
+  //    user.identificacion.toString(),
+  //    true
+  //  );
+  //  await this.reloadUsersList(user);
+  //}
+
+  //private reloadUsersList(user: IUserUnauthorized): Promise<void> {
+  //  return new Promise(() => {
+  //    this.pedidosPendientesList.update((users) =>
+  //      users.filter((u) => u.identificacion !== user.identificacion)
+  //    );
+  //  });
+  //}
+  async getPedidos(): Promise<{ data: any | null; error: any }> {
+    const response = await this.dbService.getAll('pedidos');
     if (response.error) {
-      this.unauthorizedUsersList.set([]);
+      console.log(response.error);
+      return { data: null, error: response.error };
+    }
+    return { data: response.data, error: null };
+  }
+
+  private async cargarPedidos() {
+  const response = await this.getPedidos();
+    if (response.error) {
+      this.pedidosPendientesList.set([]);
       return;
     }
-    this.unauthorizedUsersList.set(response.data as IUserUnauthorized[]);
+    this.pedidosPendientesList.set(response.data as IPedido[]);
+    console.log(response.data)
   }
 }
