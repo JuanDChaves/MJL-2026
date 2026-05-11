@@ -125,4 +125,8 @@ export class PhotoService {
   async uploadProfilePhoto(file: Blob, nombreArchivo: string){
     return await this.uploadImage(file,nombreArchivo,'ProfilePhoto');
   }
+
+  async uploadTablePhoto(file: Blob, nombreArchivo: string){
+    return await this.uploadImage(file,nombreArchivo,'TablePhoto');
+  }
 }
