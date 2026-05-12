@@ -40,7 +40,6 @@ import { DbService } from '../../services/db-service';
 import { LocalStorageService } from '../../services/local-storage-service';
 import { RegisterFormService } from 'src/app/services/register-form-service';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { IUser } from 'src/app/interfaces/IUsers';
 import { PhotoService } from 'src/app/services/photo-service';
 import { BarcodeScannerService } from 'src/app/services/barcode-scanner-service';
 import { ErrorMessagePipe } from 'src/app/pipes/error-message.pipe';
@@ -192,13 +191,8 @@ export class RegistrationFormComponent implements ViewWillEnter, OnInit {
   }
 
   async scanQr() {
-    const { ScanResult, format } = await this.scannerService.scanBarcode();
-    const data = ScanResult.split('@');
-    const apellidos = data[1];
-    const nombre = data[2];
-    const dni = data[4];
-
-    this.form().controls.nombres.setValue(nombre);
+    const { apellidos, nombres, dni } = await this.scannerService.scanBarcode();
+    this.form().controls.nombres.setValue(nombres);
     this.form().controls.apellidos.setValue(apellidos);
     this.form().controls.dni.setValue(dni);
   }

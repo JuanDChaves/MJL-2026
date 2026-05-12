@@ -6,14 +6,20 @@ import { CapacitorBarcodeScanner, CapacitorBarcodeScannerCameraDirection, Capaci
 })
 export class BarcodeScannerService {
   
- async scanBarcode(){
+ async scanBarcode(): Promise<{apellidos: string, nombres: string, dni: string}>{
     let options: CapacitorBarcodeScannerOptions = {
       hint: CapacitorBarcodeScannerTypeHint.ALL ,
       cameraDirection:CapacitorBarcodeScannerCameraDirection.BACK,
       scanText: 'Escanear código de barras',
     }
 
-    return await CapacitorBarcodeScanner.scanBarcode(options)
+    const { ScanResult, format } = await CapacitorBarcodeScanner.scanBarcode(options)
+    const data = ScanResult.split('@');
+    return {
+      apellidos : data[1],
+      nombres : data[2],
+      dni : data[4]
+    }
   }
 
 }

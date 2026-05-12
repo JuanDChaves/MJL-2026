@@ -129,4 +129,8 @@ export class PhotoService {
   async uploadTablePhoto(file: Blob, nombreArchivo: string){
     return await this.uploadImage(file,nombreArchivo,'TablePhoto');
   }
+
+  async uploadQrCode(file: Blob, nombreArchivo: string){
+    return await this.uploadImage(file,nombreArchivo,'TableQrCode');
+  }
 }

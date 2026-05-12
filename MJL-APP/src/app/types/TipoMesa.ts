@@ -1,0 +1,1 @@
+export type TipoMesa = 'estandar' | 'vip' | 'movilidadReducida';
