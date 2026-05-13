@@ -191,7 +191,7 @@ export class RegistrationFormComponent implements ViewWillEnter, OnInit {
   }
 
   async scanQr() {
-    const { apellidos, nombres, dni } = await this.scannerService.scanBarcode();
+    const { apellidos, nombres, dni } = await this.scannerService.scanQrDni();
     this.form().controls.nombres.setValue(nombres);
     this.form().controls.apellidos.setValue(apellidos);
     this.form().controls.dni.setValue(dni);

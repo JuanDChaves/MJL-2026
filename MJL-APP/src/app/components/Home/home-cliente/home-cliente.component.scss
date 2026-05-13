@@ -1,0 +1,203 @@
+// ─── Variables ───────────────────────────────────────────────────────────────
+$bg-amber:      #F5A623;
+$bg-beige:      #f3e9da;
+$btn-color:     #B71C1C;
+$btn-hover:     #D32F2F;
+$btn-text:      #FFFFFF;
+$text-dark:     #1A1A1A;
+$text-muted:    #6E4839;
+$shadow:        0 4px 12px rgba(0, 0, 0, 0.25);
+$shadow-light:  0 2px 8px rgba(0, 0, 0, 0.1);
+
+.cliente-content {
+  --background: #{$bg-amber};
+}
+
+.cliente-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100%;
+  padding: 32px 20px 24px;
+  position: relative;
+}
+
+// ─── Decoración de fondo ─────────────────────────────────────────────────────
+.header-decoration {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  overflow: hidden;
+  pointer-events: none;
+
+  .decoration-circle {
+    position: absolute;
+    top: -60px;
+    right: -60px;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+
+    &.small {
+      top: -30px;
+      right: -20px;
+      width: 100px;
+      height: 100px;
+    }
+  }
+}
+
+// ─── Perfil ──────────────────────────────────────────────────────────────────
+.profile-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 24px;
+  z-index: 1;
+  animation: fadeInUp 0.5s ease-out;
+}
+
+.photo-wrapper {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-bottom: 16px;
+  box-shadow: $shadow;
+  border: 4px solid $btn-color;
+  background: $bg-beige;
+
+  .profile-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .photo-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    color: $btn-color;
+    opacity: 0.6;
+  }
+}
+
+.welcome-title {
+  font-family: 'Georgia', serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: $text-dark;
+  margin: 0 0 4px;
+  text-align: center;
+}
+
+.user-email {
+  font-size: 0.9rem;
+  color: $text-muted;
+  margin: 0;
+  text-align: center;
+}
+
+// ─── Card informativa ────────────────────────────────────────────────────────
+.info-card {
+  width: 100%;
+  max-width: 400px;
+  background: $bg-beige;
+  border-radius: 12px;
+  padding: 16px 20px;
+  box-shadow: $shadow-light;
+  margin-bottom: 24px;
+  animation: fadeInUp 0.5s ease-out 0.1s both;
+
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+
+    &:not(:last-child) {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    }
+
+    .info-label {
+      font-family: 'Georgia', serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: $text-muted;
+    }
+
+    .info-value {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: $text-dark;
+
+      &.capitalize {
+        text-transform: capitalize;
+      }
+    }
+  }
+}
+
+// ─── Botón de acción ─────────────────────────────────────────────────────────
+.action-section {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeInUp 0.5s ease-out 0.2s both;
+}
+
+.action-btn {
+  --background: #{$btn-color};
+  --background-hover: #{$btn-hover};
+  --color: #{$btn-text};
+  --border-radius: 12px;
+  --box-shadow: #{$shadow};
+
+  font-family: 'Georgia', serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+
+  &::part(native) {
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  ion-icon {
+    font-size: 1.4rem;
+    margin-right: 16px;
+  }
+
+  span {
+    flex: 1;
+    text-align: center;
+    padding-right: 40px;
+  }
+
+  &:hover {
+    --background: #{$btn-hover};
+  }
+}
+
+.action-hint {
+  font-size: 0.8rem;
+  color: $text-muted;
+  opacity: 0.7;
+  margin-top: 12px;
+}
+
+// ─── Animaciones ─────────────────────────────────────────────────────────────
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
