@@ -16,8 +16,7 @@ export class PhotoService {
   async takePicture(): Promise<any> {
     try {
       const result = await Camera.takePhoto({
-        quality: 90,
-        includeMetadata: true,
+        quality: 60,
       });
 
       // result.webPath can be set directly as the src of an image element
