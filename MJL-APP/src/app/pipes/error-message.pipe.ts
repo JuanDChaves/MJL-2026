@@ -20,6 +20,7 @@ export class ErrorMessagePipe implements PipeTransform {
       if (fieldName === 'cuil') return 'Solo numeros de 11 digitos';
       if (fieldName === 'apellidos' || fieldName === 'nombres') return 'Solo letras';
     }
+    if(control.hasError('max')) return `Maximo valor: ${control.errors?.['max']?.max}`;
     return null;
   }
 }
