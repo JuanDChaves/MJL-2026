@@ -1,0 +1,48 @@
+<ion-content class="cliente-content">
+  <div class="cliente-container">
+    
+    <!-- Header decorativo -->
+    <div class="header-decoration">
+      <div class="decoration-circle"></div>
+      <div class="decoration-circle small"></div>
+    </div>
+
+    <!-- Sección de perfil -->
+    <div class="profile-section">
+      <div class="photo-wrapper">
+        @if (userService.userData()?.url_foto_perfil) {
+          <img [src]="userService.userData()?.url_foto_perfil" alt="Foto" class="profile-photo" />
+        } @else {
+          <ion-icon name="person-circle-outline" class="photo-placeholder"></ion-icon>
+        }
+      </div>
+      
+      <h1 class="welcome-title">
+        Bienvenido, {{ userService.userData()?.nombres }} {{ userService.userData()?.apellidos }}
+      </h1>
+      <p class="user-email">{{ userService.userData()?.correo_electronico }}</p>
+    </div>
+
+    <!-- Card informativa -->
+    <div class="info-card">
+      <div class="info-row">
+        <span class="info-label">DNI</span>
+        <span class="info-value">{{ userService.userData()?.dni }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Perfil</span>
+        <span class="info-value capitalize">{{ userService.userData()?.perfil }}</span>
+      </div>
+    </div>
+
+    <!-- Botón de acción -->
+    <div class="action-section">
+      <ion-button expand="block" class="action-btn" (click)="scanQr()">
+        <ion-icon slot="start" name="qr-code-outline"></ion-icon>
+        <span>Anunciarse</span>
+      </ion-button>
+      <p class="action-hint">Escané el código QR de tu mesa</p>
+    </div>
+
+  </div>
+</ion-content>

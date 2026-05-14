@@ -6,7 +6,7 @@ import { CapacitorBarcodeScanner, CapacitorBarcodeScannerCameraDirection, Capaci
 })
 export class BarcodeScannerService {
   
- async scanBarcode(): Promise<{apellidos: string, nombres: string, dni: string}>{
+ async scanQrDni(): Promise<{apellidos: string, nombres: string, dni: string}>{
     let options: CapacitorBarcodeScannerOptions = {
       hint: CapacitorBarcodeScannerTypeHint.ALL ,
       cameraDirection:CapacitorBarcodeScannerCameraDirection.BACK,
@@ -20,6 +20,10 @@ export class BarcodeScannerService {
       nombres : data[2],
       dni : data[4]
     }
+  }
+
+  async scanQrGeneric(){
+    
   }
 
 }

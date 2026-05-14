@@ -99,4 +99,11 @@ export const routes: Routes = [
         (m) => m.AgregarMesaFormComponent
       ),
   },
+  {
+    path:'home-cliente',
+    loadComponent: () =>
+      import('./components/Home/home-cliente/home-cliente.component').then(
+        (m) => m.HomeClienteComponent
+      ),
+  }
 ];
