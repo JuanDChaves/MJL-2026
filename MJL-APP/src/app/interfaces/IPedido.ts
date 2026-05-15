@@ -2,7 +2,12 @@ export interface IPedido {
   mesa: string;
   id_cliente: string,
   nombre_cliente: string;
-  aprobado: boolean;
-  preparado: boolean;
-  entregado: boolean;
+  estado: EstadoPedido
+}
+
+export enum EstadoPedido {
+  Pendiente = "pendiente",
+  Preparando = "preparando",
+  Hecho = "hecho",
+  Entregado = "entregado"
 }

@@ -45,29 +45,6 @@ export class PedidosPendientesComponent  implements ViewWillEnter {
     console.log("rechazar")
   }
 
-  //async rejectUser(user: IUserUnauthorized) {
-  //  await this.userServ.enableOrRejectUser(
-  //    user.identificacion.toString(),
-  //    false
-  //  );
-  //  await this.reloadUsersList(user);
-  //}
-
-  //async enableUser(user: IUserUnauthorized) {
-  //  await this.userServ.enableOrRejectUser(
-  //    user.identificacion.toString(),
-  //    true
-  //  );
-  //  await this.reloadUsersList(user);
-  //}
-
-  //private reloadUsersList(user: IUserUnauthorized): Promise<void> {
-  //  return new Promise(() => {
-  //    this.pedidosPendientesList.update((users) =>
-  //      users.filter((u) => u.identificacion !== user.identificacion)
-  //    );
-  //  });
-  //}
   async getPedidos(): Promise<{ data: any | null; error: any }> {
     const response = await this.dbService.getAll('pedidos');
     if (response.error) {
