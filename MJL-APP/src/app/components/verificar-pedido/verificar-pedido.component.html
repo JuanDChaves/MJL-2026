@@ -1,0 +1,62 @@
+<app-layout [title]="'Verificar Pedidos'" [showBackButton]="true" [backUrl]="'/home'">
+  <div class="auth-panel-content">
+    
+    @if (pedidosPendientes.length > 0) {
+      <div class="panel-header">
+        <ion-card-title>Nuevos Pendientes</ion-card-title>
+      </div>
+      
+      @for (pedido of pedidosPendientes; track pedido.id) {
+        <ion-card class="user-card">
+          <ion-card-header>
+            <ion-card-title>Mesa N° {{ pedido.mesa }}</ion-card-title>
+            <ion-card-subtitle>{{ pedido.fecha | date:'dd/MM/yyyy HH:mm' }}</ion-card-subtitle>
+            <span class="status-badge status-pendiente">Pendiente</span>
+          </ion-card-header>
+          <ion-card-content>
+            <div class="productos-list">
+              @for (prod of pedido.productos; track prod.id) {
+                <div class="producto-item">
+                  <p class="prod-title"><b>{{ prod.cantidad }}x</b> {{ prod.nombre }}</p>
+                  <p class="prod-desc">{{ prod.descripcion }}</p>
+                </div>
+              }
+            </div>
+            <div class="action-buttons">
+              <ion-button expand="block" class="btn-approve" (click)="aceptarPedido(pedido)">
+                Aceptar Pedido
+              </ion-button>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      }
+    }
+
+    @if (pedidosPreparando.length > 0) {
+      <div class="panel-header mt-4">
+        <ion-card-title>En Preparación</ion-card-title>
+      </div>
+
+      @for (pedido of pedidosPreparando; track pedido.id) {
+        <ion-card class="user-card">
+          <ion-card-header>
+            <ion-card-title>Mesa N° {{ pedido.mesa }}</ion-card-title>
+            <ion-card-subtitle>{{ pedido.fecha | date:'dd/MM/yyyy HH:mm' }}</ion-card-subtitle>
+            <span class="status-badge status-preparando">Preparando</span>
+          </ion-card-header>
+          <ion-card-content>
+            <div class="productos-list">
+              @for (prod of pedido.productos; track prod.id) {
+                <div class="producto-item">
+                  <p class="prod-title"><b>{{ prod.cantidad }}x</b> {{ prod.nombre }}</p>
+                  <p class="prod-desc">{{ prod.descripcion }}</p>
+                </div>
+              }
+            </div>
+          </ion-card-content>
+        </ion-card>
+      }
+    }
+
+  </div>
+</app-layout>

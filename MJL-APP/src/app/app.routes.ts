@@ -105,5 +105,17 @@ export const routes: Routes = [
       import('./components/Home/home-cliente/home-cliente.component').then(
         (m) => m.HomeClienteComponent
       ),
+  },
+  {path: 'verificar-pedido',
+    loadComponent: () => 
+      import('./components/verificar-pedido/verificar-pedido.component').then(
+        (m) => m.VerificarPedidoComponent
+      ),
+  },
+  {path: 'entregar-pedido',
+    loadComponent: () => 
+      import('./components/entregar-pedido/entregar-pedido.component').then(
+        (m) => m.EntregarPedidoComponent
+      ),
   }
 ];
