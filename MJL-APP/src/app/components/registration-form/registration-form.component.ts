@@ -32,6 +32,8 @@ import {
   beer,
   flash,
   qrCodeOutline,
+  cameraReverse,
+  cameraReverseOutline,
 } from 'ionicons/icons';
 import { Router } from '@angular/router';
 import { UserService } from '../../services/user-service';
@@ -102,6 +104,7 @@ export class RegistrationFormComponent implements ViewWillEnter, OnInit {
       camera,
       chevronBack,
       personCircle,
+      cameraReverseOutline,
       restaurant,
       people,
       clipboard,
