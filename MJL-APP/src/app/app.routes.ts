@@ -105,5 +105,19 @@ export const routes: Routes = [
       import('./components/Home/home-cliente/home-cliente.component').then(
         (m) => m.HomeClienteComponent
       ),
+  },
+  {
+    path: 'ingreso-local-cliente',
+    loadComponent: () =>
+      import('./components/pantalla-ingreso-local/pantalla-ingreso-local.component').then(
+        (m) => m.PantallaIngresoLocalComponent
+      ),
+  },
+  {
+    path:'menu-clientes',
+    loadComponent: () =>
+      import('./components/pantalla-menu-cliente/pantalla-menu-cliente.component').then(
+        (m) => m.PantallaMenuClienteComponent
+      ),
   }
 ];
