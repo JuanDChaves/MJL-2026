@@ -171,6 +171,7 @@ export class RegistrationService {
       dni: user.dni,
       url_foto_perfil: user.url_foto_perfil,
       correo_electronico: user.correo_electronico,
+      estado:true
     };
     const { error: solicitudError } =
       await this.userService.loadUserAuthorization(userUnauthorized);
