@@ -4,7 +4,7 @@ import { checkmark, close, checkmarkCircle } from 'ionicons/icons';
 import { LayoutComponent } from '../../layout/layout.component';
 import { IonAvatar, IonButton, IonCard, IonCardContent, IonIcon, ViewWillEnter } from '@ionic/angular/standalone';
 import { DatePipe } from '@angular/common';
-import { IPedido } from 'src/app/interfaces/IPedido';
+import { EstadoPedido, IPedido } from 'src/app/interfaces/IPedido';
 import { SupabaseService } from 'src/app/services/supabase-service';
 import { DbService } from 'src/app/services/db-service';
 
@@ -34,12 +34,23 @@ export class PedidosPendientesComponent  implements ViewWillEnter {
     await this.cargarPedidos();
   }
 
-  aprobarPedido() {
-    console.log("aprobar")
+  async aprobarPedido(pedido: IPedido) {
+    const response = await this.dbService.update('pedidos', 'id', pedido.id, { estado: EstadoPedido.Preparando})
+    if (response.error) {
+      console.error("Error al aprobar el pedido: ", response.error)
+      return;
+    }
+    await this.cargarPedidos();
   }
 
-  rechazarPedido() {
-    console.log("rechazar")
+  // FALTA CREAR EL ESTADO PREVIO A PENDIENTE
+  async rechazarPedido(pedido: IPedido) {
+    const response = await this.dbService.update('pedidos', 'id', pedido.id, { estado: EstadoPedido.Preparando})
+    if (response.error) {
+      console.error("Error al rechazar el pedido: ", response.error)
+      return;
+    }
+    await this.cargarPedidos();
   }
 
   async getPedidos(): Promise<{ data: any | null; error: any }> {
