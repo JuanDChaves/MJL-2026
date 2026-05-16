@@ -1,3 +1,35 @@
-<p>
-  pedidos-en-preparacion works!
-</p>
+<app-layout [title]="'Pedidos en Preparacion'" [showBackButton]="true" [backUrl]="'/home'">
+  <div class="auth-panel-content">
+    @for (item of pedidosEnPreparacionList(); track item.id_cliente) {
+      <ion-card class="user-card">
+        <ion-card-content>
+          <div class="user-info">
+            <ion-avatar class="user-avatar">
+            </ion-avatar>
+            <div class="user-details">
+              <h2 class="user-name">Nombre del Cliente: {{ item.nombre_cliente }}</h2>
+              <h2 class="user-name">Mesa: #{{ item.mesa }}</h2>
+            </div>
+          </div>
+          <div class="actions">
+            <ion-button fill="solid" class="action-btn approve" (click)="aprobarPedido()">
+              <ion-icon slot="start" name="checkmark"></ion-icon>
+              <span>Enviar a Cocina</span>
+            </ion-button>
+            <ion-button fill="solid" class="action-btn reject" (click)="rechazarPedido()">
+              <ion-icon slot="start" name="close"></ion-icon>
+              <span>Devolver</span>
+            </ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    }
+
+    @empty {
+      <div class="empty-state">
+        <ion-icon name="checkmark-circle" class="empty-icon"></ion-icon>
+        <p>No hay solicitudes pendientes</p>
+      </div>
+    }
+  </div>
+</app-layout>

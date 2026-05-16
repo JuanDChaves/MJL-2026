@@ -29,9 +29,6 @@ export class PedidosPendientesComponent  implements ViewWillEnter {
   constructor() {
     addIcons({ checkmark, close, checkmarkCircle });
   }
-  //ngOnInit(): void {
-  //  throw new Error('Method not implemented.');
-  //}
 
   async ionViewWillEnter(): Promise<void> {
     await this.cargarPedidos();
@@ -60,7 +57,13 @@ export class PedidosPendientesComponent  implements ViewWillEnter {
       this.pedidosPendientesList.set([]);
       return;
     }
-    this.pedidosPendientesList.set(response.data as IPedido[]);
+
+    const pedidos = response.data as IPedido[];
+
+    this.pedidosPendientesList.set(
+      pedidos.filter(pedido => pedido.estado === 'pendiente')
+    );
+
     console.log(response.data)
   }
 }
