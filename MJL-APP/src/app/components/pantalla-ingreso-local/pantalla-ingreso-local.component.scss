@@ -1,0 +1,132 @@
+// ─── Variables ───────────────────────────────────────────────────────────────
+$btn-color:     #B71C1C;
+$btn-hover:     #D32F2F;
+$btn-text:      #FFFFFF;
+$bg-beige:      #f3e9da;
+$text-dark:     #1A1A1A;
+$text-muted:    #6E4839;
+$shadow:        0 4px 12px rgba(0, 0, 0, 0.25);
+
+.ingreso-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px 24px;
+  min-height: 100%;
+}
+
+// ─── Icono central ───────────────────────────────────────────────────────────
+.icon-section {
+  margin-bottom: 24px;
+  animation: fadeInUp 0.5s ease-out;
+
+  .icon-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: #{$bg-beige};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: #{$shadow};
+
+    .main-icon {
+      font-size: 3.5rem;
+      color: #{$btn-color};
+    }
+  }
+}
+
+// ─── Texto ───────────────────────────────────────────────────────────────────
+.text-section {
+  text-align: center;
+  margin-bottom: 32px;
+  animation: fadeInUp 0.5s ease-out 0.1s both;
+
+  .main-title {
+    font-family: 'Georgia', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #{$text-dark};
+    margin: 0 0 8px;
+  }
+
+  .main-subtitle {
+    font-size: 0.95rem;
+    color: #{$text-muted};
+    line-height: 1.5;
+    margin: 0;
+    max-width: 300px;
+  }
+}
+
+// ─── Botones ─────────────────────────────────────────────────────────────────
+.actions-section {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.action-btn {
+  --border-radius: 12px;
+  --box-shadow: #{$shadow};
+
+  font-family: 'Georgia', serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+
+  &::part(native) {
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  ion-icon {
+    font-size: 1.4rem;
+    margin-right: 16px;
+  }
+
+  span {
+    flex: 1;
+    text-align: center;
+    padding-right: 40px;
+  }
+
+  // Primario (rojo lleno)
+  --background: #{$btn-color};
+  --background-hover: #{$btn-hover};
+  --color: #{$btn-text};
+
+  &:hover {
+    --background: #{$btn-hover};
+    --box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
+  }
+
+  // Outline
+  &.outline {
+    --background: transparent;
+    --color: #{$btn-color};
+    --border-color: #{$btn-color};
+    --border-width: 2px;
+    --border-style: solid;
+    --box-shadow: none;
+
+    &:hover {
+      --background: #{$btn-color};
+      --color: #{$btn-text};
+      --box-shadow: #{$shadow};
+    }
+  }
+}
+
+// ─── Animaciones ─────────────────────────────────────────────────────────────
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

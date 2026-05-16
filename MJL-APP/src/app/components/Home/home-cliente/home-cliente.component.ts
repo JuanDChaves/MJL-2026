@@ -4,6 +4,7 @@ import { addIcons } from 'ionicons';
 import { qrCodeOutline, personCircleOutline } from 'ionicons/icons';
 import { BarcodeScannerService } from '../../../services/barcode-scanner-service';
 import { UserService } from '../../../services/user-service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home-cliente',
@@ -14,12 +15,16 @@ import { UserService } from '../../../services/user-service';
 export class HomeClienteComponent {
   private scannerService = inject(BarcodeScannerService);
   userService = inject(UserService);
+  router = inject(Router);
 
   constructor() {
     addIcons({ qrCodeOutline, personCircleOutline });
   }
 
   async scanQr() {
-    await this.scannerService.scanQrGeneric();
+    const response = await this.scannerService.scanQrGeneric();
+    console.log(response);
+    this.router.navigate([`/${response}`]);
+    
   }
 }
