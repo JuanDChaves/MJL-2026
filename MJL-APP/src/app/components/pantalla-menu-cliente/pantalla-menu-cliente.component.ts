@@ -1,4 +1,10 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, computed, signal, inject } from '@angular/core';
+import {
+  Component,
+  CUSTOM_ELEMENTS_SCHEMA,
+  computed,
+  signal,
+  inject,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
   IonContent,
@@ -52,7 +58,6 @@ interface ProductoMenu {
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class PantallaMenuClienteComponent implements ViewWillEnter {
-
   productService = inject(ProductsService);
 
   selectedSegment = signal('food');
@@ -71,8 +76,8 @@ export class PantallaMenuClienteComponent implements ViewWillEnter {
       trashOutline,
     });
   }
-  ionViewWillEnter(): void {
-    this.loadProducts();
+  async ionViewWillEnter(): Promise<void> {
+    await this.loadProducts();
   }
 
   get currentProducts(): ProductoMenu[] {
@@ -85,6 +90,19 @@ export class PantallaMenuClienteComponent implements ViewWillEnter {
   total = computed(() => {
     const all = [...this.drinks(), ...this.food()];
     return all.reduce((sum, p) => sum + p.precio * p.cantidad, 0);
+  });
+
+  product_count = computed(() => {
+    const all = [...this.drinks(), ...this.food()];
+    return all.reduce((sum, p) => sum + p.cantidad, 0);
+  });
+
+  total_time_computed = computed(() => {
+    const all = [...this.drinks().filter((p) => p.cantidad > 0), ...this.food().filter((p) => p.cantidad > 0)];    
+    console.log(all);
+    if (this.product_count() === 0) return 0;
+    if (this.product_count() === 1) return all[0].tiempo_elaboracion;
+    return Math.trunc(all.reduce((sum, p) => sum + p.tiempo_elaboracion * p.cantidad, 0)/2);
   });
 
   addOne(product: ProductoMenu) {
@@ -105,16 +123,20 @@ export class PantallaMenuClienteComponent implements ViewWillEnter {
     const seg = this.selectedSegment();
     if (seg === 'drinks') {
       this.drinks.update((list) =>
-        list.map((p) => (p.id === product.id ? { ...p, cantidad: newCantidad } : p))
+        list.map((p) =>
+          p.id === product.id ? { ...p, cantidad: newCantidad } : p,
+        ),
       );
     } else if (seg === 'food') {
       this.food.update((list) =>
-        list.map((p) => (p.id === product.id ? { ...p, cantidad: newCantidad } : p))
+        list.map((p) =>
+          p.id === product.id ? { ...p, cantidad: newCantidad } : p,
+        ),
       );
     }
   }
 
-  async loadProducts(){
+  async loadProducts() {
     let drinks = await this.productService.getDrinks();
     drinks = drinks.map((p) => ({ ...p, cantidad: 0 })) as ProductoMenu[];
     let food = await this.productService.getFood();
