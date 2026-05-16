@@ -56,6 +56,29 @@ _Completar_
     <img src="./MJL-APP/docs/images/lista-pedidos-pendientes.png" alt=""/>
 </div>
 
+### QRs
+#### Ingreso local
+<div align="center">
+    <img src="./MJL-APP/docs/qr/ingreso local/ingreso-local-cliente.png" alt=""/>
+</div>
+
+#### Mesas  
+<div align="center">
+    <img src="./MJL-APP/docs/qr/mesas/mesa_1.png" alt=""/>
+</div>
+<div align="center">
+    <img src="./MJL-APP/docs/qr/mesas/mesa_2.png" alt=""/>
+</div>
+<div align="center">
+    <img src="./MJL-APP/docs/qr/mesas/mesa_3.png" alt=""/>
+</div>
+<div align="center">
+    <img src="./MJL-APP/docs/qr/mesas/mesa_4.png" alt=""/>
+</div>
+<div align="center">
+    <img src="./MJL-APP/docs/qr/mesas/mesa_5.png" alt=""/>
+</div>
+
 ## Tareas del equipo
 
 ### Entrega Preliminar 5 - 16/05 
