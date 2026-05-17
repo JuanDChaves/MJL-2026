@@ -7,12 +7,13 @@ import { HomeCocineroPage } from "src/app/components/Home/home-cocinero/home-coc
 import { MozoHomePageComponent } from "../../components/Home/home-mozo/mozo-home-page/mozo-home-page.component";
 import { HomeCantineroPage } from 'src/app/components/Home/home-cantinero/home-cantinero.page';
 import { HomeClienteComponent } from "src/app/components/Home/home-cliente/home-cliente.component";
+import { HomeMetreComponent } from "src/app/components/Home/home-metre/home-metre.component";
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
-  imports: [HomeSupervisorComponent, LayoutComponent, MozoHomePageComponent, HomeCocineroPage, HomeCantineroPage, HomeClienteComponent],
+  imports: [HomeSupervisorComponent, LayoutComponent, MozoHomePageComponent, HomeCocineroPage, HomeCantineroPage, HomeClienteComponent, HomeMetreComponent],
 })
 export class HomePage implements ViewWillEnter {
   userServ = inject(UserService);
