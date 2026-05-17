@@ -1,0 +1,27 @@
+<div class="home-cocinero-container">
+  <!-- Header del cocinero -->
+  <div class="home-header">
+    <h1 class="home-title">Panel de metre</h1>
+  </div>
+
+  <div class="main-container">
+    <!-- Logo / Avatar -->
+    <div class="logo-wrapper">
+      <div class="logo-circle">
+        <span class="logo-emoji">🤵</span>
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="buttons-container">
+      <ion-button expand="block" class="menu-btn" (click)="asignarMesa()">
+        <ion-icon slot="start" name="pencil-outline"></ion-icon>
+        <span>Asignar mesa</span>
+      </ion-button>
+      <ion-button expand="block" routerLink="/register" class="menu-btn">
+        <ion-icon slot="start" name="add-circle-outline"></ion-icon>
+        <span>Agregar empleado</span>
+      </ion-button>
+    </div>
+  </div>
+</div>

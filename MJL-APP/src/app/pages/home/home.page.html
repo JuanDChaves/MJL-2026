@@ -9,6 +9,8 @@
     <app-home-cantinero></app-home-cantinero>
   } @else if (userServ.userData()?.perfil === 'cliente'){
     <app-home-cliente></app-home-cliente>
+  } @else if (userServ.userData()?.perfil === 'metre'){ 
+    <app-home-metre></app-home-metre>
   }@else {
     <app-home-cliente></app-home-cliente>
   }
