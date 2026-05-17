@@ -22,7 +22,6 @@ export class ClientService {
       en_espera: true,
     })
     if(response.error){
-      "23505"
       result.success = false
       if(response.error.code === "23505"){
         result.error = {message: "Ya estas en la lista de espera"};
