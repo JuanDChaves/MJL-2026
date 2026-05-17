@@ -173,3 +173,14 @@ fix: corregir validación de email
 chore: actualizar dependencias
 docs: actualizar README
 ```
+
+
+lu empieza con juegos y encuestas
+Juan sigue con lo del mozo
+matias metre y cliente
+
+Y el miercoles rotamos
+
+lu sigue concina y bar
+Juan rota a su juego
+matias juego chat
