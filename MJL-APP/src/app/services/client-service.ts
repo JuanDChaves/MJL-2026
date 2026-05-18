@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { DbService } from './db-service';
-import { IUser } from '../interfaces/IUsers';
+import { IUser } from '../interfaces/IUser';
 import { IResult } from '../interfaces/IResult';
 
 @Injectable({
@@ -18,9 +18,10 @@ export class ClientService {
     }
     
     const response = await this.dbService.insert('lista_espera',{
-      user_id: user.user_id,
+      user_id: user.id,
       en_espera: true,
     })
+    console.log(response);
     if(response.error){
       result.success = false
       if(response.error.code === "23505"){

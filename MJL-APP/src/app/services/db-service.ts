@@ -134,4 +134,14 @@ export class DbService<T extends BaseEntity> {
     if (error) throw error;
   }
 
+  async waitingCustomer(){
+    const response = await this.sbService.client
+      .from('lista_espera')
+      .select(`
+        *,
+        cliente:usuarios!user_id      
+        `)
+
+  }
+
 }
