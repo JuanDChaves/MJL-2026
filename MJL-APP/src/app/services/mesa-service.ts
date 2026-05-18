@@ -7,6 +7,7 @@ import { PhotoService } from './photo-service';
 import { IDatosMesaParaQr } from '../interfaces/IDatosMesaParaQr';
 import { IResult } from '../interfaces/IResult';
 import { IUser } from '../interfaces/IUser';
+import { IMesaDniCliente } from '../interfaces/IMesaDniCliente';
 
 @Injectable({
   providedIn: 'root',
@@ -111,4 +112,43 @@ export class MesaService {
       return { success: false, error: { message: 'Error al asignar la mesa' }, data: null };
     }
   }
+
+  async chequearMesaAsignada(numeroMesa:number){
+    const result :IResult<IMesaDniCliente> = {
+      success: false,
+      error: null,
+      data: null
+    }
+    try {
+      const {data:mesaList, error: mesaError} = await this.dbService.getAllWithFilter('mesas','numero_mesa',numeroMesa);
+
+      if(mesaError || !mesaList || mesaList.length === 0) {
+        result.error = {message: 'Mesa no encontrada'};
+        return result;
+      }
+      const mesa_con_usuario :IMesaDniCliente = {
+        id: mesaList[0].id,
+        numero_mesa: mesaList[0].numero_mesa,
+        ocupada: mesaList[0].ocupada,
+        dni: mesaList[0].dni,
+      }
+
+      result.success = true;
+      result.data = mesa_con_usuario;
+      return result;
+      
+    } catch (error) {
+      return {
+        success: false,
+        error: { message: 'Error al enlazarse con la mesa' },
+        data: null
+      }
+    }
+  }
+
+  async liberarMesa(numer_mesa:number){
+    const result = await this.dbService.update('mesas', 'numer_mesa', numer_mesa, {ocupada: false, dni: null});
+    return result
+  }
+
 }
