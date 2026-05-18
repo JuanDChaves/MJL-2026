@@ -1,16 +1,19 @@
 import { inject, Injectable } from '@angular/core';
 import { DbService } from './db-service';
+import { SupabaseService } from './supabase-service';
 import { IMesa } from '../interfaces/IMesa';
 import { QrService } from './qr-service';
 import { PhotoService } from './photo-service';
 import { IDatosMesaParaQr } from '../interfaces/IDatosMesaParaQr';
 import { IResult } from '../interfaces/IResult';
+import { IUser } from '../interfaces/IUser';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MesaService {
   private dbService = inject(DbService);
+  private supabaseService = inject(SupabaseService);
   private qrService = inject(QrService);
   private photoService = inject(PhotoService);
 
@@ -64,5 +67,48 @@ export class MesaService {
 
   async existeMesa(numero_mesa: number):Promise<{ data: any[] | null; error: any }> {
     return await this.dbService.getAllWithFilter('mesas','numero_mesa',numero_mesa);
+  }
+
+  async getAvailableMesas(): Promise<IResult<IMesa[]>> {
+    try {
+      const { data, error } = await this.supabaseService.client
+        .from('mesas')
+        .select('*')
+        .eq('ocupada', false);
+      if (error) throw error;
+      return { success: true, error: null, data: data as IMesa[] };
+    } catch (error) {
+      return { success: false, error: { message: 'Error al obtener mesas disponibles' }, data: null };
+    }
+  }
+
+  async asignarMesa(cliente: IUser, numeroMesa: number): Promise<IResult<any>> {
+    try {
+      const { data: mesa, error: mesaError } = await this.supabaseService.client
+        .from('mesas')
+        .select('id, numero_mesa')
+        .eq('numero_mesa', numeroMesa)
+        .single();
+
+      if (mesaError || !mesa) throw mesaError || new Error('Mesa no encontrada');
+
+      const { error: updateMesaError } = await this.supabaseService.client
+        .from('mesas')
+        .update({ ocupada: true, dni: cliente.dni })
+        .eq('id', mesa.id);
+
+      if (updateMesaError) throw updateMesaError;
+
+      const { error: updateListaError } = await this.supabaseService.client
+        .from('lista_espera')
+        .update({ mesa_id: mesa.id, en_espera: false })
+        .eq('user_id', cliente.id);
+
+      if (updateListaError) throw updateListaError;
+
+      return { success: true, error: null, data: { mesa, cliente: cliente.id } };
+    } catch (error) {
+      return { success: false, error: { message: 'Error al asignar la mesa' }, data: null };
+    }
   }
 }

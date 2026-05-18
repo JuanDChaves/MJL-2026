@@ -1,0 +1,41 @@
+<app-layout [title]="'Clientes en espera'" [showBackButton]="true" [backUrl]="'/home'">
+  <div class="auth-panel-content">
+    @for (item of clientesEnEsperaList(); track item.cliente.id) {
+      <ion-card class="user-card">
+        <ion-card-content>
+          <div class="user-info">
+            <ion-avatar class="user-avatar">
+              @if (item.cliente.url_foto_perfil) {
+                <img [src]="item.cliente.url_foto_perfil" alt="" />
+              } @else {
+                <div class="initials-avatar">
+                  {{ item.cliente.nombres[0] }}{{ item.cliente.apellidos[0] }}
+                </div>
+              }
+            </ion-avatar>
+            <div class="user-details">
+              <h2 class="user-name">{{ item.cliente.nombres }} {{ item.cliente.apellidos }}</h2>
+              <p class="user-status">En espera</p>
+            </div>
+          </div>
+          <div class="actions">
+            <ion-button fill="solid" class="action-btn approve" (click)="asignarMesa(item)">
+              <ion-icon slot="start" name="checkmark"></ion-icon>
+              <span>Asignar mesa</span>
+            </ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    }
+
+    @empty {
+      <div class="empty-state">
+        <div class="empty-icon-wrapper">
+          <ion-icon name="checkmark-circle" class="empty-icon"></ion-icon>
+        </div>
+        <p class="empty-text">No hay clientes en espera</p>
+        <p class="empty-hint">Los clientes aparecerán aquí cuando se anuncien</p>
+      </div>
+    }
+  </div>
+</app-layout>

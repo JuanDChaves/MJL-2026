@@ -2,7 +2,7 @@ import { CanActivateFn, Router } from '@angular/router';
 import { SupabaseService } from '../services/supabase-service';
 import { inject } from '@angular/core';
 import { LocalStorageService } from '../services/local-storage-service';
-import { IUser } from '../interfaces/IUsers';
+import { IUser } from '../interfaces/IUser';
 
 export const isLoggedGuard: CanActivateFn = async (route, state) => {
   const sbServ = inject(SupabaseService);

@@ -1,12 +1,12 @@
 import { inject, Injectable } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
-import { IUser } from '../interfaces/IUsers';
+import { IUserToRegister } from '../interfaces/IUserToRegister';
+import { IUser } from '../interfaces/IUser';
 import { UserService } from './user-service';
 import { LoginService } from './login-service';
 import { IResult } from '../interfaces/IResult';
 import { PhotoService } from './photo-service';
 import { NotificationsService } from './notifications-service';
-import { IUserUnauthorized } from '../interfaces/IUserUnauthorized';
 import { IUserUnauthorizedToRegister } from '../interfaces/IUserUnauthorizedToRegister';
 
 @Injectable({
@@ -32,7 +32,7 @@ export class RegistrationService {
 
   private async getUserObject(controls: {
     [key: string]: AbstractControl<any, any, any>;
-  }): Promise<IUser> {
+  }): Promise<IUserToRegister> {
     const isClientToRegister: boolean =
       !this.userService.isLogged() ||
       this.userService.userData()?.perfil === 'metre';
@@ -58,7 +58,7 @@ export class RegistrationService {
     try {
       const user = await this.getUserObject(controls);
       const isExist = await this.checkUserExists(user.dni);
-      if (!isExist.success) return isExist;
+      if (!isExist.success) return isExist;//revisar en algun momento
       let resultCreateAccount = null;
       if (this.userService.isLogged()) {
         resultCreateAccount = await this.createUserAccountViaEdgeFunction(
@@ -164,7 +164,7 @@ export class RegistrationService {
     }
   }
 
-  private async loadUserAuthorization(user: IUser): Promise<IResult<void>> {
+  private async loadUserAuthorization(user: IUserToRegister): Promise<IResult<void>> {
     const userUnauthorized: IUserUnauthorizedToRegister = {
       apellidos: user.apellidos,
       nombres: user.nombres,
@@ -188,7 +188,7 @@ export class RegistrationService {
   }
 
   private async loadNotificationToSuperOrDuenio(
-    user: IUser
+    user: IUserToRegister
   ): Promise<IResult<void>> {
     const { error } = await this.notificationsService.insertNotification(user);
     if (error) {
@@ -201,8 +201,8 @@ export class RegistrationService {
     return { success: true, error: null, data: null };
   }
 
-  private async insertUser(user: IUser): Promise<IResult<IUser>> {
-    const { error } = await this.userService.insert(user);
+  private async insertUser(user: IUserToRegister): Promise<IResult<IUser>> {
+    const {data, error } = await this.userService.insert(user);
     if (error) {
       return {
         success: false,
@@ -210,6 +210,6 @@ export class RegistrationService {
         data: null,
       };
     }
-    return { success: true, error: null, data: user };
+    return { success: true, error: null, data: data as IUser };
   }
 }

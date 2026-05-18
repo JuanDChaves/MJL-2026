@@ -1,4 +1,4 @@
-export interface IUser {
+export interface IUserToRegister {
   user_id: string|null;
   apellidos: string;
   nombres: string;

@@ -119,5 +119,12 @@ export const routes: Routes = [
       import('./components/Home/home-cliente/pantalla-menu-cliente/pantalla-menu-cliente.component').then(
         (m) => m.PantallaMenuClienteComponent
       ),
+  },
+  {
+    path:'lista-espera',
+    loadComponent: () =>
+      import('./components/Home/home-metre/lista-espera/lista-espera.component').then(
+        (m) => m.ListaEsperaComponent
+      ),
   }
 ];
