@@ -1,14 +1,14 @@
 <app-layout [title]="'Clientes en espera'" [showBackButton]="true" [backUrl]="'/home'">
   <div class="auth-panel-content">
-    @for (item of clientesEnEsperaList(); track item.id_cliente) {
+    @for (item of clientesEnEsperaList(); track item.cliente.id) {
       <ion-card class="user-card">
         <ion-card-content>
           <div class="user-info">
             <ion-avatar class="user-avatar">
             </ion-avatar>
             <div class="user-details">
-              <h2 class="user-name">Nombre del Cliente: {{ item.nombre_cliente }}</h2>
-              <h2 class="user-name">Mesa: #{{ item.mesa }}</h2>
+              <h2 class="user-name">Nombre del Cliente: {{ item.cliente.nombres }}</h2>
+              <h2 class="user-name">Mesa: #{{ item.mesa_id }}</h2>
             </div>
           </div>
           <div class="actions">

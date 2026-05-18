@@ -139,9 +139,9 @@ export class DbService<T extends BaseEntity> {
       .from('lista_espera')
       .select(`
         *,
-        cliente:usuarios!user_id      
-        `)
-
+        cliente:usuarios!lista_espera_user_id_fkey(*)     
+        `);
+    return response;
   }
 
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import {
   IonIcon,
   ViewWillEnter,
@@ -10,6 +10,8 @@ import {
 import { addIcons } from 'ionicons';
 import { checkmark, checkmarkCircle, close } from 'ionicons/icons';
 import { LayoutComponent } from 'src/app/components/layout/layout.component';
+import { ClienteEnEspera } from 'src/app/interfaces/ClienteEnEspera';
+import { OrdersService } from 'src/app/services/orders-service';
 
 @Component({
   selector: 'app-lista-espera',
@@ -25,16 +27,21 @@ import { LayoutComponent } from 'src/app/components/layout/layout.component';
   ],
 })
 export class ListaEsperaComponent implements ViewWillEnter {
-  clientesEnEsperaList = signal<any[]>([]);
+  clientesEnEsperaList = signal<ClienteEnEspera[]>([]);
+  ordersService = inject(OrdersService);
 
   
   constructor() {
     addIcons({ checkmark, close, checkmarkCircle });
   }
   
-  ionViewWillEnter(): void {}
+  async ionViewWillEnter(): Promise<void> {
+    await this.cargarclientesEnEsperaList();
+  }
 
-  async cargarclientesEnEsperaList(): Promise<void> {}
+  async cargarclientesEnEsperaList(): Promise<void> {
+    const response = await this.ordersService.waitingCustomer();
+  }
 
   asignarMesa(_t4: any) {
     throw new Error('Method not implemented.');
