@@ -30,7 +30,7 @@ export class PantallaIngresoLocalComponent implements ViewWillEnter {
   async anunciarse() {
     const user = this.userService.userData();
     if (user) {
-      const response = await this.clientService.loadWaitingList(user);
+      const response = await this.clientService.insertWaitingList(user);
       if(response.success) {
         console.log('cliente ingresado en la lista de espera');
         return;

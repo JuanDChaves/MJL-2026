@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import {
   IonIcon,
   ViewWillEnter,
@@ -6,12 +6,15 @@ import {
   IonAvatar,
   IonCardContent,
   IonCard,
+  ModalController,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { checkmark, checkmarkCircle, close } from 'ionicons/icons';
 import { LayoutComponent } from 'src/app/components/layout/layout.component';
 import { ClienteEnEspera } from 'src/app/interfaces/ClienteEnEspera';
-import { OrdersService } from 'src/app/services/orders-service';
+import { ClientService } from 'src/app/services/client-service';
+import { MesaService } from 'src/app/services/mesa-service';
+import { AsignarMesaModalComponent } from './asignar-mesa-modal/asignar-mesa-modal.component';
 
 @Component({
   selector: 'app-lista-espera',
@@ -28,22 +31,42 @@ import { OrdersService } from 'src/app/services/orders-service';
 })
 export class ListaEsperaComponent implements ViewWillEnter {
   clientesEnEsperaList = signal<ClienteEnEspera[]>([]);
-  ordersService = inject(OrdersService);
+  clientService = inject(ClientService);
+  mesaService = inject(MesaService);
+  modalCtrl = inject(ModalController);
 
-  
   constructor() {
     addIcons({ checkmark, close, checkmarkCircle });
   }
-  
+
   async ionViewWillEnter(): Promise<void> {
     await this.cargarclientesEnEsperaList();
   }
 
   async cargarclientesEnEsperaList(): Promise<void> {
-    const response = await this.ordersService.waitingCustomer();
+    const response = await this.clientService.waitingCustomerList();
+    if (response.success) {
+      this.clientesEnEsperaList.set(response.data!);
+    }
   }
 
-  asignarMesa(_t4: any) {
-    throw new Error('Method not implemented.');
+  async asignarMesa(cliente: ClienteEnEspera) {
+    const mesas = await this.mesaService.getAvailableMesas();
+    if (!mesas.success || !mesas.data?.length) return;
+
+    const modal = await this.modalCtrl.create({
+      component: AsignarMesaModalComponent,
+      componentProps: {
+        cliente,
+        mesasDisponibles: mesas.data,
+      },
+    });
+    await modal.present();
+
+    const { data, role } = await modal.onWillDismiss();
+    if (role === 'confirm' && data) {
+      await this.mesaService.asignarMesa(cliente.cliente, data.numeroMesa);
+      await this.cargarclientesEnEsperaList();
+    }
   }
 }

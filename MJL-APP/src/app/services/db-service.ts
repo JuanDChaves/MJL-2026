@@ -140,7 +140,8 @@ export class DbService<T extends BaseEntity> {
       .select(`
         *,
         cliente:usuarios!lista_espera_user_id_fkey(*)     
-        `);
+        `)
+      .eq('en_espera', true);
     return response;
   }
 
