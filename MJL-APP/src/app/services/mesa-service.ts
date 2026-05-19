@@ -151,4 +151,9 @@ export class MesaService {
     return result
   }
 
+  async getByDni(dni:string): Promise<IResult<IMesa>>{
+    const result = await this.dbService.getAllWithFilter('mesas','dni',dni);
+    if(result.error || !result.data || result.data.length === 0) return {success: false, error: {message: 'Mesa no encontrada'}, data: null}
+    return {success: true, error: null, data: result.data[0]}
+  }
 }

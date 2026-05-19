@@ -1,0 +1,1 @@
+export type TypeOrderState = 'pendiente' | 'preparando' | 'hecho' | 'entregado' | 'editando';
