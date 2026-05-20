@@ -16,6 +16,7 @@ import {
   IonFooter,
   ViewWillEnter,
 } from '@ionic/angular/standalone';
+import { RouterLink } from '@angular/router';
 import { addIcons } from 'ionicons';
 import {
   gameControllerOutline,
@@ -24,6 +25,7 @@ import {
   addOutline,
   removeOutline,
   trashOutline,
+  trophyOutline,
 } from 'ionicons/icons';
 import { ProductsService } from 'src/app/services/products-service';
 import { register } from 'swiper/element/bundle';
@@ -54,6 +56,7 @@ interface ProductoMenu {
     IonButton,
     IonFooter,
     FormsModule,
+    RouterLink,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
@@ -74,6 +77,7 @@ export class PantallaMenuClienteComponent implements ViewWillEnter {
       addOutline,
       removeOutline,
       trashOutline,
+      trophyOutline,
     });
   }
   async ionViewWillEnter(): Promise<void> {
