@@ -1,4 +1,4 @@
-<app-layout [title]="'Pedido ' + pedidoId()" [showBackButton]="true" [backUrl]="'/home'">
+<app-layout [title]="`Mesa# ${pedido()?.numero_mesa} - ${pedido()?.nombre_cliente}` " [showBackButton]="true" [backUrl]="'/home'">
   <div class="auth-panel-content">
     <ion-card class="user-card">
         <ion-card-content>
@@ -7,9 +7,9 @@
             <ion-icon name="receipt-outline" class="avatar-icon"></ion-icon>
           </ion-avatar>
           <div class="user-details">
-            <h2 class="user-name"> nombre_cliente </h2>
-            <p class="user-dni">Mesa # mesa </p>
-            <p class="user-date">estado</p>
+            <h2 class="user-name"> {{pedido()?.nombre_cliente}} </h2>
+            <p class="user-dni">Mesa # {{pedido()?.numero_mesa}} </p>
+            <p class="user-date">estado: {{pedido()?.estado}}</p>
           </div>
         </div>
         </ion-card-content>

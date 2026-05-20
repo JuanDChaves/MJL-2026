@@ -1,14 +1,20 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { addIcons } from 'ionicons';
 import { checkmark, close, checkmarkCircle } from 'ionicons/icons';
 import { LayoutComponent } from '../../layout/layout.component';
-import { IonAvatar, IonButton, IonCard, IonCardContent, IonIcon, ViewWillEnter } from '@ionic/angular/standalone';
+import {
+  IonAvatar,
+  IonButton,
+  IonCard,
+  IonCardContent,
+  IonIcon,
+  ViewWillEnter,
+} from '@ionic/angular/standalone';
 import { DatePipe } from '@angular/common';
-import { EstadoPedido, IPedido } from 'src/app/interfaces/IPedido';
-import { SupabaseService } from 'src/app/services/supabase-service';
-import { DbService } from 'src/app/services/db-service';
-import { PedidosService } from 'src/app/services/pedidos-service';
 import { Router } from '@angular/router';
+import { OrdersService } from 'src/app/services/orders-service';
+import { IOrder } from 'src/app/interfaces/IOrder';
+import { TypeOrderState } from 'src/app/types/TypeOrderState';
 
 @Component({
   selector: 'app-pedidos-pendientes',
@@ -21,15 +27,13 @@ import { Router } from '@angular/router';
     IonButton,
     IonIcon,
     DatePipe,
-    LayoutComponent]
+    LayoutComponent,
+  ],
 })
-
-export class PedidosPendientesComponent  implements ViewWillEnter {
-  pedidosPendientesList = signal<IPedido[]>([]);
-  supabaseService = inject(SupabaseService);
-  dbService = inject(DbService);
-  pedidosService = inject(PedidosService);
+export class PedidosPendientesComponent implements ViewWillEnter {
+  pedidosPendientesList = signal<IOrder[]>([]);
   router = inject(Router);
+  orderService = inject(OrdersService);
 
   constructor() {
     addIcons({ checkmark, close, checkmarkCircle });
@@ -39,32 +43,32 @@ export class PedidosPendientesComponent  implements ViewWillEnter {
     await this.cargarPedidosPendientes();
   }
 
-  async aprobarPedido(pedido: IPedido) {
-    const response = await this.dbService.update('pedidos', 'id', pedido.id, { estado: EstadoPedido.Preparando})
+  async aprobarPedido(pedido: IOrder) {
+    const response = await this.orderService.approveOrder(pedido);
     if (response.error) {
-      console.error("Error al aprobar el pedido: ", response.error)
+      console.error('Error al aprobar el pedido: ', response.error);
       return;
     }
     await this.cargarPedidosPendientes();
   }
 
-  async rechazarPedido(pedido: IPedido) {
-    const response = await this.dbService.update('pedidos', 'id', pedido.id, { estado: EstadoPedido.Preparando})
+  async rechazarPedido(pedido: IOrder) {
+    const response = await this.orderService.rejectOrder(pedido);
     if (response.error) {
-      console.error("Error al rechazar el pedido: ", response.error)
+      console.error('Error al rechazar el pedido: ', response.error);
       return;
     }
     await this.cargarPedidosPendientes();
   }
 
-  irAPedido(pedido: IPedido) {
+  irAPedido(pedido: IOrder) {
     this.router.navigate(['/detalle-pedido', pedido.id]);
   }
 
   private async cargarPedidosPendientes() {
-    const pedidos: IPedido[] = await this.pedidosService.cargarPedidos();
-    this.pedidosPendientesList.set(
-      pedidos.filter(pedido => pedido.estado === 'pendiente')
-    );
+    const result = await this.orderService.getOrdersWithStateFilter(TypeOrderState.Pendiente);
+    if (result.success) {
+      this.pedidosPendientesList.set(result.data!);
+    }
   }
 }

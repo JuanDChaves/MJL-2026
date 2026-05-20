@@ -1,1 +1,7 @@
-export type TypeOrderState = 'pendiente' | 'preparando' | 'hecho' | 'entregado' | 'editando';
+export enum TypeOrderState {
+    Pendiente = 'pendiente',
+    Preparando = 'preparando',
+    Hecho = 'hecho',
+    Entregado = 'entregado',
+    Editando = 'editando'
+} 

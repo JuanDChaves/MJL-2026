@@ -33,6 +33,7 @@ export class PedidosService {
     if (response.error) {
       return [];
     }
+    console.log(response.data);
     return response.data as IPedido[];
   }
 

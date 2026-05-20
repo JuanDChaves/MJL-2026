@@ -1,6 +1,6 @@
 export interface IPedido {
   id: string,
-  mesa: string;
+  numero_mesa: string;
   id_cliente: string,
   nombre_cliente: string;
   estado: EstadoPedido

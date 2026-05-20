@@ -4,6 +4,7 @@ import {
   computed,
   signal,
   inject,
+  Type,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
@@ -38,6 +39,7 @@ import { ProductsOrdersService } from 'src/app/services/products-orders-service'
 import { ProductsService } from 'src/app/services/products-service';
 import { UserService } from 'src/app/services/user-service';
 import { register } from 'swiper/element/bundle';
+import { TypeOrderState } from 'src/app/types/TypeOrderState';
 
 register();
 
@@ -175,7 +177,7 @@ export class PantallaMenuClienteComponent implements ViewWillEnter {
         this.userService.userData()?.nombres +
         ' ' +
         this.userService.userData()?.apellidos,
-      estado: 'pendiente',
+      estado: TypeOrderState.Pendiente,
       numero_mesa: this.mesa()!.numero_mesa,
       data: productsToLoad.map((p) => ({
         id_producto: p.id,

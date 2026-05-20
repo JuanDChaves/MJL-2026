@@ -1,15 +1,23 @@
-import { Component, inject, OnInit, signal, WritableSignal } from '@angular/core';
-import { addIcons } from 'ionicons';
-import { checkmark, close, checkmarkCircle } from 'ionicons/icons';
+import {
+  Component,
+  inject,
+  signal,
+  WritableSignal,
+} from '@angular/core';
 import { LayoutComponent } from '../../layout/layout.component';
-import { IonAvatar, IonButton, IonCard, IonCardContent, IonIcon, IonBadge, ViewWillEnter } from '@ionic/angular/standalone';
+import {
+  IonAvatar,
+  IonButton,
+  IonCard,
+  IonCardContent,
+  IonIcon,
+  IonBadge,
+  ViewWillEnter,
+} from '@ionic/angular/standalone';
 import { DatePipe } from '@angular/common';
-import { EstadoPedido, IPedido } from 'src/app/interfaces/IPedido';
-import { SupabaseService } from 'src/app/services/supabase-service';
-import { DbService } from 'src/app/services/db-service';
-import { PedidosService } from 'src/app/services/pedidos-service';
-import { Router, ActivatedRoute } from '@angular/router';
-import { IPedidoConProductos } from 'src/app/interfaces/IProductoPedido';
+import { ActivatedRoute } from '@angular/router';
+import { OrdersService } from 'src/app/services/orders-service';
+import { IOrder } from 'src/app/interfaces/IOrder';
 
 @Component({
   selector: 'app-detalle-pedido',
@@ -23,26 +31,37 @@ import { IPedidoConProductos } from 'src/app/interfaces/IProductoPedido';
     IonBadge,
     IonIcon,
     DatePipe,
-    LayoutComponent
-  ]
+    LayoutComponent,
+  ],
 })
-export class DetallePedidoComponent  implements ViewWillEnter {
-  supabaseService = inject(SupabaseService);
-  dbService = inject(DbService);
-  pedidosService = inject(PedidosService);
-  pedidoId: WritableSignal<string> = signal("");
-  pedido: WritableSignal<IPedidoConProductos | null> = signal(null);
+export class DetallePedidoComponent implements ViewWillEnter {
+  pedidoId: WritableSignal<string> = signal('');
+  pedido: WritableSignal<IOrder | null> = signal(null);
+  orderService = inject(OrdersService);
 
-  constructor(private route: ActivatedRoute) { }
+  constructor(private route: ActivatedRoute) {}
 
   async ionViewWillEnter(): Promise<void> {
-    const id = this.route.snapshot.paramMap.get('id');
-    if(!id) return;
-
-    this.pedidoId.set(id);
-    const data = await this.pedidosService.cargarPedidoConProductos(id);
-    this.pedido.set(data);
-    console.log(this.pedidoId())
+    await this.loadOrder();
   }
 
+  async loadOrder() {
+    const id = this.route.snapshot.paramMap.get('id');
+    if (!id) return;
+    this.pedidoId.set(id);
+    const response = await this.orderService.getOneOrder(id);
+    if (!response.success) {
+      // TODO: manejar error
+      console.log(response.error?.message);
+      return;
+    }
+    if (response.data === null) {
+      // TODO: manejar error
+      console.log('No se encontro el pedido');
+      return;
+    }
+    const data = response.data;
+    this.pedido.set(data);
+    console.log(this.pedidoId());
+  }
 }
