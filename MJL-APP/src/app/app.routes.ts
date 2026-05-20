@@ -58,6 +58,20 @@ export const routes: Routes = [
       ).then((m) => m.PedidosEnPreparacionComponent),
   },
   {
+    path: 'pedidos-preparados',
+    loadComponent: () =>
+      import(
+        './components/pedidos/predidos-preparados/predidos-preparados.component'
+      ).then((m) => m.PredidosPreparadosComponent),
+  },
+  {
+    path: 'detalle-pedido/:id',
+    loadComponent: () => 
+      import(
+        './components/pedidos/detalle-pedido/detalle-pedido.component'
+      ).then((m) => m.DetallePedidoComponent)
+  },
+  {
     path: 'chat-room',
     loadComponent: () =>
       import('./components/chat-room/chat-room.component').then(
@@ -125,6 +139,20 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./components/Home/home-metre/lista-espera/lista-espera.component').then(
         (m) => m.ListaEsperaComponent
+      ),
+  },
+  {
+    path:'encuesta',
+    loadComponent: () =>
+      import('./components/encuesta/encuesta.component').then(
+        (m) => m.EncuestaComponent
+      ),
+  },
+  {
+    path:'ver-encuesta',
+    loadComponent: () =>
+      import('./components/Home/home-cliente/graficos-encuesta/graficos-encuesta.component').then(
+        (m) => m.GraficosEncuestaComponent
       ),
   },
   {

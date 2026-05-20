@@ -77,6 +77,19 @@ export class DbService<T extends BaseEntity> {
     return { data: data as T | null, error };
   }
 
+  async getOneByIdWithRelations(
+    table: string,
+    id: string, 
+    selectQuery: string
+  ) : Promise<{ data: any | null; error: any}> {
+    const { data, error } = await this.sbService.client
+      .from(table)
+      .select(selectQuery)
+      .eq("id", id)
+      .single();
+    return { data, error };
+  }
+
   async getOneByEmail(
     table: string,
     email: string,

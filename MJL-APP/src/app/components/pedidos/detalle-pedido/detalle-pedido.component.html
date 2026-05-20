@@ -1,0 +1,133 @@
+<app-layout
+  [title]="'Mesa #' + (pedido()?.numero_mesa ?? '?') + ' - ' + (pedido()?.nombre_cliente ?? '')"
+  [showBackButton]="true"
+  [backUrl]="'/pedidos-pendientes'"
+>
+  <div class="content-inner">
+
+    <!-- HEADER CARD -->
+    <ion-card class="user-card slide-up" style="--delay: 0s">
+      <ion-card-content>
+        <div class="user-info">
+          <ion-avatar class="user-avatar">
+            <ion-icon name="receipt-outline" class="avatar-icon"></ion-icon>
+          </ion-avatar>
+          <div class="user-details">
+            <h2 class="user-name">{{ pedido()?.nombre_cliente }}</h2>
+            <p class="user-detail-line">Mesa #{{ pedido()?.numero_mesa }}</p>
+            <ion-badge [color]="badgeColor()" class="estado-badge">
+              {{ pedido()?.estado }}
+            </ion-badge>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- SECTION TITLE -->
+    @if (pedido()?.data?.length) {
+      <div class="section-title slide-up" style="--delay: 0.1s">
+        Productos ({{ totalItems() }})
+      </div>
+    }
+
+    <!-- SWIPER PRODUCTS -->
+    @if (pedido()?.data?.length) {
+      <div class="swiper-area slide-up" style="--delay: 0.15s">
+        <swiper-container
+          slides-per-view="1"
+          space-between="0"
+          pagination="true"
+          pagination-clickable="true"
+          class="product-swiper"
+        >
+          @for (prod of pedido()?.data; track prod.id_producto) {
+            <swiper-slide class="product-slide">
+              <div class="swiper-card">
+                <div class="swiper-card-top">
+                  <div class="product-icon-wrapper">
+                    <ion-icon
+                      [name]="prod.tipo === 'bebida' ? 'beer-outline' : 'restaurant-outline'"
+                    ></ion-icon>
+                  </div>
+                  <ion-badge class="qty-badge" color="dark">x{{ prod.cantidad }}</ion-badge>
+                </div>
+                <span class="product-name">{{ prod.nombre }}</span>
+                <p class="product-desc">{{ prod.descripcion }}</p>
+                <div class="product-meta">
+                  <span class="meta-time">
+                    <ion-icon name="time-outline"></ion-icon>
+                    {{ prod.tiempo_elaboracion }} minutos
+                  </span>
+                  <span class="product-price">$ {{ prod.precio }}</span>
+                </div>
+              </div>
+            </swiper-slide>
+          }
+        </swiper-container>
+      </div>
+    }
+
+    @if (!pedido()?.data?.length) {
+      <div class="empty-state slide-up" style="--delay: 0.15s">
+        <p>Sin productos</p>
+      </div>
+    }
+
+    <!-- SUMMARY CARD -->
+    @if (pedido()?.data?.length) {
+      <ion-card class="summary-card slide-up" style="--delay: 0.3s">
+        <ion-card-content>
+          <div class="summary-row">
+            <span class="summary-label">Items</span>
+            <span class="summary-value">{{ totalItems() }}</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-label">Tiempo estimado</span>
+            <span class="summary-value">{{ totalTime() }} minutos</span>
+          </div>
+          <div class="summary-row summary-total">
+            <span class="summary-label">Total</span>
+            <span class="summary-value">$ {{ total() }}</span>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    }
+
+    <!-- ACTION BUTTONS -->
+    @if (pedido()?.estado === 'pendiente') {
+      <div class="actions slide-up" style="--delay: 0.35s">
+        <ion-button class="action-btn approve" (click)="approveOrder()">
+          <ion-icon slot="start" name="checkmark-outline"></ion-icon>
+          <span>Enviar a cocina</span>
+        </ion-button>
+        <ion-button class="action-btn reject" (click)="rejectOrder()">
+          <ion-icon slot="start" name="close-outline"></ion-icon>
+          <span>Devolver</span>
+        </ion-button>
+      </div>
+    }
+
+    @if (pedido()?.estado === 'preparando') {
+      <div class="actions slide-up" style="--delay: 0.35s">
+        <ion-button class="action-btn approve" (click)="markAsReady()">
+          <ion-icon slot="start" name="checkmark-outline"></ion-icon>
+          <span>Listo para servir</span>
+        </ion-button>
+        <ion-button class="action-btn reject" (click)="rejectOrder()">
+          <ion-icon slot="start" name="close-outline"></ion-icon>
+          <span>Devolver</span>
+        </ion-button>
+      </div>
+    }
+
+    @if (pedido()?.estado === 'hecho') {
+      <div class="actions slide-up" style="--delay: 0.35s">
+        <ion-button class="action-btn approve" (click)="markAsDelivered()">
+          <ion-icon slot="start" name="checkmark-outline"></ion-icon>
+          <span>Marcar entregado</span>
+        </ion-button>
+      </div>
+    }
+
+  </div>
+</app-layout>

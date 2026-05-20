@@ -1,12 +1,21 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { addIcons } from 'ionicons';
 import { checkmark, close, checkmarkCircle } from 'ionicons/icons';
 import { LayoutComponent } from '../../layout/layout.component';
-import { IonAvatar, IonButton, IonCard, IonCardContent, IonIcon, ViewWillEnter } from '@ionic/angular/standalone';
+import {
+  IonAvatar,
+  IonButton,
+  IonCard,
+  IonCardContent,
+  IonIcon,
+  ViewWillEnter,
+} from '@ionic/angular/standalone';
 import { DatePipe } from '@angular/common';
-import { EstadoPedido, IPedido } from 'src/app/interfaces/IPedido';
-import { SupabaseService } from 'src/app/services/supabase-service';
-import { DbService } from 'src/app/services/db-service';
+import { Router } from '@angular/router';
+import { OrdersService } from 'src/app/services/orders-service';
+import { IOrder } from 'src/app/interfaces/IOrder';
+import { TypeOrderState } from 'src/app/types/TypeOrderState';
+import { ProductsOrdersService } from 'src/app/services/products-orders-service';
 
 @Component({
   selector: 'app-pedidos-pendientes',
@@ -19,62 +28,52 @@ import { DbService } from 'src/app/services/db-service';
     IonButton,
     IonIcon,
     DatePipe,
-    LayoutComponent]
+    LayoutComponent,
+  ],
 })
-export class PedidosPendientesComponent  implements ViewWillEnter {
-  pedidosPendientesList = signal<IPedido[]>([]);
-  supabaseService = inject(SupabaseService);
-  dbService = inject(DbService);
+export class PedidosPendientesComponent implements ViewWillEnter {
+  pedidosPendientesList = signal<IOrder[]>([]);
+  router = inject(Router);
+  orderService = inject(OrdersService);
+  productOrderService = inject(ProductsOrdersService)
 
   constructor() {
     addIcons({ checkmark, close, checkmarkCircle });
   }
 
   async ionViewWillEnter(): Promise<void> {
-    await this.cargarPedidos();
+    await this.cargarPedidosPendientes();
   }
 
-  async aprobarPedido(pedido: IPedido) {
-    const response = await this.dbService.update('pedidos', 'id', pedido.id, { estado: EstadoPedido.Preparando})
+  async aprobarPedido(pedido: IOrder) {
+    const response = await this.orderService.approveOrder(pedido);
     if (response.error) {
-      console.error("Error al aprobar el pedido: ", response.error)
+      console.error('Error al aprobar el pedido: ', response.error);
       return;
     }
-    await this.cargarPedidos();
+    //subir a la tabla producto_pedidos
+    const resultado = await this.productOrderService.insertProductsOrders(pedido);
+    console.log(resultado);
+    await this.cargarPedidosPendientes();
   }
 
-  // FALTA CREAR EL ESTADO PREVIO A PENDIENTE
-  async rechazarPedido(pedido: IPedido) {
-    const response = await this.dbService.update('pedidos', 'id', pedido.id, { estado: EstadoPedido.Preparando})
+  async rechazarPedido(pedido: IOrder) {
+    const response = await this.orderService.rejectOrder(pedido);
     if (response.error) {
-      console.error("Error al rechazar el pedido: ", response.error)
+      console.error('Error al rechazar el pedido: ', response.error);
       return;
     }
-    await this.cargarPedidos();
+    await this.cargarPedidosPendientes();
   }
 
-  async getPedidos(): Promise<{ data: any | null; error: any }> {
-    const response = await this.dbService.getAll('pedidos');
-    if (response.error) {
-      console.log(response.error);
-      return { data: null, error: response.error };
-    }
-    return { data: response.data, error: null };
+  irAPedido(pedido: IOrder) {
+    this.router.navigate(['/detalle-pedido', pedido.id]);
   }
 
-  private async cargarPedidos() {
-  const response = await this.getPedidos();
-    if (response.error) {
-      this.pedidosPendientesList.set([]);
-      return;
+  private async cargarPedidosPendientes() {
+    const result = await this.orderService.getOrdersWithStateFilter(TypeOrderState.Pendiente);
+    if (result.success) {
+      this.pedidosPendientesList.set(result.data!);
     }
-
-    const pedidos = response.data as IPedido[];
-
-    this.pedidosPendientesList.set(
-      pedidos.filter(pedido => pedido.estado === 'pendiente')
-    );
-
-    console.log(response.data)
   }
 }
