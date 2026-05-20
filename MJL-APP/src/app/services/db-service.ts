@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { SupabaseService } from './supabase-service';
-import { IProductOrderToLoad } from '../interfaces/IProductOrder';
+import { IProductOrderToLoad } from '../interfaces/IProductOrderToLoad';
 
 export interface BaseEntity {
   id?: string;

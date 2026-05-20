@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { DbService } from './db-service';
 import { IOrder } from '../interfaces/IOrder';
-import { IProductOrderToLoad } from '../interfaces/IProductOrder';
+import { IProductOrderToLoad } from '../interfaces/IProductOrderToLoad';
 
 @Injectable({
   providedIn: 'root',
@@ -9,7 +9,8 @@ import { IProductOrderToLoad } from '../interfaces/IProductOrder';
 export class ProductsOrdersService {
   dbService = inject(DbService);
 
-  async loadProductsOrders(order: IOrder) {
+  //Inserta los productos de un pedido
+  async insertProductsOrders(order: IOrder) {
     const productOrder: IProductOrderToLoad = {
       p_id_pedido: order.id,
       p_productos: order.data.map((p) => ({
@@ -21,6 +22,12 @@ export class ProductsOrdersService {
     };
     const response = await this.dbService.insertProductsOrders(productOrder);
     console.log('insertando en la tabla productos_pedidos');
+    return response;
+  }
+
+  //Obtenes todos los productos de un pedido
+  getProductsOrdersByIdOrder(id_order: string) {
+    const response = this.dbService.getAllWithFilter('productos_pedidos', 'id_pedido', id_order);
     return response;
   }
 }

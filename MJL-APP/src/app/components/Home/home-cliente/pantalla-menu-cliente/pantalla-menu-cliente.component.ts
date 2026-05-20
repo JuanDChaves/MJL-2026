@@ -29,7 +29,7 @@ import { IMesa } from 'src/app/interfaces/IMesa';
 import { IOrder } from 'src/app/interfaces/IOrder';
 import { IOrderToLoad } from 'src/app/interfaces/IOrderToLoad';
 import { IProductoMenu } from 'src/app/interfaces/IProductoMenu';
-import { IProductOrderToLoad } from 'src/app/interfaces/IProductOrder';
+import { IProductOrderToLoad } from 'src/app/interfaces/IProductOrderToLoad';
 import { MesaService } from 'src/app/services/mesa-service';
 import { OrdersService } from 'src/app/services/orders-service';
 import { ProductsOrdersService } from 'src/app/services/products-orders-service';
