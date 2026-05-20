@@ -24,7 +24,17 @@ export class HomeClienteComponent {
   async scanQr() {
     const response = await this.scannerService.scanQrGeneric();
     console.log(response);
-    this.router.navigate([`/${response}`]);
-    
+
+    if (response) {
+      // 1. Generamos el token único para esta nueva visita
+      const nuevaEstadia = crypto.randomUUID();
+      
+      // 2. Lo guardamos en el almacenamiento del celular
+      localStorage.setItem('id_estadia', nuevaEstadia);
+      console.log('Estadía iniciada desde la puerta:', nuevaEstadia);
+
+      // 3. Continuamos con la navegación dinámica que ya tenías
+      this.router.navigate([`/${response}`]);
+    }
   }
 }
