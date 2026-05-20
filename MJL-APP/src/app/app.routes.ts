@@ -58,6 +58,20 @@ export const routes: Routes = [
       ).then((m) => m.PedidosEnPreparacionComponent),
   },
   {
+    path: 'pedidos-preparados',
+    loadComponent: () =>
+      import(
+        './components/pedidos/predidos-preparados/predidos-preparados.component'
+      ).then((m) => m.PredidosPreparadosComponent),
+  },
+  {
+    path: 'detalle-pedido/:id',
+    loadComponent: () => 
+      import(
+        './components/pedidos/detalle-pedido/detalle-pedido.component'
+      ).then((m) => m.DetallePedidoComponent)
+  },
+  {
     path: 'chat-room',
     loadComponent: () =>
       import('./components/chat-room/chat-room.component').then(

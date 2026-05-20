@@ -1,6 +1,6 @@
-<app-layout [title]="'Pedidos pendientes'" [showBackButton]="true" [backUrl]="'/home'">
+<app-layout [title]="'Pedidos preparados'" [showBackButton]="true" [backUrl]="'/home'">
   <div class="auth-panel-content">
-    @for (item of pedidosPendientesList(); track item.id_cliente) {
+    @for (item of pedidosPreparadosList(); track item.id_cliente) {
       <ion-card class="user-card">
         <ion-card-content>
           <div class="user-info">
@@ -14,15 +14,11 @@
           <div class="actions">
             <ion-button fill="solid" class="action-btn approve" (click)="aprobarPedido(item)">
               <ion-icon slot="start" name="checkmark"></ion-icon>
-              <span>Enviar a Cocina</span>
+              <span>Servir pedido</span>
             </ion-button>
             <ion-button fill="solid" class="action-btn reject" (click)="rechazarPedido(item)">
               <ion-icon slot="start" name="close"></ion-icon>
-              <span>Devolver</span>
-            </ion-button>
-            <ion-button fill="solid" class="action-btn reject" (click)="irAPedido(item)">
-              <ion-icon slot="start" name="close"></ion-icon>
-              <span>Ver Pedido</span>
+              <span>Devolver a preparacion</span>
             </ion-button>
           </div>
         </ion-card-content>
@@ -32,7 +28,7 @@
     @empty {
       <div class="empty-state">
         <ion-icon name="checkmark-circle" class="empty-icon"></ion-icon>
-        <p>No hay solicitudes pendientes</p>
+        <p>No hay pedidos para servir</p>
       </div>
     }
   </div>
