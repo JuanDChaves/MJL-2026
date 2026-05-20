@@ -7,6 +7,8 @@ import { BarcodeScannerService } from '../../../../services/barcode-scanner-serv
 import { Router } from '@angular/router';
 import { ClientService } from 'src/app/services/client-service';
 import { UserService } from 'src/app/services/user-service';
+import { MesaService } from 'src/app/services/mesa-service';
+import { IDatosMesaParaQr } from 'src/app/interfaces/IDatosMesaParaQr';
 
 @Component({
   selector: 'app-pantalla-ingreso-local',
@@ -19,6 +21,7 @@ export class PantallaIngresoLocalComponent implements ViewWillEnter {
   clientService = inject(ClientService);
   router = inject(Router);
   userService = inject(UserService);
+  mesaService = inject(MesaService)
 
   constructor() {
     addIcons({ qrCodeOutline, enterOutline, clipboardOutline });
@@ -42,8 +45,31 @@ export class PantallaIngresoLocalComponent implements ViewWillEnter {
   }
 
   async escanearQR() {
-    // await this.scannerService.scanQrGeneric();
-    this.router.navigate(['/menu-clientes']);
+    try {
+      const response = await this.scannerService.scanQrGeneric();
+      console.log(response);
+      const mesaData = JSON.parse(response!) ;
+      mesaData as IDatosMesaParaQr; 
+      const result = await this.mesaService.chequearMesaAsignada(mesaData.numero_mesa);
+      if(!result.success) {
+        console.log(result.error?.message);
+        return;
+      }
+      const mesa = result.data!;
+      if(mesa.ocupada) {
+        if(mesa.dni === this.userService.userData()?.dni) {
+          console.log('mesa enlazada correctamente ');
+          //mostrar algun mensaje de exito
+          this.router.navigate(['/menu-clientes']);
+        }else{
+          //mostrar algun mensaje de error
+          console.log('mesa ocupada por otro cliente');
+          return;
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   verEncuestas() {}
