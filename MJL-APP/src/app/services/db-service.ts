@@ -156,15 +156,7 @@ export class DbService<T extends BaseEntity> {
   async insertProductsOrders(data: IProductOrderToLoad) {
     const response = await this.sbService.client.rpc(
       'insertar_productos_pedido',
-      {
-        p_id_pedido: data.id_pedido,
-        p_productos: data.lista_productos.map((p) => ({
-          id_producto: p.id,
-          cantidad: p.cantidad,
-          precio: p.precio,
-        })),
-        p_estado: data.estado,
-      },
+      data,
     );
     return response;
   }

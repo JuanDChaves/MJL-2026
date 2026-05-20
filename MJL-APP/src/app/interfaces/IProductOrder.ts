@@ -1,8 +1,8 @@
 import { TypeOrderState } from "../types/TypeOrderState";
-import { IProductoMenu } from "./IProductoMenu";
+import { ICutProducto } from "./ICutProducto";
 
 export interface IProductOrderToLoad{
-  id_pedido:string
-  lista_productos: IProductoMenu[],
-  estado: TypeOrderState,
+  p_id_pedido:string
+  p_productos: ICutProducto[],
+  p_estado: TypeOrderState,
 }

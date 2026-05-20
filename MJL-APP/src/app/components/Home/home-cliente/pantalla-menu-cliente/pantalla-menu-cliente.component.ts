@@ -156,13 +156,15 @@ export class PantallaMenuClienteComponent implements ViewWillEnter {
   async confirmOrder() {
     const orderToLoad = this.buildOrder();
     const response = await this.orderService.insertOrder(orderToLoad);
-    const order = response.data as IOrder;
-    const productOrderToLoad = this.buildProductsOrder(order);
-    const result = await this.productOrderService.loadProductsOrders(productOrderToLoad);
-    console.log(result);
+    console.log(response);
+    const order = response.data as IOrder; 
   }
 
   buildOrder(): IOrderToLoad {
+    const productsToLoad = [
+      ...this.drinks().filter((p) => p.cantidad > 0),
+      ...this.food().filter((p) => p.cantidad > 0),
+    ];
     return {
       id_cliente: this.userService.userData()!.id,
       nombre_cliente:
@@ -171,6 +173,15 @@ export class PantallaMenuClienteComponent implements ViewWillEnter {
         this.userService.userData()?.apellidos,
       estado: 'pendiente',
       numero_mesa: this.mesa()!.numero_mesa,
+      data: productsToLoad.map((p) => ({
+        id_producto: p.id,
+        nombre: p.nombre,
+        cantidad: p.cantidad,
+        precio: p.precio,
+        tipo: p.tipo,
+        tiempo_elaboracion: p.tiempo_elaboracion,
+        descripcion: p.descripcion,
+      })),
     };
   }
 
@@ -180,18 +191,4 @@ export class PantallaMenuClienteComponent implements ViewWillEnter {
     );
     this.mesa.set(result.data);
   }
-
-  buildProductsOrder(order:IOrder): IProductOrderToLoad {
-    const productsToLoad = [
-      ...this.drinks().filter((p) => p.cantidad > 0),
-      ...this.food().filter((p) => p.cantidad > 0),
-    ];
-    const productOrderToLoad: IProductOrderToLoad = {
-      id_pedido: order.id,
-      lista_productos: productsToLoad,
-      estado: 'preparando',
-    };
-    return productOrderToLoad;
-  }
-
 }

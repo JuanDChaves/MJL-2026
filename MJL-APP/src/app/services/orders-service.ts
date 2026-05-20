@@ -30,7 +30,8 @@ export class OrdersService {
       id_cliente: order.id_cliente,
       nombre_cliente: order.nombre_cliente,
       estado: order.estado,
-      numero_mesa: order.numero_mesa
+      numero_mesa: order.numero_mesa,
+      data:order.data,
     });
     console.log(response,'insertOrder');
     if (response.error) {
