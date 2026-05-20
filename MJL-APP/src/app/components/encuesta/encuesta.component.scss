@@ -1,0 +1,210 @@
+$bg-color: #F5A623;   // Color institucional cálido
+$btn-color: #B71C1C;  // Rojo profundo
+$text-dark: #1A1A1A;
+
+.encuesta-content {
+  --background: #{$bg-color};
+}
+
+.encuesta-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  padding: 16px;
+}
+
+.form-card, .ya-realizada-card {
+  background-color: #FFFFFF;
+  border-radius: 16px;
+  padding: 24px 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  flex: 1; // REGLA: Ocupar todo el espacio disponible
+}
+
+.form-header {
+  text-align: center;
+  margin-bottom: 20px;
+  
+  h2 {
+    color: $text-dark;
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin: 0;
+  }
+  p {
+    color: #4A4A4A;
+    font-size: 1.1rem;
+    margin-top: 8px;
+  }
+}
+
+.full-height-form {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.control-group {
+  margin-bottom: 16px;
+}
+
+.flex-grow {
+  flex-grow: 1; // Obliga al textarea a estirarse si sobra pantalla
+}
+
+.question-label {
+  display: block;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: $text-dark;
+  margin-bottom: 12px;
+  white-space: normal; 
+}
+
+// 1. ESTRELLAS: Cambiamos el color para que resalten más sobre el blanco
+.stars-container {
+  display: flex;
+  justify-content: space-around;
+  font-size: 2.8rem;
+  
+  .star-icon {
+    cursor: pointer;
+    transition: transform 0.2s;
+    
+    // Si la estrella está "pintada" (activa), usamos un naranja fuerte / dorado oscuro
+    color: #F5A623; // Mismo naranja de tu fondo, sobre fondo blanco queda bárbaro
+    
+    // Si la estrella es "outline" (vacía), le ponemos un gris medio para que se vea el borde
+    &[name="star-outline"] {
+      color: #999999; 
+    }
+
+    &:active {
+      transform: scale(1.2);
+    }
+  }
+}
+
+// 2. RADIO GROUP: Aseguramos que los botones de radio se vean bien
+.radio-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  
+  .radio-item {
+    width: 48%;
+    background: #F8F9FA; // Fondo gris clarito
+    border-radius: 8px;
+    margin-bottom: 8px;
+    --padding-start: 8px;
+    border: 1px solid #CCCCCC; // Borde más oscuro para que resalte
+    
+    ion-radio {
+       --color: #666666; // Color del círculo inactivo
+       --color-checked: #B71C1C; // Rojo corporativo cuando lo seleccionás
+    }
+
+    ion-label {
+      font-weight: 500;
+      color: $text-dark;
+    }
+  }
+  
+  .full-width-radio {
+    width: 100%;
+  }
+}
+// Estilos Range
+.range-wrapper {
+  display: flex;
+  align-items: center;
+  background: #F8F9FA;
+  padding: 0 12px;
+  border-radius: 12px;
+  border: 1px solid #E0E0E0;
+  
+  .range-icon {
+    font-size: 1.8rem;
+    color: #666;
+  }
+}
+
+// Estilos Textarea
+.custom-textarea {
+  background: #F8F9FA;
+  border: 1px solid #E0E0E0;
+  border-radius: 8px;
+  --padding-start: 12px;
+  --padding-end: 12px;
+  --padding-top: 12px;
+  height: 100%; // Ocupa el resto de la pantalla
+}
+
+.divider {
+  border-top: 1px solid #EEEEEE;
+  margin: 16px 0;
+}
+
+.error-msg {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+.submit-btn {
+  --background: #{$btn-color};
+  --border-radius: 12px;
+  margin-top: auto; // Lo empuja hacia el fondo de la pantalla
+  font-weight: bold;
+  height: 56px;
+  font-size: 1.2rem;
+}
+
+// Spinner Personalizado
+.loading-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(#F5A623, 0.95);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  
+  .spinner-logo {
+    width: 120px;
+  }
+  
+  .loading-text {
+    color: #FFFFFF;
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin-top: 16px;
+  }
+  
+  .bounce {
+    animation: bounce 1.5s infinite alternate;
+  }
+}
+
+@keyframes bounce {
+  from { transform: translateY(0); }
+  to { transform: translateY(-20px); }
+}
+
+.ya-realizada-card {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  
+  ion-icon {
+    font-size: 5rem;
+    margin-bottom: 16px;
+  }
+  
+  h2 { font-weight: bold; color: $text-dark; font-size: 1.8rem; }
+  p { color: #4A4A4A; font-size: 1.1rem; margin-bottom: 32px; }
+}

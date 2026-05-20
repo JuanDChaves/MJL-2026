@@ -142,6 +142,20 @@ export const routes: Routes = [
       ),
   },
   {
+    path:'encuesta',
+    loadComponent: () =>
+      import('./components/encuesta/encuesta.component').then(
+        (m) => m.EncuestaComponent
+      ),
+  },
+  {
+    path:'ver-encuesta',
+    loadComponent: () =>
+      import('./components/Home/home-cliente/graficos-encuesta/graficos-encuesta.component').then(
+        (m) => m.GraficosEncuestaComponent
+      ),
+  },
+  {
     path:'mayor-menor',
     loadComponent: () =>
       import('./components/juegos/mayor-menor/mayor-menor.component').then(
