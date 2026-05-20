@@ -23,10 +23,11 @@
         <div class="games-icon-wrapper">
           <ion-icon name="game-controller-outline" class="games-icon"></ion-icon>
         </div>
-        <p class="games-hint">Próximamente podrás jugar para obtener descuentos</p>
-        <ion-button expand="block">Juego 1</ion-button>
-        <ion-button expand="block">Juego 2</ion-button>
-        <ion-button expand="block">Juego 3</ion-button>
+        <p class="games-hint">Jugá para ganar descuentos</p>
+        <ion-button expand="block" routerLink="/mayor-menor">
+          <ion-icon slot="start" name="trophy-outline"></ion-icon>
+          Mayor o Menor
+        </ion-button>
       </div>
     }
 
@@ -92,7 +93,15 @@
   <div class="total-bar">
     <span class="total-label">Total</span>
     <span class="total-amount">$ {{ total() }}</span>
-    <span class="total-label">Tiempo total de elaboracion</span>
+  </div>
+  <div class="total-bar">
+    <span class="total-label">Tiempo de elaboracion</span>
     <span class="total-amount"> {{ total_time_computed() }} minutos</span>
+  </div>
+
+  <div class="footer-action">
+    <ion-button expand="block" class="confirm-order-btn" (click)="confirmOrder()">
+      Confirmar pedido
+    </ion-button>
   </div>
 </ion-footer>

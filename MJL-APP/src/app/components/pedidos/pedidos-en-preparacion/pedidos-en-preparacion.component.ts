@@ -7,6 +7,8 @@ import { DatePipe } from '@angular/common';
 import { EstadoPedido, IPedido } from 'src/app/interfaces/IPedido';
 import { SupabaseService } from 'src/app/services/supabase-service';
 import { DbService } from 'src/app/services/db-service';
+import { PedidosService } from 'src/app/services/pedidos-service';
+import { OrdersService } from 'src/app/services/orders-service';
 
 @Component({
   selector: 'app-pedidos-en-preparacion',
@@ -27,44 +29,42 @@ export class PedidosEnPreparacionComponent  implements ViewWillEnter {
   pedidosEnPreparacionList = signal<IPedido[]>([]);
   supabaseService = inject(SupabaseService);
   dbService = inject(DbService);
+  pedidosService = inject(PedidosService)
+  orderService = inject(OrdersService)
 
   constructor() {
     addIcons({ checkmark, close, checkmarkCircle });
   }
 
   async ionViewWillEnter(): Promise<void> {
-    await this.cargarPedidos();
+    await this.cargarPedidosEnPreparacion();
   }
 
-  aprobarPedido() {
-    console.log("aprobar")
-  }
-
-  rechazarPedido() {
-    console.log("rechazar")
-  }
-
-  async getPedidos(): Promise<{ data: any | null; error: any }> {
-    const response = await this.dbService.getAll('pedidos');
+  async aprobarPedido(pedido: IPedido) {
+    const response = await this.dbService.update('pedidos', 'id', pedido.id, { estado: EstadoPedido.Hecho})
     if (response.error) {
-      console.log(response.error);
-      return { data: null, error: response.error };
-    }
-    return { data: response.data, error: null };
-  }
-
-  private async cargarPedidos() {
-  const response = await this.getPedidos();
-    if (response.error) {
-      this.pedidosEnPreparacionList.set([]);
+      console.error("Error al aprobar el pedido: ", response.error)
       return;
     }
-    const pedidos = response.data as IPedido[];
+    await this.cargarPedidosEnPreparacion();
+  }
 
+  // FALTA CREAR EL ESTADO PREVIO A PENDIENTE
+  async rechazarPedido(pedido: IPedido) {
+    const response = await this.dbService.update('pedidos', 'id', pedido.id, { estado: EstadoPedido.Pendiente})
+    if (response.error) {
+      console.error("Error al rechazar el pedido: ", response.error)
+      return;
+    }
+    await this.cargarPedidosEnPreparacion();
+  }
+
+  private async cargarPedidosEnPreparacion() {
+    const pedidos: IPedido[] = await this.pedidosService.cargarPedidos();
     this.pedidosEnPreparacionList.set(
       pedidos.filter(pedido => pedido.estado === 'preparando')
     );
-    console.log(response.data)
+    console.log(pedidos)
   }
 }
 

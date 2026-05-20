@@ -1,0 +1,427 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+// ─── Variables ───────────────────────────────────────────────────────────────
+$btn-color:     #B71C1C;
+$btn-hover:     #D32F2F;
+$btn-text:      #FFFFFF;
+$title-color:   #1A1A1A;
+$text-muted:    #6E4839;
+$shadow:        0 4px 12px rgba(0, 0, 0, 0.25);
+$radius:        12px;
+$beige:         #f3e9da;
+
+$approve-color: #2E7D32;
+$approve-hover: #388E3C;
+$reject-color:  #B71C1C;
+$reject-hover:  #D32F2F;
+
+// ─── Content wrapper (flex full height, no scroll) ───────────────────────────
+.content-inner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  padding: 16px 12px;
+}
+
+// ─── Slide-up animation ──────────────────────────────────────────────────────
+.slide-up {
+  animation: slide-up 0.45s ease forwards;
+  opacity: 0;
+  animation-delay: var(--delay, 0s);
+}
+
+// ─── Header card ─────────────────────────────────────────────────────────────
+.user-card {
+  margin: 0 0 8px;
+  border-radius: $radius;
+  box-shadow: $shadow;
+  background: $beige;
+  flex-shrink: 0;
+}
+
+.user-card ::ng-deep ion-card-content {
+  padding: 16px;
+}
+
+.user-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.user-avatar {
+  width: 72px;
+  height: 72px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: rgba($btn-color, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .avatar-icon {
+    font-size: 2rem;
+    color: $btn-color;
+  }
+}
+
+.user-details {
+  flex: 1;
+  min-width: 0;
+  padding-top: 4px;
+}
+
+.user-name {
+  font-family: 'Georgia', serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: $title-color;
+  margin: 0 0 6px;
+  line-height: 1.3;
+}
+
+.user-detail-line {
+  font-size: 0.95rem;
+  color: $text-muted;
+  margin: 0 0 8px;
+  font-weight: 500;
+}
+
+.estado-badge {
+  font-family: 'Georgia', serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+
+// ─── Section title ───────────────────────────────────────────────────────────
+.section-title {
+  font-family: 'Georgia', serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: $title-color;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 12px 0 6px;
+  padding: 0 4px;
+  flex-shrink: 0;
+}
+
+// ─── Swiper area (ocupa el espacio restante) ─────────────────────────────────
+.swiper-area {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.product-swiper {
+  width: 100%;
+  height: auto;
+  padding-bottom: 28px;
+}
+
+.product-slide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: auto;
+}
+
+// ─── Swiper product card ─────────────────────────────────────────────────────
+.swiper-card {
+  background: $beige;
+  border-radius: $radius;
+  box-shadow: $shadow;
+  padding: 24px 20px;
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+}
+
+.swiper-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.product-icon-wrapper {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba($btn-color, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  ion-icon {
+    font-size: 1.5rem;
+    color: $btn-color;
+  }
+}
+
+.qty-badge {
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.product-name {
+  font-family: 'Georgia', serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: $title-color;
+  line-height: 1.3;
+}
+
+.product-desc {
+  font-size: 0.85rem;
+  color: $text-muted;
+  line-height: 1.4;
+  margin: 0;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.product-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding-top: 4px;
+}
+
+.meta-time {
+  font-size: 0.8rem;
+  color: $text-muted;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  ion-icon {
+    font-size: 0.9rem;
+  }
+}
+
+.product-price {
+  font-family: 'Georgia', serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: $title-color;
+}
+
+// ─── Swiper pagination ──────────────────────────────────────────────────────
+::ng-deep .product-swiper {
+  --swiper-pagination-color: #{$btn-color};
+  --swiper-pagination-bullet-inactive-color: #{rgba($btn-color, 0.3)};
+  --swiper-pagination-bullet-size: 8px;
+  --swiper-pagination-bottom: 0;
+}
+
+// ─── Summary card ────────────────────────────────────────────────────────────
+.summary-card {
+  margin: 8px 0 0;
+  border-radius: $radius;
+  box-shadow: $shadow;
+  background: $beige;
+  flex-shrink: 0;
+}
+
+.summary-card ::ng-deep ion-card-content {
+  padding: 16px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+
+  + .summary-row {
+    border-top: 1px solid rgba($title-color, 0.08);
+  }
+
+  &.summary-total {
+    padding-top: 10px;
+
+    .summary-label,
+    .summary-value {
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    .summary-value {
+      color: $approve-color;
+    }
+  }
+}
+
+.summary-label {
+  font-size: 0.9rem;
+  color: $text-muted;
+}
+
+.summary-value {
+  font-family: 'Georgia', serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: $title-color;
+}
+
+// ─── Action buttons ──────────────────────────────────────────────────────────
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 8px;
+  flex-shrink: 0;
+}
+
+.action-btn {
+  width: 100%;
+  min-height: 50px;
+  margin: 0;
+  font-family: 'Georgia', serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  --border-radius: $radius;
+
+  &::part(native) {
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  ion-icon {
+    font-size: 1.3rem;
+    flex-shrink: 0;
+    margin-right: 12px;
+  }
+
+  span {
+    flex: 1;
+    text-align: center;
+    padding-right: 32px;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    --box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+  }
+
+  &:active {
+    transform: translateY(1px);
+    --box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  }
+
+  &.approve {
+    --background: #{$approve-color};
+    --background-hover: #{$approve-hover};
+    --background-activated: #{$approve-hover};
+    --background-focused: #{$approve-hover};
+    --color: #{$btn-text};
+    --box-shadow: #{$shadow};
+
+    &:hover {
+      --background: #{$approve-hover};
+    }
+  }
+
+  &.reject {
+    --background: #{$reject-color};
+    --background-hover: #{$reject-hover};
+    --background-activated: #{$reject-hover};
+    --background-focused: #{$reject-hover};
+    --color: #{$btn-text};
+    --box-shadow: #{$shadow};
+
+    &:hover {
+      --background: #{$reject-hover};
+    }
+  }
+}
+
+// ─── Empty state ─────────────────────────────────────────────────────────────
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+
+  p {
+    font-family: 'Georgia', serif;
+    font-size: 1rem;
+    color: $text-muted;
+    margin: 0;
+  }
+}
+
+// ─── Keyframes ───────────────────────────────────────────────────────────────
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+// ─── Responsive ──────────────────────────────────────────────────────────────
+@media (max-width: 380px) {
+  .user-info {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+  }
+
+  .user-avatar {
+    width: 60px;
+    height: 60px;
+
+    .avatar-icon {
+      font-size: 1.6rem;
+    }
+  }
+
+  .user-details {
+    padding-top: 0;
+  }
+
+  .swiper-card {
+    padding: 20px 16px;
+  }
+}
+
+@media (min-width: 768px) {
+  .user-card,
+  .swiper-area,
+  .summary-card,
+  .actions,
+  .section-title,
+  .empty-state {
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}

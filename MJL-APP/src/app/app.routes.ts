@@ -58,6 +58,20 @@ export const routes: Routes = [
       ).then((m) => m.PedidosEnPreparacionComponent),
   },
   {
+    path: 'pedidos-preparados',
+    loadComponent: () =>
+      import(
+        './components/pedidos/predidos-preparados/predidos-preparados.component'
+      ).then((m) => m.PredidosPreparadosComponent),
+  },
+  {
+    path: 'detalle-pedido/:id',
+    loadComponent: () => 
+      import(
+        './components/pedidos/detalle-pedido/detalle-pedido.component'
+      ).then((m) => m.DetallePedidoComponent)
+  },
+  {
     path: 'chat-room',
     loadComponent: () =>
       import('./components/chat-room/chat-room.component').then(
@@ -139,6 +153,13 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./components/Home/home-cliente/graficos-encuesta/graficos-encuesta.component').then(
         (m) => m.GraficosEncuestaComponent
+      ),
+  },
+  {
+    path:'mayor-menor',
+    loadComponent: () =>
+      import('./components/juegos/mayor-menor/mayor-menor.component').then(
+        (m) => m.MayorMenorComponent
       ),
   }
 ];

@@ -1,5 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { SupabaseService } from './supabase-service';
+import { IProductOrderToLoad } from '../interfaces/IProductOrderToLoad';
 
 export interface BaseEntity {
   id?: string;
@@ -14,7 +15,7 @@ export class DbService<T extends BaseEntity> {
 
   async insert(
     table: string,
-    data: Omit<T, 'id'>
+    data: Omit<T, 'id'>,
   ): Promise<{ data: T | null; error: any }> {
     const { data: result, error } = await this.sbService.client
       .from(table)
@@ -26,9 +27,9 @@ export class DbService<T extends BaseEntity> {
 
   async update(
     table: string,
-    column:string,
+    column: string,
     value: any,
-    data: Partial<T>
+    data: Partial<T>,
   ): Promise<{ data: T | null; error: any }> {
     const { data: result, error } = await this.sbService.client
       .from(table)
@@ -47,7 +48,11 @@ export class DbService<T extends BaseEntity> {
     return { error };
   }
 
-  async getAllWithFilter(table: string,filter:string,value:any): Promise<{ data: T[] | null; error: any }> {
+  async getAllWithFilter(
+    table: string,
+    filter: string,
+    value: any,
+  ): Promise<{ data: T[] | null; error: any }> {
     const { data, error } = await this.sbService.client
       .from(table)
       .select('*')
@@ -56,15 +61,13 @@ export class DbService<T extends BaseEntity> {
   }
 
   async getAll(table: string): Promise<{ data: T[] | null; error: any }> {
-    const { data, error } = await this.sbService.client
-      .from(table)
-      .select('*');
+    const { data, error } = await this.sbService.client.from(table).select('*');
     return { data: data as T[] | null, error };
   }
 
   async getOneById(
     table: string,
-    id: string
+    id: string,
   ): Promise<{ data: T | null; error: any }> {
     const { data, error } = await this.sbService.client
       .from(table)
@@ -74,9 +77,22 @@ export class DbService<T extends BaseEntity> {
     return { data: data as T | null, error };
   }
 
+  async getOneByIdWithRelations(
+    table: string,
+    id: string, 
+    selectQuery: string
+  ) : Promise<{ data: any | null; error: any}> {
+    const { data, error } = await this.sbService.client
+      .from(table)
+      .select(selectQuery)
+      .eq("id", id)
+      .single();
+    return { data, error };
+  }
+
   async getOneByEmail(
     table: string,
-    email: string
+    email: string,
   ): Promise<{ data: T | null; error: any }> {
     const { data, error } = await this.sbService.client
       .from(table)
@@ -87,13 +103,13 @@ export class DbService<T extends BaseEntity> {
   }
 
   //aca el id es el dni o cuil del usuario
-  async userExist(table:string, dni:string,): Promise<boolean>{
+  async userExist(table: string, dni: string): Promise<boolean> {
     try {
-      const responseId = await  this.sbService.client
+      const responseId = await this.sbService.client
         .from(table)
         .select('*')
         .eq('dni', dni)
-        .maybeSingle();      
+        .maybeSingle();
       return responseId.data !== null;
     } catch (error) {
       console.error('Error checking user existence:', error);
@@ -102,8 +118,11 @@ export class DbService<T extends BaseEntity> {
   }
 
   // 1. Verifica si ya existe un plato/bebida con ese nombre
-  async verificarProductoExistente(nombre: string, tipo: 'plato' | 'bebida'): Promise<boolean> {
-    const { data, error } = await this.sbService.client 
+  async verificarProductoExistente(
+    nombre: string,
+    tipo: 'plato' | 'bebida',
+  ): Promise<boolean> {
+    const { data, error } = await this.sbService.client
       .from('productos')
       .select('nombre')
       .ilike('nombre', nombre) // ilike hace la búsqueda ignorando mayúsculas/minúsculas
@@ -127,22 +146,31 @@ export class DbService<T extends BaseEntity> {
         tiempo_elaboracion: producto.tiempoElaboracion, // <--- REVISA ESTA LÍNEA
         precio: producto.precio,
         tipo: producto.tipo,
-        fotos: producto.fotos, 
-      }
+        fotos: producto.fotos,
+      },
     ]);
 
     if (error) throw error;
   }
 
-  async waitingCustomer(){
+  async waitingCustomer() {
     const response = await this.sbService.client
       .from('lista_espera')
-      .select(`
+      .select(
+        `
         *,
         cliente:usuarios!lista_espera_user_id_fkey(*)     
-        `)
+        `,
+      )
       .eq('en_espera', true);
     return response;
   }
 
+  async insertProductsOrders(data: IProductOrderToLoad) {
+    const response = await this.sbService.client.rpc(
+      'insertar_productos_pedido',
+      data,
+    );
+    return response;
+  }
 }
