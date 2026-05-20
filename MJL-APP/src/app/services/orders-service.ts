@@ -73,37 +73,33 @@ export class OrdersService {
   }
 
   async approveOrder(pedido: IOrder) {
-    const result : IResult<IOrder> = {
-      success: false,
-      error: null,
-      data: null
-    }
-    const response = await this.dbService.update('pedidos', 'id', pedido.id, {
-      estado: TypeOrderState.Preparando,
-    });
-    if (response.error) {
-      result.error = { message: 'Error al aprobar el pedido' };
-      return result;
-    }
-    const orderResult: IOrder = response.data as IOrder;
-    result.data = orderResult;
-    result.success = true;
-    return result;
-  }
+        return await this.updateOrderState(pedido, TypeOrderState.Preparando);    
 
+  }
   
   async rejectOrder(pedido: IOrder) {
-    // falta saber que hacer cuando se lo rechaza
+    return await this.updateOrderState(pedido, TypeOrderState.Editando);    
+  }
+
+  async finishOrder(pedido: IOrder) {
+    return await this.updateOrderState(pedido, TypeOrderState.Hecho);    
+  }
+
+  async deliverOrder(pedido: IOrder) {
+    return await this.updateOrderState(pedido, TypeOrderState.Entregado);    
+  }
+
+  private async updateOrderState(pedido: IOrder, estadoNuevo: TypeOrderState) {
     const result : IResult<IOrder> = {
       success: false,
       error: null,
       data: null
     }
     const response = await this.dbService.update('pedidos', 'id', pedido.id, {
-      estado: TypeOrderState.Pendiente,
+      estado: estadoNuevo,
     });
     if (response.error) {
-      result.error = { message: 'Error al aprobar el pedido' };
+      result.error = { message: `No se pudo cargar en el pedido el estado: "${estadoNuevo}"` };
       return result;
     }
     const orderResult: IOrder = response.data as IOrder;

@@ -8,6 +8,7 @@ import { EstadoPedido, IPedido } from 'src/app/interfaces/IPedido';
 import { SupabaseService } from 'src/app/services/supabase-service';
 import { DbService } from 'src/app/services/db-service';
 import { PedidosService } from 'src/app/services/pedidos-service';
+import { OrdersService } from 'src/app/services/orders-service';
 
 @Component({
   selector: 'app-pedidos-en-preparacion',
@@ -29,6 +30,7 @@ export class PedidosEnPreparacionComponent  implements ViewWillEnter {
   supabaseService = inject(SupabaseService);
   dbService = inject(DbService);
   pedidosService = inject(PedidosService)
+  orderService = inject(OrdersService)
 
   constructor() {
     addIcons({ checkmark, close, checkmarkCircle });

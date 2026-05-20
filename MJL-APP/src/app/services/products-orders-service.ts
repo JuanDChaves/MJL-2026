@@ -8,7 +8,7 @@ import { TypeOrderState } from '../types/TypeOrderState';
   providedIn: 'root',
 })
 export class ProductsOrdersService {
-  dbService = inject(DbService);
+  private dbService = inject(DbService);
 
   //Inserta los productos de un pedido
   async insertProductsOrders(order: IOrder) {
@@ -19,7 +19,7 @@ export class ProductsOrdersService {
         cantidad: p.cantidad,
         precio: p.precio,
       })),
-      p_estado: TypeOrderState.Pendiente,
+      p_estado: TypeOrderState.Preparando,
     };
     const response = await this.dbService.insertProductsOrders(productOrder);
     console.log('insertando en la tabla productos_pedidos');

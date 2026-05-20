@@ -15,6 +15,7 @@ import { Router } from '@angular/router';
 import { OrdersService } from 'src/app/services/orders-service';
 import { IOrder } from 'src/app/interfaces/IOrder';
 import { TypeOrderState } from 'src/app/types/TypeOrderState';
+import { ProductsOrdersService } from 'src/app/services/products-orders-service';
 
 @Component({
   selector: 'app-pedidos-pendientes',
@@ -34,6 +35,7 @@ export class PedidosPendientesComponent implements ViewWillEnter {
   pedidosPendientesList = signal<IOrder[]>([]);
   router = inject(Router);
   orderService = inject(OrdersService);
+  productOrderService = inject(ProductsOrdersService)
 
   constructor() {
     addIcons({ checkmark, close, checkmarkCircle });
@@ -49,6 +51,9 @@ export class PedidosPendientesComponent implements ViewWillEnter {
       console.error('Error al aprobar el pedido: ', response.error);
       return;
     }
+    //subir a la tabla producto_pedidos
+    const resultado = await this.productOrderService.insertProductsOrders(pedido);
+    console.log(resultado);
     await this.cargarPedidosPendientes();
   }
 
