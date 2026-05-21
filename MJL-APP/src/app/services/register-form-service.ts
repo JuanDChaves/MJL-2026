@@ -47,7 +47,7 @@ export class RegisterFormService {
 
   email = new FormControl('', [Validators.required, Validators.email]);
 
-  pass = new FormControl('', [Validators.required, Validators.minLength(6)]);
+  pass = new FormControl('', [Validators.required, Validators.minLength(8)]);
 
   profiles = new FormControl('');
 

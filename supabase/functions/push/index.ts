@@ -59,7 +59,7 @@ Deno.serve(async (req) => {
 
   const { data: recipients, error: recipientsError } = await supabase
     .from('usuarios')
-    .select('fcm_token, user_id')
+    .select('fcm_token, id')
     .in('perfil', ['supervisor', 'duenio'])
     .not('fcm_token', 'is', null)
 
@@ -113,10 +113,10 @@ Deno.serve(async (req) => {
       )
 
       const resData = await res.json()
-      results.push({ user_id: recipient.user_id, success: res.status >= 200 && res.status <= 299, response: resData })
+      results.push({ user_id: recipient.id, success: res.status >= 200 && res.status <= 299, response: resData })
     } catch (err) {
-      console.error(`Error sending to ${recipient.user_id}:`, err)
-      results.push({ user_id: recipient.user_id, success: false, error: String(err) })
+      console.error(`Error sending to ${recipient.id}:`, err)
+      results.push({ user_id: recipient.id, success: false, error: String(err) })
     }
   }
 
