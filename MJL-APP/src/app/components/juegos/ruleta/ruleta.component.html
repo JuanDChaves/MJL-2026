@@ -1,0 +1,44 @@
+<ion-content class="ruleta-bg">
+  <div class="juego-container">
+    
+    <div class="header">
+      <h2>Ruleta de Descuentos</h2>
+      
+      @if (esAnonimo) {
+        <p>Modo Anónimo (Jugás solo por diversión, sin premios).</p>
+      } @else if (manejadorJuegos.primeraVez()) {
+        <p>¡Es tu primer intento! Jugás por el descuento de tu cuenta.</p>
+      } @else {
+        <p>Modo diversión activado (Ya utilizaste tu intento con premio).</p>
+      }
+    </div>
+
+    <div class="ruleta-wrapper">
+      <div class="puntero">▼</div>
+
+      <div class="rueda" [style.transform]="'rotate(' + rotacionActual + 'deg)'">
+        <div class="seccion s-20"><span>20%</span></div>
+        <div class="seccion s-15"><span>15%</span></div>
+        <div class="seccion s-10"><span>10%</span></div>
+        <div class="seccion s-0"><span>Nada</span></div>
+      </div>
+    </div>
+
+    <div class="panel-resultados">
+      
+      <div class="mensaje-box" [class.destacado]="mostrarResultado && descuentoGanado > 0">
+        <h3>{{ resultadoMensaje }}</h3>
+      </div>
+
+      <ion-button expand="block" class="btn-girar" (click)="girarRuleta()" [disabled]="girando">
+        {{ girando ? 'Girando...' : 'Girar Ruleta' }}
+      </ion-button>
+
+      <ion-button expand="block" color="medium" class="btn-volver mt-3" (click)="volver()" [disabled]="girando">
+        Volver al Menú
+      </ion-button>
+      
+    </div>
+
+  </div>
+</ion-content>
