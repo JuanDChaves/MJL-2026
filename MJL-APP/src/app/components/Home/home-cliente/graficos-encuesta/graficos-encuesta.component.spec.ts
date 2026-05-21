@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { MozoHomePageComponent } from './mozo-home-page.component';
+import { GraficosEncuestaComponent } from './graficos-encuesta.component';
 
-describe('MozoHomePageComponent', () => {
-  let component: MozoHomePageComponent;
-  let fixture: ComponentFixture<MozoHomePageComponent>;
+describe('GraficosEncuestaComponent', () => {
+  let component: GraficosEncuestaComponent;
+  let fixture: ComponentFixture<GraficosEncuestaComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ MozoHomePageComponent ],
+      declarations: [ GraficosEncuestaComponent ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(MozoHomePageComponent);
+    fixture = TestBed.createComponent(GraficosEncuestaComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

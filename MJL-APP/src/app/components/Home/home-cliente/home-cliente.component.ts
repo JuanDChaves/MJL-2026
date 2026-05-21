@@ -4,6 +4,7 @@ import { addIcons } from 'ionicons';
 import { qrCodeOutline, personCircleOutline } from 'ionicons/icons';
 import { BarcodeScannerService } from '../../../services/barcode-scanner-service';
 import { UserService } from '../../../services/user-service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home-cliente',
@@ -14,12 +15,26 @@ import { UserService } from '../../../services/user-service';
 export class HomeClienteComponent {
   private scannerService = inject(BarcodeScannerService);
   userService = inject(UserService);
+  router = inject(Router);
 
   constructor() {
     addIcons({ qrCodeOutline, personCircleOutline });
   }
 
   async scanQr() {
-    await this.scannerService.scanQrGeneric();
+    const response = await this.scannerService.scanQrGeneric();
+    console.log(response);
+
+    if (response) {
+      // 1. Generamos el token único para esta nueva visita
+      const nuevaEstadia = crypto.randomUUID();
+      
+      // 2. Lo guardamos en el almacenamiento del celular
+      localStorage.setItem('id_estadia', nuevaEstadia);
+      console.log('Estadía iniciada desde la puerta:', nuevaEstadia);
+
+      // 3. Continuamos con la navegación dinámica que ya tenías
+      this.router.navigate([`/${response}`]);
+    }
   }
 }

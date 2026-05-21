@@ -56,7 +56,48 @@ _Completar_
     <img src="./MJL-APP/docs/images/lista-pedidos-pendientes.png" alt=""/>
 </div>
 
+### QRs
+#### Ingreso local
+<div align="center">
+    <img src="./MJL-APP/docs/qr/ingreso local/ingreso-local-cliente.png" alt=""/>
+</div>
+
+#### Mesas  
+<div align="center">
+    <img src="./MJL-APP/docs/qr/mesas/mesa_1.png" alt=""/>
+</div>
+<div align="center">
+    <img src="./MJL-APP/docs/qr/mesas/mesa_2.png" alt=""/>
+</div>
+<div align="center">
+    <img src="./MJL-APP/docs/qr/mesas/mesa_3.png" alt=""/>
+</div>
+<div align="center">
+    <img src="./MJL-APP/docs/qr/mesas/mesa_4.png" alt=""/>
+</div>
+<div align="center">
+    <img src="./MJL-APP/docs/qr/mesas/mesa_5.png" alt=""/>
+</div>
+
 ## Tareas del equipo
+
+### Entrega Preliminar 5 - 16/05 
+### Briceño Castillo, Matías Emanuel 
+- Módulo: Envio de correo electrónico.  
+- Inicio y fin: 09/05 - 16/05 
+- Branch: feature/ingreso-post-qr-local
+
+### Pokoik, Lucia Laura 
+- Módulo: Form alta al menú 
+- Inicio y fin: 09/05 - 16/05 
+- Branch: feature/agregar-mesa
+
+### Chaves Rodriguez, Juan David 
+- Módulo: Home del Mozo, pedidos
+- Inicio y fin: 09/05 - 16/05 
+- Branch: feature/feature-pedidos
+
+---
 
 ### Entrega Preliminar 4 - 09/05 
 ### Briceño Castillo, Matías Emanuel 
@@ -132,3 +173,14 @@ fix: corregir validación de email
 chore: actualizar dependencias
 docs: actualizar README
 ```
+
+
+lu empieza con juegos y encuestas
+Juan sigue con lo del mozo
+matias metre y cliente
+
+Y el miercoles rotamos
+
+lu sigue concina y bar
+Juan rota a su juego
+matias juego chat

@@ -2,10 +2,10 @@ import { inject, Injectable, signal } from '@angular/core';
 import { SupabaseService } from './supabase-service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { LocalStorageService } from './local-storage-service';
-import { IUser } from '../interfaces/IUsers';
+import { IUserToRegister } from '../interfaces/IUserToRegister';
 import { DbService } from './db-service';
-import { IUserUnauthorized } from '../interfaces/IUserUnauthorized';
 import { IUserUnauthorizedToRegister } from '../interfaces/IUserUnauthorizedToRegister';
+import { IUser } from '../interfaces/IUser';
 
 @Injectable({
   providedIn: 'root',
@@ -67,7 +67,7 @@ export class UserService {
     )
   }
 
-  async insert(user: IUser){
+  async insert(user: IUserToRegister){
     return await this.dbService.insert(
         'usuarios',
         user

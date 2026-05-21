@@ -1,0 +1,35 @@
+<app-layout [title]="'Pedidos preparados'" [showBackButton]="true" [backUrl]="'/home'">
+  <div class="auth-panel-content">
+    @for (item of pedidosPreparadosList(); track item.id_cliente) {
+      <ion-card class="user-card">
+        <ion-card-content>
+          <div class="user-info">
+            <ion-avatar class="user-avatar">
+            </ion-avatar>
+            <div class="user-details">
+              <h2 class="user-name">Nombre del Cliente: {{ item.nombre_cliente }}</h2>
+              <h2 class="user-name">Mesa: #{{ item.numero_mesa }}</h2>
+            </div>
+          </div>
+          <div class="actions">
+            <ion-button fill="solid" class="action-btn approve" (click)="servirPedido(item)">
+              <ion-icon slot="start" name="checkmark"></ion-icon>
+              <span>Servir pedido</span>
+            </ion-button>
+            <ion-button fill="solid" class="action-btn reject" (click)="rechazarPedido(item)">
+              <ion-icon slot="start" name="close"></ion-icon>
+              <span>Devolver a preparacion</span>
+            </ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    }
+
+    @empty {
+      <div class="empty-state">
+        <ion-icon name="checkmark-circle" class="empty-icon"></ion-icon>
+        <p>No hay pedidos para servir</p>
+      </div>
+    }
+  </div>
+</app-layout>

@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { IUser } from '../interfaces/IUsers';
+import { IUserToRegister } from '../interfaces/IUserToRegister';
 import { DbService } from './db-service';
 
 @Injectable({
@@ -8,7 +8,7 @@ import { DbService } from './db-service';
 export class NotificationsService {
   dbService = inject(DbService);
 
-  async insertNotification(user: IUser) {
+  async insertNotification(user: IUserToRegister) {
     return await this.dbService.insert('notifications', {
       user_id: user.user_id,
       title: 'Nuevo cliente pendiente',

@@ -43,8 +43,8 @@ import {
 import { LoginService } from '../../services/login-service';
 import { DbService } from 'src/app/services/db-service';
 import { LocalStorageService } from 'src/app/services/local-storage-service';
-import { IUser } from 'src/app/interfaces/IUsers';
 import { PushNotificationService } from 'src/app/services/push-notification-service';
+import { IUser } from 'src/app/interfaces/IUser';
 
 @Component({
   selector: 'app-login-form',

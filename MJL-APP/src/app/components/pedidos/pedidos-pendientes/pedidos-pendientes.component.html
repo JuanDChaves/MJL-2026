@@ -8,17 +8,21 @@
             </ion-avatar>
             <div class="user-details">
               <h2 class="user-name">Nombre del Cliente: {{ item.nombre_cliente }}</h2>
-              <h2 class="user-name">Mesa: #{{ item.mesa }}</h2>
+              <h2 class="user-name">Mesa: #{{ item.numero_mesa }}</h2>
             </div>
           </div>
           <div class="actions">
-            <ion-button fill="solid" class="action-btn approve" (click)="aprobarPedido()">
+            <ion-button fill="solid" class="action-btn approve" (click)="aprobarPedido(item)">
               <ion-icon slot="start" name="checkmark"></ion-icon>
               <span>Enviar a Cocina</span>
             </ion-button>
-            <ion-button fill="solid" class="action-btn reject" (click)="rechazarPedido()">
+            <ion-button fill="solid" class="action-btn reject" (click)="rechazarPedido(item)">
               <ion-icon slot="start" name="close"></ion-icon>
               <span>Devolver</span>
+            </ion-button>
+            <ion-button fill="solid" class="action-btn reject" (click)="irAPedido(item)">
+              <ion-icon slot="start" name="close"></ion-icon>
+              <span>Ver Pedido</span>
             </ion-button>
           </div>
         </ion-card-content>

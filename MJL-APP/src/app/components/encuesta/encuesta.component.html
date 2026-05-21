@@ -1,0 +1,113 @@
+<ion-content [fullscreen]="true" class="encuesta-content">
+  
+  @if (cargando) {
+    <div class="loading-overlay">
+      <img src="assets/icon-only.png" alt="Logo Empresa" class="spinner-logo bounce" />
+      <p class="loading-text">Cargando...</p>
+    </div>
+  } @else {
+    <div class="encuesta-container">
+      
+      @if (encuestaYaRealizada) {
+        <div class="ya-realizada-card">
+          <ion-icon name="checkmark-circle" color="success"></ion-icon>
+          <h2>¡Muchas gracias!</h2>
+          <p>Ya hemos registrado tu opinión sobre esta estadía.</p>
+          <ion-button expand="block" class="btn-primary" (click)="volver()">Volver al Menú</ion-button>
+        </div>
+      } @else {
+        <div class="form-card">
+          <div class="form-header">
+            <h2>Queremos escucharte</h2>
+            <p>Tu opinión nos ayuda a mejorar nuestro servicio.</p>
+          </div>
+
+          <form [formGroup]="encuestaForm" (ngSubmit)="enviarEncuesta()" class="full-height-form">
+            
+            <div class="control-group">
+              <ion-label class="question-label">¿Qué te pareció nuestra comida?</ion-label>
+              <div class="stars-container">
+                @for (i of estrellas; track i) {
+                  <ion-icon 
+                    [name]="i <= ratingComida ? 'star' : 'star-outline'" 
+                    class="star-icon"
+                    (click)="setRatingComida(i)">
+                  </ion-icon>
+                }
+              </div>
+              @if (encuestaForm.controls['satisfaccion_comida'].invalid && encuestaForm.controls['satisfaccion_comida'].touched) {
+                <ion-text color="danger" class="error-msg">
+                  * Por favor, califica la comida.
+                </ion-text>
+              }
+            </div>
+
+            <hr class="divider">
+
+            <div class="control-group">
+              <ion-label class="question-label">¿Cómo evaluarías las bebidas?</ion-label>
+              <ion-radio-group formControlName="satisfaccion_bebida">
+                <div class="radio-grid">
+                  <ion-item lines="none" class="radio-item">
+                    <ion-radio value="Malo" slot="start"></ion-radio>
+                    <ion-label>Malo</ion-label>
+                  </ion-item>
+                  <ion-item lines="none" class="radio-item">
+                    <ion-radio value="Regular" slot="start"></ion-radio>
+                    <ion-label>Regular</ion-label>
+                  </ion-item>
+                  <ion-item lines="none" class="radio-item">
+                    <ion-radio value="Bueno" slot="start"></ion-radio>
+                    <ion-label>Bueno</ion-label>
+                  </ion-item>
+                  <ion-item lines="none" class="radio-item">
+                    <ion-radio value="Muy Bueno" slot="start"></ion-radio>
+                    <ion-label>Muy Bueno</ion-label>
+                  </ion-item>
+                  <ion-item lines="none" class="radio-item full-width-radio">
+                    <ion-radio value="Excelente" slot="start"></ion-radio>
+                    <ion-label>Excelente</ion-label>
+                  </ion-item>
+                </div>
+              </ion-radio-group>
+              
+              @if (encuestaForm.controls['satisfaccion_bebida'].invalid && encuestaForm.controls['satisfaccion_bebida'].touched) {
+                <ion-text color="danger" class="error-msg">
+                  * Debes seleccionar una opción para la bebida.
+                </ion-text>
+              }
+            </div>
+
+            <hr class="divider">
+
+            <div class="control-group">
+              <ion-label class="question-label">Atención del personal (1 al 10)</ion-label>
+              <div class="range-wrapper">
+                <ion-icon name="sad-outline" class="range-icon"></ion-icon>
+                <ion-range min="1" max="10" step="1" snaps="true" pin="true" color="primary" formControlName="satisfaccion_atencion"></ion-range>
+                <ion-icon name="happy-outline" class="range-icon"></ion-icon>
+              </div>
+            </div>
+
+            <hr class="divider">
+
+            <div class="control-group flex-grow">
+              <ion-label class="question-label">¿Alguna sugerencia adicional?</ion-label>
+              <ion-textarea 
+                formControlName="comentarios"
+                placeholder="Escribe aquí tus comentarios..." 
+                rows="3" 
+                class="custom-textarea">
+              </ion-textarea>
+            </div>
+
+            <ion-button type="submit" expand="block" class="btn-primary submit-btn">
+              Enviar Encuesta
+            </ion-button>
+            
+          </form>
+        </div>
+      }
+    </div>
+  }
+</ion-content>

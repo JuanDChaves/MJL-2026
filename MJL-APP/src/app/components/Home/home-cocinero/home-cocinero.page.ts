@@ -14,8 +14,7 @@ import {
   styleUrls: ['./home-cocinero.page.scss'],
   standalone: true,
   imports: [
-    IonHeader, IonToolbar, IonTitle,
-    IonContent, IonIcon,
+    IonIcon,
     IonButton
 ],
 })

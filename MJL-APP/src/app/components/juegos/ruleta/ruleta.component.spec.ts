@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { CustomerAuthPanelComponent } from './customer-auth-panel.component';
+import { RuletaComponent } from './ruleta.component';
 
-describe('CustomerAuthPanelComponent', () => {
-  let component: CustomerAuthPanelComponent;
-  let fixture: ComponentFixture<CustomerAuthPanelComponent>;
+describe('RuletaComponent', () => {
+  let component: RuletaComponent;
+  let fixture: ComponentFixture<RuletaComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ CustomerAuthPanelComponent ],
+      declarations: [ RuletaComponent ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(CustomerAuthPanelComponent);
+    fixture = TestBed.createComponent(RuletaComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

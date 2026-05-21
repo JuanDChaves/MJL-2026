@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Asignar mesa</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cancelar()">Cerrar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="modal-content">
+  <div class="modal-body">
+    <div class="client-header">
+      <h3 class="client-name">
+        {{ cliente.cliente.nombres }} {{ cliente.cliente.apellidos }}
+      </h3>
+      <p class="client-subtitle">Seleccioná una mesa para asignar</p>
+    </div>
+
+    <form [formGroup]="form" class="modal-form">
+      <ion-item class="form-item">
+        <ion-select
+          formControlName="numeroMesa"
+          placeholder="Seleccionar mesa"
+          interface="action-sheet"
+          class="mesa-select"
+        >
+          @for (mesa of mesasDisponibles; track mesa.numero_mesa) {
+            <ion-select-option [value]="mesa.numero_mesa">
+              Mesa #{{ mesa.numero_mesa }} — {{ mesa.tipo_mesa }} ({{ mesa.cantidad_comensales }} pers.)
+            </ion-select-option>
+          }
+        </ion-select>
+      </ion-item>
+    </form>
+
+    <ion-button
+      expand="block"
+      class="confirm-btn"
+      [disabled]="form.invalid"
+      (click)="confirmar()"
+    >
+      Confirmar asignación
+    </ion-button>
+  </div>
+</ion-content>

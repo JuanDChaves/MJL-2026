@@ -56,7 +56,6 @@ export class AgregarMesaFormComponent implements ViewWillEnter {
     numeroMesa: new FormControl('', [
       Validators.required,
       Validators.min(1),
-      Validators.max(5),
     ]),
     cantidadComensales: new FormControl('', [
       Validators.required,
