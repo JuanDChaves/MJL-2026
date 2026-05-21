@@ -159,11 +159,11 @@ export class LoginFormComponent {
         'usuarios',
         email!
       );
-      const user = data as IUser;
-      if (!user) {
+      if (!data || error) {
         this.errorMessage = 'Credenciales incorrectas';
         return;
       }
+      const user = data as IUser;
       if (user.perfil === 'cliente' && !user.activo) {
         this.errorMessage =
           'El usuario no ha sido aprobado por el administrador';
