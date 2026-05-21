@@ -161,5 +161,12 @@ export const routes: Routes = [
       import('./components/juegos/mayor-menor/mayor-menor.component').then(
         (m) => m.MayorMenorComponent
       ),
+  },
+   {
+    path:'ruleta',
+    loadComponent: () =>
+      import('./components/juegos/ruleta/ruleta.component').then(
+        (m) => m.RuletaComponent
+      ),
   }
 ];

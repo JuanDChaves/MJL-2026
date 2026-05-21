@@ -27,6 +27,7 @@ import {
   removeOutline,
   trashOutline,
   trophyOutline,
+  pieChartOutline
 } from 'ionicons/icons';
 import { IMesa } from 'src/app/interfaces/IMesa';
 import { IOrder } from 'src/app/interfaces/IOrder';
@@ -81,6 +82,7 @@ export class PantallaMenuClienteComponent implements ViewWillEnter {
       removeOutline,
       trashOutline,
       trophyOutline,
+      pieChartOutline,
     });
   }
   async ionViewWillEnter(): Promise<void> {
