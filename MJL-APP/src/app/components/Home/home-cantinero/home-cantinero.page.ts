@@ -31,11 +31,11 @@ export class HomeCantineroPage implements OnInit {
   }
  
   verificarPedido() {
-    this.router.navigate(['/verificar-pedido']);
+    this.router.navigate(['/verificar-pedido'],{queryParams: {rol: 'cantinero'}});
   }
  
   entregarPedido() {
-    this.router.navigate(['/entregar-pedido']);
+    this.router.navigate(['/entregar-pedido'],{queryParams: {rol: 'cantinero'}});
   }
   ngOnInit() {
   }

@@ -120,6 +120,18 @@ export const routes: Routes = [
         (m) => m.HomeClienteComponent
       ),
   },
+<<<<<<< feature/pedido-cocina-bar
+  {path: 'verificar-pedido',
+    loadComponent: () => 
+      import('./components/verificar-pedido/verificar-pedido.component').then(
+        (m) => m.VerificarPedidoComponent
+      ),
+  },
+  {path: 'entregar-pedido',
+    loadComponent: () => 
+      import('./components/entregar-pedido/entregar-pedido.component').then(
+        (m) => m.EntregarPedidoComponent
+=======
   {
     path: 'ingreso-local-cliente',
     loadComponent: () =>
@@ -167,6 +179,7 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./components/juegos/ruleta/ruleta.component').then(
         (m) => m.RuletaComponent
+>>>>>>> dev
       ),
   }
 ];
