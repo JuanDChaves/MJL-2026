@@ -86,7 +86,7 @@ export class OrdersService {
   }
 
   async deliverOrder(pedido: IOrder) {
-    return await this.updateOrderState(pedido, TypeOrderState.Entregado);    
+    return await this.updateOrderState(pedido, TypeOrderState.Hecho);    
   }
 
   private async updateOrderState(pedido: IOrder, estadoNuevo: TypeOrderState) {

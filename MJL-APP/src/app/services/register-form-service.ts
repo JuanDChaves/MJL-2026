@@ -1,13 +1,13 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { UserService } from './user-service';
-import { perfilRol } from '../types/typeRol';
+import { TipoPerfil } from '../types/TipoPerfil';
 import { IUser } from '../interfaces/IUser';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { LocalStorageService } from './local-storage-service';
 
 type perfilUser = {
-  value: perfilRol;
+  value: TipoPerfil;
   label: string;
   icon: string;
 };

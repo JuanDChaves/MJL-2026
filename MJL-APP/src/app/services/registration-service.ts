@@ -88,7 +88,7 @@ export class RegistrationService {
         const resultAuth = await this.loadUserAuthorization(user);
         if (!resultAuth.success) return resultAuth;
 
-        const resultNotification = await this.notificationsService.loadNotificationToSuperOrDuenio(
+        const resultNotification = await this.notificationsService.nuevoUsuarioRegistrado(
           registeredUser
         );
         if (!resultNotification.success) return resultNotification;
