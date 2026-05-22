@@ -38,7 +38,7 @@ import { IMesa } from 'src/app/interfaces/IMesa';
   ],
 })
 export class AsignarMesaModalComponent {
-  @Input() cliente!: ClienteEnEspera;
+  @Input() clienteEsperando!: ClienteEnEspera;
   @Input() mesasDisponibles: IMesa[] = [];
 
   private modalCtrl = inject(ModalController);

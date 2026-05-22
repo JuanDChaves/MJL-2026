@@ -87,7 +87,7 @@ export class NotificationsService {
   async confirmacionPedidoACliente(id_user: string) {
     const notiInfo: INotificacionInfo = {
       title: 'Pedido confirmado',
-      body: `Tu pedido ha sido confirmado, ya puede ser ver su estado escaneando el qr de la mesa.`,
+      body: `Tu pedido ha sido confirmado, ya puedes ver su estado escaneando el qr de la mesa.`,
       data: {
         cliente_id: id_user,
         tipo: 'mensaje_pendiente',

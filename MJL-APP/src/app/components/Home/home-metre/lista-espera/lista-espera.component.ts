@@ -52,14 +52,15 @@ export class ListaEsperaComponent implements ViewWillEnter {
     }
   }
 
-  async asignarMesa(cliente: ClienteEnEspera) {
+  async asignarMesa(clienteEsperando: ClienteEnEspera) {
+    console.log(clienteEsperando,'cliente recibido')
     const mesas = await this.mesaService.getAvailableMesas();
     if (!mesas.success || !mesas.data?.length) return;
 
     const modal = await this.modalCtrl.create({
       component: AsignarMesaModalComponent,
       componentProps: {
-        cliente,
+        clienteEsperando,
         mesasDisponibles: mesas.data,
       },
     });
@@ -67,8 +68,8 @@ export class ListaEsperaComponent implements ViewWillEnter {
 
     const { data, role } = await modal.onWillDismiss();
     if (role === 'confirm' && data) {
-      await this.mesaService.asignarMesa(cliente.cliente, data.numeroMesa);
-      await this.notiService.mesaAsingada(cliente.cliente, data.mesa);
+      await this.mesaService.asignarMesa(clienteEsperando.cliente, data.mesaElegida,clienteEsperando.id);
+      await this.notiService.mesaAsingada(clienteEsperando.cliente, data.mesaElegida);
       await this.cargarclientesEnEsperaList();
     }
   }

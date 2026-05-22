@@ -91,7 +91,7 @@ export class MesaService {
     }
   }
 
-  async asignarMesa(cliente: IUser, mesaElegida: IMesa): Promise<IResult<any>> {
+  async asignarMesa(cliente: IUser, mesaElegida: IMesa, id_lista_espera: string): Promise<IResult<any>> {
     try {
       const { data: mesa, error: mesaError } = await this.dbService.getOneById(
         'mesas',
@@ -105,7 +105,8 @@ export class MesaService {
 
       if (updateMesaError) throw updateMesaError;
 
-      const { error: updateListaError } = await this.dbService.update('lista_espera', 'user_id', cliente.id, { mesa_id: mesa.id, en_espera: true });
+      const { data: listaEspera, error: updateListaError } = await this.dbService.update('lista_espera', 'id', id_lista_espera, { mesa_id: mesaElegida.id, en_espera: false });
+      console.log(updateListaError);
 
       if (updateListaError) throw updateListaError;
 
