@@ -15,6 +15,7 @@ import { ClienteEnEspera } from 'src/app/interfaces/ClienteEnEspera';
 import { ClientService } from 'src/app/services/client-service';
 import { MesaService } from 'src/app/services/mesa-service';
 import { AsignarMesaModalComponent } from './asignar-mesa-modal/asignar-mesa-modal.component';
+import { NotificationsService } from 'src/app/services/notifications-service';
 
 @Component({
   selector: 'app-lista-espera',
@@ -34,6 +35,7 @@ export class ListaEsperaComponent implements ViewWillEnter {
   clientService = inject(ClientService);
   mesaService = inject(MesaService);
   modalCtrl = inject(ModalController);
+  notiService = inject(NotificationsService);
 
   constructor() {
     addIcons({ checkmark, close, checkmarkCircle });
@@ -66,6 +68,7 @@ export class ListaEsperaComponent implements ViewWillEnter {
     const { data, role } = await modal.onWillDismiss();
     if (role === 'confirm' && data) {
       await this.mesaService.asignarMesa(cliente.cliente, data.numeroMesa);
+      await this.notiService.mesaAsingada(cliente.cliente, data.mesa);
       await this.cargarclientesEnEsperaList();
     }
   }

@@ -1,7 +1,6 @@
 import { TipoMesa } from "../types/TipoMesa";
 
-export interface IMesa {
-  id:string;
+export interface IMesaACargar {
   numero_mesa: number;
   tipo_mesa: TipoMesa;
   cantidad_comensales: number;

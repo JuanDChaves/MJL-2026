@@ -21,10 +21,10 @@ import { grid, people, restaurant, camera, checkmark } from 'ionicons/icons';
 import { LayoutComponent } from '../../components/layout/layout.component';
 import { ErrorMessagePipe } from '../../pipes/error-message.pipe';
 import { PhotoService } from 'src/app/services/photo-service';
-import { IMesa } from 'src/app/interfaces/IMesa';
 import { TipoMesa } from 'src/app/types/TipoMesa';
 import { QrService } from 'src/app/services/qr-service';
 import { MesaService } from 'src/app/services/mesa-service';
+import { IMesaACargar } from 'src/app/interfaces/IMesaACargar';
 
 @Component({
   selector: 'app-agregar-mesa-form',
@@ -109,7 +109,7 @@ export class AgregarMesaFormComponent implements ViewWillEnter {
       return;
     }    
 
-    const mesa:IMesa ={
+    const mesa:IMesaACargar ={
       numero_mesa: parseInt(this.form.value.numeroMesa!),
       tipo_mesa: this.form.value.tipoMesa!,
       cantidad_comensales: parseInt(this.form.value.cantidadComensales!),

@@ -9,6 +9,7 @@ import { ClientService } from 'src/app/services/client-service';
 import { UserService } from 'src/app/services/user-service';
 import { MesaService } from 'src/app/services/mesa-service';
 import { IDatosMesaParaQr } from 'src/app/interfaces/IDatosMesaParaQr';
+import { NotificationsService } from 'src/app/services/notifications-service';
 
 @Component({
   selector: 'app-pantalla-ingreso-local',
@@ -22,6 +23,7 @@ export class PantallaIngresoLocalComponent implements ViewWillEnter {
   router = inject(Router);
   userService = inject(UserService);
   mesaService = inject(MesaService)
+  notiService = inject(NotificationsService)
 
   constructor() {
     addIcons({ qrCodeOutline, enterOutline, clipboardOutline,documentTextOutline });
@@ -36,6 +38,7 @@ export class PantallaIngresoLocalComponent implements ViewWillEnter {
       const response = await this.clientService.insertWaitingList(user);
       if(response.success) {
         console.log('cliente ingresado en la lista de espera');
+        await this.notiService.ingresoListaEspera(user);
         return;
       }
       console.log(response.error);

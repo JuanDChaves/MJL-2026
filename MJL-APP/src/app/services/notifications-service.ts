@@ -5,6 +5,7 @@ import { IUser } from '../interfaces/IUser';
 import { TipoPerfil } from '../types/TipoPerfil';
 import { INotificacionInfo } from '../interfaces/INotificacionInfo';
 import { TipoProducto } from '../interfaces/IProducto';
+import { IMesa } from '../interfaces/IMesa';
 
 @Injectable({
   providedIn: 'root',
@@ -83,28 +84,40 @@ export class NotificationsService {
     return await this.insertNotification(['cliente'], notiInfo, user.id);
   }
 
-  async confirmacionPedido(user: IUser) {
+  async confirmacionPedidoACliente(id_user: string) {
     const notiInfo: INotificacionInfo = {
       title: 'Pedido confirmado',
       body: `Tu pedido ha sido confirmado, ya puede ser ver su estado escaneando el qr de la mesa.`,
       data: {
-        cliente_id: user.id,
+        cliente_id: id_user,
         tipo: 'mensaje_pendiente',
       },
     };
-    return await this.insertNotification(['cliente'], notiInfo, user.id);
+    return await this.insertNotification(['cliente'], notiInfo, id_user);
   }
 
-  async rechazaPedido(user: IUser) {
+  async confirmacionPedidoAMozo(user: IUser) {
     const notiInfo: INotificacionInfo = {
-      title: 'Pedido rechazado',
-      body: `No pudimos aprobar tu pedido realizalo nuevamente`,
+      title: 'Pedido nuevo',
+      body: `${user.nombres} ${user.apellidos} ha confirmado el pedido.`,
       data: {
         cliente_id: user.id,
         tipo: 'mensaje_pendiente',
       },
     };
-    return await this.insertNotification(['cliente'], notiInfo, user.id);
+    return await this.insertNotification(['mozo'], notiInfo);
+  }
+
+  async rechazaPedido(id_user: string) {
+    const notiInfo: INotificacionInfo = {
+      title: 'Pedido rechazado',
+      body: `No pudimos aprobar tu pedido realizalo nuevamente`,
+      data: {
+        cliente_id: id_user,
+        tipo: 'mensaje_pendiente',
+      },
+    };
+    return await this.insertNotification(['cliente'], notiInfo, id_user);
   }
 
   async enviarPedidoBar() {
@@ -191,6 +204,18 @@ export class NotificationsService {
       },
     };
     await this.insertNotification(['duenio', 'supervisor'], notiInfo);
+    return await this.insertNotification(['cliente'], notiInfoUser, user.id);
+  }
+
+  async mesaAsingada(user:IUser,mesa:IMesa){
+    const notiInfoUser: INotificacionInfo = {
+      title: "Mesa asignada",
+      body: `Se te asigno la mesa #${mesa.numero_mesa}, podes escanear el qr de tu mesa para ver el menu`,
+      data: {
+        cliente_id: user.id,
+        tipo: 'pago_confirmado',
+      },
+    };
     return await this.insertNotification(['cliente'], notiInfoUser, user.id);
   }
 }

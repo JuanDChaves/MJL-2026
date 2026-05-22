@@ -74,7 +74,6 @@ export class OrdersService {
 
   async approveOrder(pedido: IOrder) {
         return await this.updateOrderState(pedido, TypeOrderState.Preparando);    
-
   }
   
   async rejectOrder(pedido: IOrder) {
