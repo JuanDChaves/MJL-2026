@@ -1,104 +1,82 @@
 <ion-content class="menu-content" [scrollY]="false">
-
   <!-- Segment selector -->
-  <ion-segment [(ngModel)]="selectedSegment" class="menu-segment">
-    <!-- EN PRINCIPIO CHEQUEAMOS QUE SI HAY UN PEDIDO EN PREPARACION MOSTRAMOS LOS JUEGOS
-         FALTA AGREGAR DE QUE SEA UN USUARIO REGISTRADO
-         PROBABLEMENTE DEBERIAMOS USAR userService.isLogged() 
-    -->
-    @if (this.orderCurrent()?.estado === 'preparando') {
-      <ion-segment-button value="games">
-        <ion-icon name="game-controller-outline"></ion-icon>
-        <ion-label>Juegos</ion-label>
-      </ion-segment-button>
-    }
-    <ion-segment-button value="drinks">
+  <ion-segment class="menu-segment">
+    <ion-segment-button value="drinks" (click)="changeSegment('drinks')">
       <ion-icon name="beer-outline"></ion-icon>
       <ion-label>Bebidas</ion-label>
     </ion-segment-button>
-    <ion-segment-button value="food">
+    <ion-segment-button value="food" (click)="changeSegment('food')">
       <ion-icon name="restaurant-outline"></ion-icon>
       <ion-label>Platos</ion-label>
     </ion-segment-button>
   </ion-segment>
 
-  @switch (selectedSegment()) {
+  <!-- Scroll horizontal de productos -->
+  <div class="products-scroll">
+    @for (product of currentProducts(); track product.id) {
+      <div class="product-card">
+        <!-- Carrusel de fotos con Swiper Element -->
+        <swiper-container
+          pagination="true"
+          slides-per-view="1"
+          space-between="0"
+          class="photo-swiper"
+        >
+          @for (photo of product.fotos; track $index) {
+            <swiper-slide class="photo-slide">
+              <img [src]="photo" alt="Foto de {{ product.nombre }}" />
+            </swiper-slide>
+          }
+        </swiper-container>
 
-    @case ('games') {
-      <div class="games-placeholder">
-        <div class="games-icon-wrapper">
-          <ion-icon name="game-controller-outline" class="games-icon"></ion-icon>
-        </div>
-        <p class="games-hint">Jugá para ganar descuentos</p>
-        
-        <ion-button expand="block" routerLink="/mayor-menor" class="mb-3">
-          <ion-icon slot="start" name="trophy-outline"></ion-icon>
-          Mayor o Menor
-        </ion-button>
-
-        <ion-button expand="block" color="tertiary" routerLink="/ruleta">
-          <ion-icon slot="start" name="pie-chart-outline"></ion-icon>
-          Ruleta de Descuentos
-        </ion-button>
-      </div>
-    }
-
-    @default {
-      <!-- Scroll horizontal de productos -->
-      <div class="products-scroll">
-        @for (product of currentProducts; track product.id) {
-          <div class="product-card">
-
-            <!-- Carrusel de fotos con Swiper Element -->
-            <swiper-container
-              pagination="true"
-              slides-per-view="1"
-              space-between="0"
-              class="photo-swiper"
-            >
-              @for (photo of product.fotos; track $index) {
-                <swiper-slide class="photo-slide">
-                  <img [src]="photo" alt="Foto de {{ product.nombre }}" />
-                </swiper-slide>
-              }
-            </swiper-container>
-
-            <!-- Info del producto -->
-            <div class="product-info">
-              <h3 class="product-name">{{ product.nombre }}</h3>
-              <p class="product-desc">{{ product.descripcion }}</p>
-              <div class="product-meta">
-                <span class="product-price">$ {{ product.precio }}</span>
-                <span class="product-time">
-                  <ion-icon name="time-outline"></ion-icon>
-                  {{ product.tiempo_elaboracion }} minutos
-                </span>
-              </div>
-
-              <!-- Controles de cantidad -->
-              <div class="quantity-controls">
-                <ion-button size="small" fill="outline" class="qty-btn" (click)="removeOne(product)">
-                  <ion-icon slot="icon-only" name="remove-outline"></ion-icon>
-                </ion-button>
-
-                <span class="quantity-display">{{ product.cantidad }}</span>
-
-                <ion-button size="small" fill="outline" class="qty-btn" (click)="addOne(product)">
-                  <ion-icon slot="icon-only" name="add-outline"></ion-icon>
-                </ion-button>
-
-                <ion-button size="small" fill="clear" color="danger" class="delete-btn" (click)="deleteItem(product)">
-                  <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
-                </ion-button>
-              </div>
-            </div>
-
+        <!-- Info del producto -->
+        <div class="product-info">
+          <h3 class="product-name">{{ product.nombre }}</h3>
+          <p class="product-desc">{{ product.descripcion }}</p>
+          <div class="product-meta">
+            <span class="product-price">$ {{ product.precio }}</span>
+            <span class="product-time">
+              <ion-icon name="time-outline"></ion-icon>
+              {{ product.tiempo_elaboracion }} minutos
+            </span>
           </div>
-        }
+
+          <!-- Controles de cantidad -->
+          <div class="quantity-controls">
+            <ion-button
+              size="small"
+              fill="outline"
+              class="qty-btn"
+              (click)="removeOne(product)"
+            >
+              <ion-icon slot="icon-only" name="remove-outline"></ion-icon>
+            </ion-button>
+
+            <span class="quantity-display">{{ product.cantidad }}</span>
+
+            <ion-button
+              size="small"
+              fill="outline"
+              class="qty-btn"
+              (click)="addOne(product)"
+            >
+              <ion-icon slot="icon-only" name="add-outline"></ion-icon>
+            </ion-button>
+
+            <ion-button
+              size="small"
+              fill="clear"
+              color="danger"
+              class="delete-btn"
+              (click)="deleteItem(product)"
+            >
+              <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+            </ion-button>
+          </div>
+        </div>
       </div>
     }
-  }
-
+  </div>
 </ion-content>
 
 <ion-footer class="menu-footer">
@@ -112,7 +90,12 @@
   </div>
 
   <div class="footer-action">
-    <ion-button expand="block" class="confirm-order-btn" (click)="confirmOrder()">
+    <ion-button
+      expand="block"
+      class="confirm-order-btn"
+      (click)="confirmOrder()"
+      [disabled]="product_count() === 0"
+    >
       Confirmar pedido
     </ion-button>
   </div>

@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, computed, inject, signal, WritableSignal } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, computed, inject, signal, WritableSignal, input, Input } from '@angular/core';
 import { LayoutComponent } from '../../layout/layout.component';
 import {
   IonAvatar,
@@ -41,8 +41,8 @@ register();
   ],
 })
 export class DetallePedidoComponent implements ViewWillEnter {
-  pedidoId: WritableSignal<string> = signal('');
-  pedido: WritableSignal<IOrder | null> = signal(null);
+  @Input() pedidoId: WritableSignal<string> = signal('');
+  @Input() pedido: WritableSignal<IOrder | null> = signal(null);
   orderService = inject(OrdersService);
 
   total = computed(() => {
