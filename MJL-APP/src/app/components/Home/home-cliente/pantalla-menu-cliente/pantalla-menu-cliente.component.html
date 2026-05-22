@@ -2,10 +2,16 @@
 
   <!-- Segment selector -->
   <ion-segment [(ngModel)]="selectedSegment" class="menu-segment">
-    <ion-segment-button value="games">
-      <ion-icon name="game-controller-outline"></ion-icon>
-      <ion-label>Juegos</ion-label>
-    </ion-segment-button>
+    <!-- EN PRINCIPIO CHEQUEAMOS QUE SI HAY UN PEDIDO EN PREPARACION MOSTRAMOS LOS JUEGOS
+         FALTA AGREGAR DE QUE SEA UN USUARIO REGISTRADO
+         PROBABLEMENTE DEBERIAMOS USAR userService.isLogged() 
+    -->
+    @if (this.orderCurrent()?.estado === 'preparando') {
+      <ion-segment-button value="games">
+        <ion-icon name="game-controller-outline"></ion-icon>
+        <ion-label>Juegos</ion-label>
+      </ion-segment-button>
+    }
     <ion-segment-button value="drinks">
       <ion-icon name="beer-outline"></ion-icon>
       <ion-label>Bebidas</ion-label>

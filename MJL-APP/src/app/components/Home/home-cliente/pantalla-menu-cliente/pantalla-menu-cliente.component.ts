@@ -17,7 +17,7 @@ import {
   IonFooter,
   ViewWillEnter,
 } from '@ionic/angular/standalone';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { addIcons } from 'ionicons';
 import {
   gameControllerOutline,
@@ -27,7 +27,7 @@ import {
   removeOutline,
   trashOutline,
   trophyOutline,
-  pieChartOutline
+  pieChartOutline,
 } from 'ionicons/icons';
 import { IMesa } from 'src/app/interfaces/IMesa';
 import { IOrder } from 'src/app/interfaces/IOrder';
@@ -41,6 +41,8 @@ import { UserService } from 'src/app/services/user-service';
 import { register } from 'swiper/element/bundle';
 import { TypeOrderState } from 'src/app/types/TypeOrderState';
 import { NotificationsService } from 'src/app/services/notifications-service';
+import { LocalStorageService } from 'src/app/services/local-storage-service';
+import { IResult } from 'src/app/interfaces/IResult';
 
 register();
 
@@ -68,11 +70,14 @@ export class PantallaMenuClienteComponent implements ViewWillEnter {
   orderService = inject(OrdersService);
   productOrderService = inject(ProductsOrdersService);
   notiService = inject(NotificationsService);
+  localStorageService = inject(LocalStorageService);
+  router = inject(Router);
 
   selectedSegment = signal('food');
   drinks = signal<IProductoMenu[]>([]);
   food = signal<IProductoMenu[]>([]);
   mesa = signal<IMesa | null>(null);
+  orderCurrent = signal<IOrder | null>(null);
 
   constructor() {
     addIcons({
@@ -89,6 +94,7 @@ export class PantallaMenuClienteComponent implements ViewWillEnter {
   async ionViewWillEnter(): Promise<void> {
     await this.loadMesa();
     await this.loadProducts();
+    await this.loadOrderCurrent();
   }
 
   get currentProducts(): IProductoMenu[] {
@@ -153,6 +159,12 @@ export class PantallaMenuClienteComponent implements ViewWillEnter {
   }
 
   async loadProducts() {
+    const result = await this.checkExistOrder()
+    if(result.data?.estado === 'editando') {
+      await this.loadOrderCurrent();
+      return;
+    }
+
     let drinks = await this.productService.getDrinks();
     drinks = drinks.map((p) => ({ ...p, cantidad: 0 })) as IProductoMenu[];
     let food = await this.productService.getFood();
@@ -165,9 +177,19 @@ export class PantallaMenuClienteComponent implements ViewWillEnter {
   async confirmOrder() {
     const orderToLoad = this.buildOrder();
     const response = await this.orderService.insertOrder(orderToLoad);
-    await this.notiService.confirmacionPedidoAMozo(this.userService.userData()!);
+    this.localStorageService.saveData('productos_pedido', [
+      ...this.drinks(),
+      ...this.food(),
+    ]);
+    this.localStorageService.saveData('id_pedido', {
+      id_pedido: response.data?.id,
+    });
+    await this.notiService.confirmacionPedidoAMozo(
+      this.userService.userData()!,
+    );
     console.log(response);
-    const order = response.data as IOrder; 
+    const order = response.data as IOrder;
+    this.router.navigate(['/ingreso-local-cliente']);
   }
 
   buildOrder(): IOrderToLoad {
@@ -200,5 +222,39 @@ export class PantallaMenuClienteComponent implements ViewWillEnter {
       this.userService.userData()!.dni!,
     );
     this.mesa.set(result.data);
+  }
+
+  async loadOrderCurrent() {
+    
+    const productos_pedidos =
+      await this.localStorageService.getData<IProductoMenu[]>(
+        'productos_pedido',
+      );
+      console.log(productos_pedidos);
+      this.drinks.set([
+        ...productos_pedidos!.filter((p) => p.tipo === 'bebida'),
+      ]);
+      this.food.set([...productos_pedidos!.filter((p) => p.tipo === 'plato')]);
+  }
+
+  async checkExistOrder(): Promise<IResult<IOrder>> {
+    const result:IResult<IOrder> = {
+      success:false,
+      data:null,
+      error:null
+    }
+    const order_id = await this.localStorageService.getData<{id_pedido: string;}>('id_pedido');
+    if (!order_id) {
+      result.error = { message: 'No hay pedido cargado' };
+      return result;
+    };
+    const resultOrder = await this.orderService.getOneOrder(order_id!.id_pedido);
+    if (!result.success) {
+      result.error = { message: 'Error al obtener el pedido' };
+      return result;
+    };
+    result.data = resultOrder.data;
+    result.success = true;
+    return result;
   }
 }
