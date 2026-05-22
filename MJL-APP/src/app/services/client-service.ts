@@ -43,16 +43,16 @@ export class ClientService {
         data: null
       }
       if(response.success){
-        const orders: ClienteEnEspera[] = [];
-        response.data!.map((order) =>{
-          let cliente = order.cliente as IUser;
-          let toOrder: ClienteEnEspera = {
-            en_espera: order.en_espera,
-            id: order.id,
-            mesa_id: order.mesa_id,
+        const clientesEsperando: ClienteEnEspera[] = [];
+        response.data!.map((clienteEsperando) =>{
+          let cliente = clienteEsperando.cliente as IUser;
+          let clientWaiting: ClienteEnEspera = {
+            en_espera: clienteEsperando.en_espera,
+            id: clienteEsperando.id,
+            mesa_id: clienteEsperando.mesa_id,
             cliente: cliente,
           }
-          orders.push(toOrder);
+          clientesEsperando.push(clientWaiting);
         }
       );
         result.success = true;

@@ -33,7 +33,6 @@ import { IMesa } from 'src/app/interfaces/IMesa';
 import { IOrder } from 'src/app/interfaces/IOrder';
 import { IOrderToLoad } from 'src/app/interfaces/IOrderToLoad';
 import { IProductoMenu } from 'src/app/interfaces/IProductoMenu';
-import { IProductOrderToLoad } from 'src/app/interfaces/IProductOrderToLoad';
 import { MesaService } from 'src/app/services/mesa-service';
 import { OrdersService } from 'src/app/services/orders-service';
 import { ProductsOrdersService } from 'src/app/services/products-orders-service';
@@ -41,6 +40,7 @@ import { ProductsService } from 'src/app/services/products-service';
 import { UserService } from 'src/app/services/user-service';
 import { register } from 'swiper/element/bundle';
 import { TypeOrderState } from 'src/app/types/TypeOrderState';
+import { NotificationsService } from 'src/app/services/notifications-service';
 
 register();
 
@@ -67,6 +67,7 @@ export class PantallaMenuClienteComponent implements ViewWillEnter {
   mesaService = inject(MesaService);
   orderService = inject(OrdersService);
   productOrderService = inject(ProductsOrdersService);
+  notiService = inject(NotificationsService);
 
   selectedSegment = signal('food');
   drinks = signal<IProductoMenu[]>([]);
@@ -164,6 +165,7 @@ export class PantallaMenuClienteComponent implements ViewWillEnter {
   async confirmOrder() {
     const orderToLoad = this.buildOrder();
     const response = await this.orderService.insertOrder(orderToLoad);
+    await this.notiService.confirmacionPedidoAMozo(this.userService.userData()!);
     console.log(response);
     const order = response.data as IOrder; 
   }

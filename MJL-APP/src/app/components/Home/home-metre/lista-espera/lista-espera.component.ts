@@ -15,6 +15,7 @@ import { ClienteEnEspera } from 'src/app/interfaces/ClienteEnEspera';
 import { ClientService } from 'src/app/services/client-service';
 import { MesaService } from 'src/app/services/mesa-service';
 import { AsignarMesaModalComponent } from './asignar-mesa-modal/asignar-mesa-modal.component';
+import { NotificationsService } from 'src/app/services/notifications-service';
 
 @Component({
   selector: 'app-lista-espera',
@@ -34,6 +35,7 @@ export class ListaEsperaComponent implements ViewWillEnter {
   clientService = inject(ClientService);
   mesaService = inject(MesaService);
   modalCtrl = inject(ModalController);
+  notiService = inject(NotificationsService);
 
   constructor() {
     addIcons({ checkmark, close, checkmarkCircle });
@@ -50,14 +52,15 @@ export class ListaEsperaComponent implements ViewWillEnter {
     }
   }
 
-  async asignarMesa(cliente: ClienteEnEspera) {
+  async asignarMesa(clienteEsperando: ClienteEnEspera) {
+    console.log(clienteEsperando,'cliente recibido')
     const mesas = await this.mesaService.getAvailableMesas();
     if (!mesas.success || !mesas.data?.length) return;
 
     const modal = await this.modalCtrl.create({
       component: AsignarMesaModalComponent,
       componentProps: {
-        cliente,
+        clienteEsperando,
         mesasDisponibles: mesas.data,
       },
     });
@@ -65,7 +68,8 @@ export class ListaEsperaComponent implements ViewWillEnter {
 
     const { data, role } = await modal.onWillDismiss();
     if (role === 'confirm' && data) {
-      await this.mesaService.asignarMesa(cliente.cliente, data.numeroMesa);
+      await this.mesaService.asignarMesa(clienteEsperando.cliente, data.mesaElegida,clienteEsperando.id);
+      await this.notiService.mesaAsingada(clienteEsperando.cliente, data.mesaElegida);
       await this.cargarclientesEnEsperaList();
     }
   }

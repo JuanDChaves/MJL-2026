@@ -157,13 +157,13 @@ export class LoginFormComponent {
       const { email, password } = this.loginForm.value;
       const { data, error } = await this.dbServ.getOneByEmail(
         'usuarios',
-        email!
+        email!,
       );
-      const user = data as IUser;
-      if (!user) {
+      if (!data || error) {
         this.errorMessage = 'Credenciales incorrectas';
         return;
       }
+      const user = data as IUser;
       if (user.perfil === 'cliente' && !user.activo) {
         this.errorMessage =
           'El usuario no ha sido aprobado por el administrador';
@@ -183,15 +183,12 @@ export class LoginFormComponent {
         await this.storageServ.saveData('user', response.data!);
         console.log('guardado en el local storage exitoso');
 
-        // Inicializar push notifications para supervisor/duenio
-        const perfil = response.data.perfil;
-        if (perfil === 'supervisor' || perfil === 'duenio') {
-          this.pushServ
-            .init()
-            .catch((err: any) =>
-              console.warn('Push notifications not available:', err)
-            );
-        }
+        // Cargamos el fcm token en la base de datos
+        this.pushServ
+          .init()
+          .catch((err: any) =>
+            console.warn('Push notifications not available:', err),
+          );
 
         this.router.navigate(['/home']);
       }

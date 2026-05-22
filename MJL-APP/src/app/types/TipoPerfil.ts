@@ -1,4 +1,4 @@
-export type perfilRol =
+export type TipoPerfil =
   | 'duenio'
   | 'supervisor'
   | 'metre'

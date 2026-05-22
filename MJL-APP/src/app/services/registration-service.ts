@@ -80,17 +80,20 @@ export class RegistrationService {
 
       user.user_id = resultCreateAccount.data!;
       user.url_foto_perfil = url;
+      const result = await this.insertUser(user);
+      if (!result.success) return result;
+      const registeredUser = result.data!;
 
-      if (user.perfil === 'cliente') {
+      if (registeredUser.perfil === 'cliente') {
         const resultAuth = await this.loadUserAuthorization(user);
         if (!resultAuth.success) return resultAuth;
 
-        const resultNotification = await this.loadNotificationToSuperOrDuenio(
-          user
+        const resultNotification = await this.notificationsService.nuevoUsuarioRegistrado(
+          registeredUser
         );
         if (!resultNotification.success) return resultNotification;
       }
-      return await this.insertUser(user);
+      return result;
     } catch (error: any) {
       return {
         success: false,
@@ -181,20 +184,6 @@ export class RegistrationService {
         error: {
           message: `Error al guardar en usuarios pendientes de aprobacion`,
         },
-        data: null,
-      };
-    }
-    return { success: true, error: null, data: null };
-  }
-
-  private async loadNotificationToSuperOrDuenio(
-    user: IUserToRegister
-  ): Promise<IResult<void>> {
-    const { error } = await this.notificationsService.insertNotification(user);
-    if (error) {
-      return {
-        success: false,
-        error: { message: 'Error al enviar notificacion' },
         data: null,
       };
     }

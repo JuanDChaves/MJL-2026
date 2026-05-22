@@ -38,7 +38,7 @@ import { IMesa } from 'src/app/interfaces/IMesa';
   ],
 })
 export class AsignarMesaModalComponent {
-  @Input() cliente!: ClienteEnEspera;
+  @Input() clienteEsperando!: ClienteEnEspera;
   @Input() mesasDisponibles: IMesa[] = [];
 
   private modalCtrl = inject(ModalController);
@@ -56,6 +56,7 @@ export class AsignarMesaModalComponent {
       this.form.markAllAsTouched();
       return;
     }
-    this.modalCtrl.dismiss({ numeroMesa: this.form.value.numeroMesa }, 'confirm');
+    const mesaElegida = this.mesasDisponibles.find((mesa) => mesa.numero_mesa === this.form.value.numeroMesa);
+    this.modalCtrl.dismiss({ mesaElegida: mesaElegida }, 'confirm');
   }
 }
