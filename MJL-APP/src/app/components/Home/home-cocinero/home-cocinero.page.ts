@@ -28,10 +28,6 @@ export class HomeCocineroPage implements OnInit {
     this.router.navigate(['/alta-producto']); 
   }
  
-  verificarPedido() {
-    this.router.navigate(['/verificar-pedido'], {queryParams: {rol: 'cocinero'}});
-  }
- 
   entregarPedido() {
     this.router.navigate(['/entregar-pedido'],{queryParams: {rol: 'cocinero'}});
   }

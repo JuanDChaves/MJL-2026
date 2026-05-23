@@ -30,10 +30,6 @@ export class HomeCantineroPage implements OnInit {
     this.router.navigate(['/alta-producto']); 
   }
  
-  verificarPedido() {
-    this.router.navigate(['/verificar-pedido'],{queryParams: {rol: 'cantinero'}});
-  }
- 
   entregarPedido() {
     this.router.navigate(['/entregar-pedido'],{queryParams: {rol: 'cantinero'}});
   }
