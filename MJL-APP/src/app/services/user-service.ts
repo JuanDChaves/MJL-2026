@@ -6,6 +6,7 @@ import { IUserToRegister } from '../interfaces/IUserToRegister';
 import { DbService } from './db-service';
 import { IUserUnauthorizedToRegister } from '../interfaces/IUserUnauthorizedToRegister';
 import { IUser } from '../interfaces/IUser';
+import { IResult } from '../interfaces/IResult';
 
 @Injectable({
   providedIn: 'root',
@@ -67,11 +68,23 @@ export class UserService {
     )
   }
 
-  async insert(user: IUserToRegister){
-    return await this.dbService.insert(
+  async insert(user: IUserToRegister) : Promise<IResult<IUser>>{
+    const {data: registeredUser, error: loadError} = await this.dbService.insert(
         'usuarios',
         user
       );
+    const result :IResult<IUser>={
+      success : false,
+      data: null,
+      error: null
+    }  
+    if(loadError){
+      result.error = {message: 'Error al inserte usuario' }
+      return result;
+    }
+    result.data = registeredUser;
+    result.success = true;
+    return result
   }
 
 }

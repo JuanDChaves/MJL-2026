@@ -6,7 +6,7 @@ import { PhotoService } from './photo-service';
 import { IDatosMesaParaQr } from '../interfaces/IDatosMesaParaQr';
 import { IResult } from '../interfaces/IResult';
 import { IUser } from '../interfaces/IUser';
-import { IMesaDniCliente } from '../interfaces/IMesaDniCliente';
+import { IMesaCliente } from '../interfaces/IMesaCliente';
 import { IMesaACargar } from '../interfaces/IMesaACargar';
 
 @Injectable({
@@ -101,7 +101,7 @@ export class MesaService {
       if (mesaError || !mesa )
         throw mesaError || new Error('Mesa no encontrada');
 
-      const { error: updateMesaError } = await this.dbService.update('mesas', 'id', mesa.id, { ocupada: true, dni: cliente.dni });
+      const { error: updateMesaError } = await this.dbService.update('mesas', 'id', mesa.id, { ocupada: true, user_id: cliente.id });
 
       if (updateMesaError) throw updateMesaError;
 
@@ -125,28 +125,26 @@ export class MesaService {
   }
 
   async chequearMesaAsignada(numeroMesa: number) {
-    const result: IResult<IMesaDniCliente> = {
+    const result: IResult<IMesaCliente> = {
       success: false,
       error: null,
       data: null,
     };
     try {
       const { data: mesaList, error: mesaError } =
-        await this.dbService.getAllWithFilter(
-          'mesas',
-          'numero_mesa',
-          numeroMesa,
+        await this.dbService.MesaConCliente(
+          numeroMesa
         );
 
       if (mesaError || !mesaList || mesaList.length === 0) {
         result.error = { message: 'Mesa no encontrada' };
         return result;
       }
-      const mesa_con_usuario: IMesaDniCliente = {
+      const mesa_con_usuario: IMesaCliente = {
         id: mesaList[0].id,
         numero_mesa: mesaList[0].numero_mesa,
         ocupada: mesaList[0].ocupada,
-        dni: mesaList[0].dni,
+        cliente: mesaList[0].cliente,
       };
 
       result.success = true;
@@ -171,8 +169,8 @@ export class MesaService {
     return result;
   }
 
-  async getByDni(dni: string): Promise<IResult<IMesa>> {
-    const result = await this.dbService.getAllWithFilter('mesas', 'dni', dni);
+  async getByIdUser(id_user: string): Promise<IResult<IMesa>> {
+    const result = await this.dbService.getAllWithFilter('mesas', 'user_id', id_user);
     if (result.error || !result.data || result.data.length === 0)
       return {
         success: false,

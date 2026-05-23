@@ -193,7 +193,6 @@ export class PantallaMenuClienteComponent implements ViewWillEnter {
       await this.loadOrderPreview();
       return;
     }
-
     let drinks = await this.productService.getDrinks();
     drinks = drinks.map((p) => ({ ...p, cantidad: 0 })) as IProductoMenu[];
 
@@ -209,7 +208,9 @@ export class PantallaMenuClienteComponent implements ViewWillEnter {
   }
 
   async confirmOrder() {
+
     const orderToLoad = this.buildOrder();
+
     if (!orderToLoad.success) {
       //mostrar mensaje de error
       return orderToLoad.error?.message;
@@ -237,6 +238,7 @@ export class PantallaMenuClienteComponent implements ViewWillEnter {
       data: null,
       error: null,
     };
+
     if(this.product_count() === 0) {
       result.error = { message: 'No hay productos en el pedido' };
       return result;
@@ -250,9 +252,7 @@ export class PantallaMenuClienteComponent implements ViewWillEnter {
     result.data = {
       id_cliente: this.userService.userData()!.id,
       nombre_cliente:
-        this.userService.userData()?.nombres +
-        ' ' +
-        this.userService.userData()?.apellidos,
+        this.userService.userData()?.nombres!,
       estado: TypeOrderState.Pendiente,
       numero_mesa: this.mesa()!.numero_mesa,
       data: all.map((p) => ({
@@ -269,9 +269,10 @@ export class PantallaMenuClienteComponent implements ViewWillEnter {
   }
 
   async loadMesa(): Promise<void> {
-    const result = await this.mesaService.getByDni(
-      this.userService.userData()!.dni!,
+    const result = await this.mesaService.getByIdUser(
+      this.userService.userData()!.id!,
     );
+    console.log(result,'aca');
     this.mesa.set(result.data);
   }
 

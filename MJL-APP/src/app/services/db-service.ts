@@ -173,4 +173,17 @@ export class DbService<T extends BaseEntity> {
     );
     return response;
   }
+
+  async MesaConCliente(numero_mesa:number){
+    const response = await this.sbService.client
+      .from('mesas')
+      .select(
+        `
+        *,
+        cliente:usuarios!mesas_user_id_fkey(*)     
+        `,
+      )
+      .eq('numero_mesa', numero_mesa);
+    return response;
+  }
 }

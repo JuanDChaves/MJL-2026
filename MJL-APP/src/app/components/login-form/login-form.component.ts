@@ -21,6 +21,7 @@ import {
   IonFabButton,
   IonFab,
   IonFabList,
+  ModalController,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
@@ -45,6 +46,7 @@ import { DbService } from 'src/app/services/db-service';
 import { LocalStorageService } from 'src/app/services/local-storage-service';
 import { PushNotificationService } from 'src/app/services/push-notification-service';
 import { IUser } from 'src/app/interfaces/IUser';
+import { AnonymousUserRegistrationFormComponent } from '../anonymous-user-registration-form/anonymous-user-registration-form.component';
 
 @Component({
   selector: 'app-login-form',
@@ -73,8 +75,8 @@ export class LoginFormComponent {
   private dbServ = inject(DbService);
   private storageServ = inject(LocalStorageService);
   private pushServ = inject(PushNotificationService);
-
   router = inject(Router);
+  modalAnon = inject(ModalController);
 
   email = new FormControl('', [Validators.required, Validators.email]);
   password = new FormControl('', [
@@ -197,6 +199,22 @@ export class LoginFormComponent {
     } finally {
       this.isLoading = false;
     }
+  }
+
+  async loginAsAnonymusUser() {
+    const modal = await this.modalAnon.create({
+      component: AnonymousUserRegistrationFormComponent,
+    });
+    await modal.present();
+
+    const { data, role } = await modal.onWillDismiss();
+    if (role === 'confirm' && data) {
+      this.router.navigate(['/home']);
+    }else{
+      //mostrar error
+      console.log('no se pudo crear una session');
+    }
+
   }
 
   toRegister() {
