@@ -180,5 +180,12 @@ export const routes: Routes = [
       import('./components/juegos/ruleta/ruleta.component').then(
         (m) => m.RuletaComponent
       ),
+  },
+  {
+    path:'juegos',
+    loadComponent: () =>
+      import('./components/juegos/pantalla-juegos/pantalla-juegos.component').then(
+        (m) => m.PantallaJuegosComponent
+      ),
   }
 ];

@@ -87,6 +87,20 @@
             <span class="summary-label">Total</span>
             <span class="summary-value">$ {{ total() }}</span>
           </div>
+          @if (showJuegosBtn()) {
+            <div class="summary-row summary-games">
+              <span class="summary-label">Sumá un descuento jugando</span>
+              <ion-button
+                fill="clear"
+                class="games-btn"
+                routerLink="/juegos"
+                [queryParams]="{pedidoId: pedidoId()}"
+              >
+                <ion-icon name="game-controller-outline" slot="start"></ion-icon>
+                Jugar
+              </ion-button>
+            </div>
+          }
         </ion-card-content>
       </ion-card>
     }

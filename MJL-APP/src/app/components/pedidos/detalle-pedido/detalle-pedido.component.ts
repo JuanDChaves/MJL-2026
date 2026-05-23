@@ -9,7 +9,7 @@ import {
   IonBadge,
   ViewWillEnter,
 } from '@ionic/angular/standalone';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { OrdersService } from 'src/app/services/orders-service';
 import { IOrder } from 'src/app/interfaces/IOrder';
 import { addIcons } from 'ionicons';
@@ -20,6 +20,7 @@ import {
   timeOutline,
   checkmarkOutline,
   closeOutline,
+  gameControllerOutline,
 } from 'ionicons/icons';
 import { register } from 'swiper/element/bundle';
 import { LocalStorageService } from 'src/app/services/local-storage-service';
@@ -39,6 +40,7 @@ register();
     IonBadge,
     IonIcon,
     LayoutComponent,
+    RouterLink,
   ],
 })
 export class DetallePedidoComponent implements ViewWillEnter {
@@ -69,6 +71,8 @@ export class DetallePedidoComponent implements ViewWillEnter {
     );
   });
 
+  showJuegosBtn = computed(() => this.order()?.estado !== 'pendiente');
+
   badgeColor = computed(() => {
     const estado = this.order()?.estado;
     switch (estado) {
@@ -93,6 +97,7 @@ export class DetallePedidoComponent implements ViewWillEnter {
       timeOutline,
       checkmarkOutline,
       closeOutline,
+      gameControllerOutline,
     });
   }
 
