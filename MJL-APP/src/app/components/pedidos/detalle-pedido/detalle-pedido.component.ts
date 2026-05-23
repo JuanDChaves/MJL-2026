@@ -22,6 +22,7 @@ import {
   closeOutline,
 } from 'ionicons/icons';
 import { register } from 'swiper/element/bundle';
+import { LocalStorageService } from 'src/app/services/local-storage-service';
 
 register();
 
@@ -41,22 +42,23 @@ register();
   ],
 })
 export class DetallePedidoComponent implements ViewWillEnter {
-  @Input() pedidoId: WritableSignal<string> = signal('');
-  @Input() pedido: WritableSignal<IOrder | null> = signal(null);
   orderService = inject(OrdersService);
-
+  localStorageService = inject(LocalStorageService);
+  @Input() pedidoId: WritableSignal<string> = signal('');
+  order= signal<IOrder|null>(null);
+  
   total = computed(() => {
-    const products = this.pedido()?.data ?? [];
+    const products = this.order()?.data ?? [];
     return products.reduce((sum, p) => sum + p.precio * p.cantidad, 0);
   });
 
   totalItems = computed(() => {
-    const products = this.pedido()?.data ?? [];
+    const products = this.order()?.data ?? [];
     return products.reduce((sum, p) => sum + p.cantidad, 0);
   });
 
   totalTime = computed(() => {
-    const products = this.pedido()?.data?.filter((p) => p.cantidad > 0) ?? [];
+    const products = this.order()?.data?.filter((p) => p.cantidad > 0) ?? [];
     if (products.length === 0) return 0;
     if (products.length === 1) return products[0].tiempo_elaboracion;
     return Math.trunc(
@@ -68,7 +70,7 @@ export class DetallePedidoComponent implements ViewWillEnter {
   });
 
   badgeColor = computed(() => {
-    const estado = this.pedido()?.estado;
+    const estado = this.order()?.estado;
     switch (estado) {
       case 'pendiente':
         return 'warning';
@@ -112,22 +114,6 @@ export class DetallePedidoComponent implements ViewWillEnter {
       return;
     }
     const data = response.data;
-    this.pedido.set(data);
-  }
-
-  approveOrder() {
-    console.log('approveOrder - pendiente → preparando');
-  }
-
-  rejectOrder() {
-    console.log('rejectOrder - devolver pedido');
-  }
-
-  markAsReady() {
-    console.log('markAsReady - preparando → hecho');
-  }
-
-  markAsDelivered() {
-    console.log('markAsDelivered - hecho → entregado');
-  }
+    this.order.set(data);
+  }  
 }

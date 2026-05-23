@@ -219,8 +219,8 @@ export class PantallaMenuClienteComponent implements ViewWillEnter {
       //mostrar mensaje de error
       return response.error?.message;
     }
-    this.localStorageService.saveData('productos_pedido', this.cart);
-    this.localStorageService.saveData('id_pedido', {
+    await this.localStorageService.saveData('productos_pedido', this.cart);
+    await this.localStorageService.saveData('id_pedido', {
       id: response.data?.id,
     });
     await this.notiService.confirmacionPedidoAMozo(
