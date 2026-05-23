@@ -1,41 +1,53 @@
-<ion-header>
+<ion-header class="modal-header">
   <ion-toolbar>
-    <ion-title>Asignar mesa</ion-title>
+    <ion-title class="header-title">Asignar Mesa</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="cancelar()">Cerrar</ion-button>
+      <ion-button fill="clear" (click)="cancelar()" class="close-btn">
+        Cerrar
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="modal-content">
   <div class="modal-body">
-    <div class="client-header">
+    <div class="client-section fade-in-up" style="--delay: 0s">
+      <div class="client-avatar">
+        <div class="avatar-initials">
+          {{ initials() }}
+          <span class="pulse-dot"></span>
+        </div>
+      </div>
       <h3 class="client-name">
         {{ clienteEsperando.cliente.nombres }} {{ clienteEsperando.cliente.apellidos }}
       </h3>
       <p class="client-subtitle">Seleccioná una mesa para asignar</p>
     </div>
 
-    <form [formGroup]="form" class="modal-form">
-      <ion-item class="form-item">
-        <ion-select
-          formControlName="numeroMesa"
-          placeholder="Seleccionar mesa"
-          interface="action-sheet"
-          class="mesa-select"
-        >
-          @for (mesa of mesasDisponibles; track mesa.numero_mesa) {
-            <ion-select-option [value]="mesa.numero_mesa">
-              Mesa #{{ mesa.numero_mesa }} — {{ mesa.tipo_mesa }} ({{ mesa.cantidad_comensales }} pers.)
-            </ion-select-option>
-          }
-        </ion-select>
-      </ion-item>
+    <form [formGroup]="form" class="modal-form slide-in-left" style="--delay: 0.1s">
+      <div class="field-wrapper">
+        <ion-item class="form-item">
+          <ion-icon name="restaurant-outline" slot="start" class="field-icon"></ion-icon>
+          <ion-select
+            formControlName="numeroMesa"
+            placeholder="Seleccionar mesa"
+            interface="action-sheet"
+            class="mesa-select"
+          >
+            @for (mesa of mesasDisponibles; track mesa.numero_mesa) {
+              <ion-select-option [value]="mesa.numero_mesa">
+                Mesa #{{ mesa.numero_mesa }} — {{ mesa.tipo_mesa }} ({{ mesa.cantidad_comensales }} pers.)
+              </ion-select-option>
+            }
+          </ion-select>
+        </ion-item>
+      </div>
     </form>
 
     <ion-button
       expand="block"
-      class="confirm-btn"
+      class="confirm-btn fade-in-up"
+      style="--delay: 0.2s"
       [disabled]="form.invalid"
       (click)="confirmar()"
     >

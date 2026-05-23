@@ -8,5 +8,5 @@ export interface IMesa {
   url_foto_mesa: string;
   url_qr: string;
   ocupada:boolean
-  dni: string | null;
+  user_id: string | null;
 }

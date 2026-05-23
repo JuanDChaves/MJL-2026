@@ -83,6 +83,17 @@
           type="button"
           expand="block"
           fill="outline"
+          (click)="loginAsAnonymusUser()"
+          class="register-button"
+        >
+          <ion-icon slot="start" name="person-add"></ion-icon>
+          <span>Ingresar como anonimo 🕵️</span>
+        </ion-button>
+
+        <ion-button
+          type="button"
+          expand="block"
+          fill="outline"
           (click)="toRegister()"
           class="register-button"
         >

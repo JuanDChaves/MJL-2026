@@ -116,7 +116,7 @@ export class AgregarMesaFormComponent implements ViewWillEnter {
       url_foto_mesa: this.photoPreview,
       url_qr: '',
       ocupada: false,
-      dni: null
+      user_id: null
     }
 
     const response = await this.mesaService.cargarMesa(mesa);

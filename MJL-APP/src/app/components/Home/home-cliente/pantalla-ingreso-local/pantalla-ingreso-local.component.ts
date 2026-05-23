@@ -68,12 +68,13 @@ export class PantallaIngresoLocalComponent implements ViewWillEnter {
       const resultMesa = await this.mesaService.chequearMesaAsignada(
         mesaData.numero_mesa,
       );
+      console.log(resultMesa);
       if (!resultMesa.success) {
         console.log(resultMesa.error?.message);
         return;
       }
       const mesa = resultMesa.data!;
-      if (mesa.dni !== this.userService.userData()?.dni) {
+      if (mesa.cliente?.dni !== this.userService.userData()?.dni) {
         let messageError = 'No es tu mesa asignada';
         if(mesa.ocupada){
           messageError = 'Mesa ocupada';

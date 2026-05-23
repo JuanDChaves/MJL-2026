@@ -57,18 +57,18 @@ export class RegistrationService {
   }): Promise<IResult<any>> {
     try {
       const user = await this.getUserObject(controls);
-      const isExist = await this.checkUserExists(user.dni);
+      const isExist = await this.checkUserExists(user.dni!);
       if (!isExist.success) return isExist;//revisar en algun momento
       let resultCreateAccount = null;
       if (this.userService.isLogged()) {
         resultCreateAccount = await this.createUserAccountViaEdgeFunction(
-          user.correo_electronico,
+          user.correo_electronico!,
           controls['clave'].value
         );
         if (!resultCreateAccount.success) return resultCreateAccount;
       } else {
         resultCreateAccount = await this.createUserAccountViaCreateAccount(
-          user.correo_electronico,
+          user.correo_electronico!,
           controls['clave'].value
         );
         if (!resultCreateAccount.success) return resultCreateAccount;
@@ -169,11 +169,11 @@ export class RegistrationService {
 
   private async loadUserAuthorization(user: IUserToRegister): Promise<IResult<void>> {
     const userUnauthorized: IUserUnauthorizedToRegister = {
-      apellidos: user.apellidos,
+      apellidos: user.apellidos!,
       nombres: user.nombres,
-      dni: user.dni,
+      dni: user.dni!,
       url_foto_perfil: user.url_foto_perfil,
-      correo_electronico: user.correo_electronico,
+      correo_electronico: user.correo_electronico!,
       estado:true
     };
     const { error: solicitudError } =

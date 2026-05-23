@@ -24,6 +24,7 @@ import {
 } from 'ionicons/icons';
 import { register } from 'swiper/element/bundle';
 import { LocalStorageService } from 'src/app/services/local-storage-service';
+import { UserService } from 'src/app/services/user-service';
 
 register();
 
@@ -48,6 +49,7 @@ export class DetallePedidoComponent implements ViewWillEnter {
   localStorageService = inject(LocalStorageService);
   @Input() pedidoId: WritableSignal<string> = signal('');
   order= signal<IOrder|null>(null);
+  userService = inject(UserService);
   
   total = computed(() => {
     const products = this.order()?.data ?? [];
@@ -71,7 +73,10 @@ export class DetallePedidoComponent implements ViewWillEnter {
     );
   });
 
-  showJuegosBtn = computed(() => this.order()?.estado !== 'pendiente');
+  isRegisteredClient = computed(() => this.userService.userData()?.dni !== null); //TODO: check if user is registered client
+
+  showJuegosBtn = computed(() => this.isRegisteredClient() && this.order()?.estado !== 'pendiente');
+  
 
   badgeColor = computed(() => {
     const estado = this.order()?.estado;
@@ -102,6 +107,7 @@ export class DetallePedidoComponent implements ViewWillEnter {
   }
 
   async ionViewWillEnter(): Promise<void> {
+    await this.userService.loadUserData();
     await this.loadOrder();
   }
 
