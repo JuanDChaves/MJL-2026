@@ -26,6 +26,8 @@ import { LocalStorageService } from 'src/app/services/local-storage-service';
 import { ErrorMessagePipe } from 'src/app/pipes/error-message.pipe';
 import { ClientService } from 'src/app/services/client-service';
 import { IUserToRegister } from 'src/app/interfaces/IUserToRegister';
+import { addIcons } from 'ionicons';
+import { camera, flash, person } from 'ionicons/icons';
 
 @Component({
   selector: 'app-anonymous-user-registration-form',
@@ -70,6 +72,10 @@ export class AnonymousUserRegistrationFormComponent {
     nombres: this.nombres,
     profileImage: this.profileImage,
   });
+
+  constructor() {
+    addIcons({ camera, person, flash });
+  }
 
   async onSelectPhoto() {
     const path = await this.photoService.takePicture();

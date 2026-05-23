@@ -1,4 +1,4 @@
-import { Component, Input, inject } from '@angular/core';
+import { Component, Input, inject, computed } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -15,8 +15,11 @@ import {
   IonItem,
   IonSelect,
   IonSelectOption,
+  IonIcon,
   ModalController,
 } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { restaurantOutline } from 'ionicons/icons';
 import { ClienteEnEspera } from 'src/app/interfaces/ClienteEnEspera';
 import { IMesa } from 'src/app/interfaces/IMesa';
 
@@ -34,6 +37,7 @@ import { IMesa } from 'src/app/interfaces/IMesa';
     IonItem,
     IonSelect,
     IonSelectOption,
+    IonIcon,
     ReactiveFormsModule,
   ],
 })
@@ -42,6 +46,18 @@ export class AsignarMesaModalComponent {
   @Input() mesasDisponibles: IMesa[] = [];
 
   private modalCtrl = inject(ModalController);
+
+  constructor() {
+    addIcons({ restaurantOutline });
+  }
+
+  initials = computed(() => {
+    const c = this.clienteEsperando?.cliente;
+    if (!c) return '??';
+    const first = c.nombres?.charAt(0)?.toUpperCase() ?? '?';
+    const last = c.apellidos?.charAt(0)?.toUpperCase() ?? '';
+    return first + last;
+  });
 
   form = new FormGroup({
     numeroMesa: new FormControl<number | null>(null, [Validators.required]),

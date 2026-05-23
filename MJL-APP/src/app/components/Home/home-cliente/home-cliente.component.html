@@ -27,7 +27,7 @@
     <div class="info-card">
       <div class="info-row">
         <span class="info-label">DNI</span>
-        <span class="info-value">{{ userService.userData()?.dni }}</span>
+        <span class="info-value">{{ userService.userData()?.dni ? userService.userData()?.dni : 'Sin DNI' }}</span>
       </div>
       <div class="info-row">
         <span class="info-label">Perfil</span>
