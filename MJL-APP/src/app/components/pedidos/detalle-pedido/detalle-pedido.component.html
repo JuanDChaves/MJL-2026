@@ -1,10 +1,9 @@
 <app-layout
-  [title]="'Mesa #' + (pedido()?.numero_mesa ?? '?') + ' - ' + (pedido()?.nombre_cliente ?? '')"
+  [title]="'Estado del pedido'"
   [showBackButton]="true"
-  [backUrl]="'/pedidos-pendientes'"
+  [backUrl]="'/ingreso-local-cliente'"
 >
   <div class="content-inner">
-
     <!-- HEADER CARD -->
     <ion-card class="user-card slide-up" style="--delay: 0s">
       <ion-card-content>
@@ -13,10 +12,10 @@
             <ion-icon name="receipt-outline" class="avatar-icon"></ion-icon>
           </ion-avatar>
           <div class="user-details">
-            <h2 class="user-name">{{ pedido()?.nombre_cliente }}</h2>
-            <p class="user-detail-line">Mesa #{{ pedido()?.numero_mesa }}</p>
+            <h2 class="user-name">{{ order()?.nombre_cliente }}</h2>
+            <p class="user-detail-line">Mesa #{{ order()?.numero_mesa }}</p>
             <ion-badge [color]="badgeColor()" class="estado-badge">
-              {{ pedido()?.estado }}
+              {{ order()?.estado }}
             </ion-badge>
           </div>
         </div>
@@ -24,14 +23,14 @@
     </ion-card>
 
     <!-- SECTION TITLE -->
-    @if (pedido()?.data?.length) {
+    @if (order()?.data?.length) {
       <div class="section-title slide-up" style="--delay: 0.1s">
         Productos ({{ totalItems() }})
       </div>
     }
 
     <!-- SWIPER PRODUCTS -->
-    @if (pedido()?.data?.length) {
+    @if (order()?.data?.length) {
       <div class="swiper-area slide-up" style="--delay: 0.15s">
         <swiper-container
           slides-per-view="1"
@@ -40,16 +39,22 @@
           pagination-clickable="true"
           class="product-swiper"
         >
-          @for (prod of pedido()?.data; track prod.id_producto) {
+          @for (prod of order()?.data; track prod.id_producto) {
             <swiper-slide class="product-slide">
               <div class="swiper-card">
                 <div class="swiper-card-top">
                   <div class="product-icon-wrapper">
                     <ion-icon
-                      [name]="prod.tipo === 'bebida' ? 'beer-outline' : 'restaurant-outline'"
+                      [name]="
+                        prod.tipo === 'bebida'
+                          ? 'beer-outline'
+                          : 'restaurant-outline'
+                      "
                     ></ion-icon>
                   </div>
-                  <ion-badge class="qty-badge" color="dark">x{{ prod.cantidad }}</ion-badge>
+                  <ion-badge class="qty-badge" color="dark"
+                    >x{{ prod.cantidad }}</ion-badge
+                  >
                 </div>
                 <span class="product-name">{{ prod.nombre }}</span>
                 <p class="product-desc">{{ prod.descripcion }}</p>
@@ -66,15 +71,8 @@
         </swiper-container>
       </div>
     }
-
-    @if (!pedido()?.data?.length) {
-      <div class="empty-state slide-up" style="--delay: 0.15s">
-        <p>Sin productos</p>
-      </div>
-    }
-
     <!-- SUMMARY CARD -->
-    @if (pedido()?.data?.length) {
+    @if (order()?.data?.length) {
       <ion-card class="summary-card slide-up" style="--delay: 0.3s">
         <ion-card-content>
           <div class="summary-row">
@@ -92,42 +90,5 @@
         </ion-card-content>
       </ion-card>
     }
-
-    <!-- ACTION BUTTONS -->
-    @if (pedido()?.estado === 'pendiente') {
-      <div class="actions slide-up" style="--delay: 0.35s">
-        <ion-button class="action-btn approve" (click)="approveOrder()">
-          <ion-icon slot="start" name="checkmark-outline"></ion-icon>
-          <span>Enviar a cocina</span>
-        </ion-button>
-        <ion-button class="action-btn reject" (click)="rejectOrder()">
-          <ion-icon slot="start" name="close-outline"></ion-icon>
-          <span>Devolver</span>
-        </ion-button>
-      </div>
-    }
-
-    @if (pedido()?.estado === 'preparando') {
-      <div class="actions slide-up" style="--delay: 0.35s">
-        <ion-button class="action-btn approve" (click)="markAsReady()">
-          <ion-icon slot="start" name="checkmark-outline"></ion-icon>
-          <span>Listo para servir</span>
-        </ion-button>
-        <ion-button class="action-btn reject" (click)="rejectOrder()">
-          <ion-icon slot="start" name="close-outline"></ion-icon>
-          <span>Devolver</span>
-        </ion-button>
-      </div>
-    }
-
-    @if (pedido()?.estado === 'hecho') {
-      <div class="actions slide-up" style="--delay: 0.35s">
-        <ion-button class="action-btn approve" (click)="markAsDelivered()">
-          <ion-icon slot="start" name="checkmark-outline"></ion-icon>
-          <span>Marcar entregado</span>
-        </ion-button>
-      </div>
-    }
-
   </div>
 </app-layout>
