@@ -81,8 +81,8 @@ Deno.serve(async (request: Request) => {
         'Authorization': `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: 'HTN Bar <htn.app.bar@resend.dev>',
-        to: [GMAIL_RESEND],
+        from: 'HTN Bar <htn.app.bar@customermjl.shop>',
+        to: [emailToSend],
         subject: 'Solicitud de registro',
         html: html,
       }),
