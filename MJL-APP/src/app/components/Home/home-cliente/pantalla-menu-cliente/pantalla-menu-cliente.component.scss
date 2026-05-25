@@ -283,7 +283,7 @@ $shadow-light:  0 2px 8px rgba(0, 0, 0, 0.1);
 
   .total-label {
     font-family: 'Georgia', serif;
-    font-size: 1rem;
+    font-size: 1.5rem;
     font-weight: 600;
     color: #{$text-muted};
     text-transform: uppercase;
@@ -292,11 +292,35 @@ $shadow-light:  0 2px 8px rgba(0, 0, 0, 0.1);
 
   .total-amount {
     font-family: 'Georgia', serif;
-    font-size: 1.35rem;
+    font-size: 1.9rem;
     font-weight: 700;
     color: #{$btn-color};
   }
 }
+
+.total-time {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+
+  .total-label {
+    font-family: 'Georgia', serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #{$text-muted};
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .total-amount {
+    font-family: 'Georgia', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #{$btn-color};
+  }
+}
+
 
 // ─── Footer action button ────────────────────────────────────────────────────
 .footer-action {
