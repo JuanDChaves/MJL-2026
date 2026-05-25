@@ -182,10 +182,24 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'ahoracado',
+    loadComponent: () =>
+      import('./components/juegos/ahorcado/ahorcado.component').then(
+        (m) => m.AhorcadoComponent
+      )
+  },
+  {
     path:'juegos',
     loadComponent: () =>
       import('./components/juegos/pantalla-juegos/pantalla-juegos.component').then(
         (m) => m.PantallaJuegosComponent
       ),
+  },
+  {
+    path: 'propinas',
+    loadComponent: () => 
+      import('./components/propinas/propinas.component').then(
+        (m) => m.PropinasComponent
+      )
   }
 ];
