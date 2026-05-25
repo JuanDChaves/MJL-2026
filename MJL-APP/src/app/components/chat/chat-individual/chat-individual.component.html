@@ -13,11 +13,11 @@
 <ion-content class="chat-content" #content>
   <div class="messages-container">
     @for (msg of messages(); track msg.id) {
-      <div class="message-row" [class.is-mine]="!msg.nombre_mozo">
+      <div class="message-row" [class.is-mine]="msg.user_id === this.userService.userData()?.id">
         <div
           class="bubble"
-          [class.bubble-mine]="!msg.nombre_mozo"
-          [class.bubble-other]="msg.nombre_mozo"
+          [class.bubble-mine]="msg.user_id === this.userService.userData()?.id"
+          [class.bubble-other]="msg.user_id !== this.userService.userData()?.id"
         >
           <p class="bubble-text">{{ msg.mensaje }}</p>
           <span class="bubble-info">{{ bubbleInfo(msg) }}</span>
