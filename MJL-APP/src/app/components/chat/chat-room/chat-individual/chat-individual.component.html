@@ -1,0 +1,55 @@
+<ion-header class="chat-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button [defaultHref]="backUrl()"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Chat - Mesa #{{ mesaId() }}</ion-title>
+    <ion-buttons slot="end">
+      <span class="status-dot"></span>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="chat-content" #content>
+  <div class="messages-container">
+    @for (msg of messages(); track msg.id) {
+      <div class="message-row" [class.is-mine]="!msg.nombre_mozo">
+        <div
+          class="bubble"
+          [class.bubble-mine]="!msg.nombre_mozo"
+          [class.bubble-other]="msg.nombre_mozo"
+        >
+          <p class="bubble-text">{{ msg.mensaje }}</p>
+          <span class="bubble-info">{{ bubbleInfo(msg) }}</span>
+        </div>
+      </div>
+    } @empty {
+      <div class="empty-chat">
+        <ion-icon name="chatbubbles-outline"></ion-icon>
+        <p class="empty-title">No hay mensajes todavía</p>
+        <p class="empty-hint">Escribí el primer mensaje</p>
+      </div>
+    }
+  </div>
+</ion-content>
+
+<ion-footer class="chat-footer">
+  <form [formGroup]="form" (ngSubmit)="sendMessage()" class="input-form">
+    <ion-item class="input-item" lines="none">
+      <ion-input
+        formControlName="mensaje"
+        placeholder="Escribí un mensaje..."
+        class="chat-input"
+      ></ion-input>
+      <ion-button
+        slot="end"
+        type="submit"
+        fill="clear"
+        class="send-btn"
+        [disabled]="form.invalid"
+      >
+        <ion-icon slot="icon-only" name="send"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </form>
+</ion-footer>
