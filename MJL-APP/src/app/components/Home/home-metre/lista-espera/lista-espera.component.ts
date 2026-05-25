@@ -54,7 +54,7 @@ export class ListaEsperaComponent implements ViewWillEnter {
 
   async asignarMesa(clienteEsperando: ClienteEnEspera) {
     console.log(clienteEsperando,'cliente recibido')
-    const mesas = await this.mesaService.getAvailableMesas();
+    const mesas = await this.mesaService.mesasDisponibles();
     if (!mesas.success || !mesas.data?.length) return;
 
     const modal = await this.modalCtrl.create({

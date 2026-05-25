@@ -1,3 +1,15 @@
+<ion-header class="menu-header">
+  <ion-toolbar>
+    <ion-title>Menú</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="openChat()" class="chat-header-btn">
+        <ion-icon name="chatbubbles-outline"></ion-icon>
+        <ion-label>Consultar al mozo</ion-label>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
 <ion-content class="menu-content" [scrollY]="false">
   <!-- Segment selector -->
   <ion-segment class="menu-segment">

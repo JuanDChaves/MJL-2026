@@ -81,7 +81,7 @@ export const routes: Routes = [
   {
     path: 'chat/:mesaId',
     loadComponent: () =>
-      import('./components/chat/chat-room/chat-individual/chat-individual.component').then(
+      import('./components/chat/chat-individual/chat-individual.component').then(
         (m) => m.ChatIndividualComponent
       ),
   },

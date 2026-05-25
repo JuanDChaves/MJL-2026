@@ -9,6 +9,47 @@ $text-muted:    #6E4839;
 $shadow:        0 4px 12px rgba(0, 0, 0, 0.25);
 $shadow-light:  0 2px 8px rgba(0, 0, 0, 0.1);
 
+// ─── Header ────────────────────────────────────────────────────────────────────
+.menu-header {
+  --background: #{$bg-amber};
+  --box-shadow: none;
+
+  ion-toolbar {
+    --background: #{$bg-amber};
+    --padding-top: 0;
+    --padding-bottom: 0;
+    padding: 0 4px;
+  }
+
+  ion-title {
+    font-family: 'Georgia', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: $text-dark;
+  }
+
+  .chat-header-btn {
+    --color: #{$text-dark};
+    --padding-start: 8px;
+    --padding-end: 8px;
+    --border-radius: 20px;
+    min-height: 36px;
+    font-family: 'Georgia', serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+
+    ion-icon {
+      font-size: 1.15rem;
+      margin-right: 4px;
+    }
+
+    ion-label {
+      text-transform: none;
+      letter-spacing: normal;
+    }
+  }
+}
+
 // ─── Content (sin scroll vertical) ───────────────────────────────────────────
 .menu-content {
   --background: #{$bg-amber};

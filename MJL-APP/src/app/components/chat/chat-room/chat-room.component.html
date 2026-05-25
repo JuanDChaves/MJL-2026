@@ -1,3 +1,32 @@
-<p>
-  chat-room works!
-</p>
+<app-layout
+  [title]="'Chats Activos'"
+  [showBackButton]="true"
+  [backUrl]="'/mozo-home-page'"
+>
+  <div class="chats-container">
+    @for (mesa of mesasOcupadas(); track mesa.id) {
+      <div class="chat-card" (click)="chatearConMesa(mesa)">
+        <div class="card-left">
+          <div class="mesa-avatar">{{ mesa.numero_mesa }}</div>
+        </div>
+        <div class="card-body">
+          <div class="card-header-row">
+            <h3 class="mesa-title">Mesa #{{ mesa.numero_mesa }}</h3>
+            <span class="mesa-time">—</span>
+          </div>
+          <p class="cliente-nombre">—</p>
+          <p class="ultimo-mensaje">—</p>
+        </div>
+        <div class="card-right">
+          <span class="unread-badge">0</span>
+        </div>
+      </div>
+    } @empty {
+      <div class="empty-state">
+        <ion-icon name="chatbubbles-outline"></ion-icon>
+        <p class="empty-title">No hay chats activos</p>
+        <p class="empty-hint">Las conversaciones aparecerán aquí</p>
+      </div>
+    }
+  </div>
+</app-layout>

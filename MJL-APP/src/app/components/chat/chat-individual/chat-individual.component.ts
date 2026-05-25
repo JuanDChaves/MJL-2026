@@ -19,6 +19,12 @@ import { addIcons } from 'ionicons';
 import { send, chatbubblesOutline } from 'ionicons/icons';
 import { IMensajeChat } from 'src/app/interfaces/IMensajeChat';
 import { IMensajeChatEnviado } from 'src/app/interfaces/IMensajeChatEnviado';
+import { IMesa } from 'src/app/interfaces/IMesa';
+import { IMesaCliente } from 'src/app/interfaces/IMesaCliente';
+import { IResult } from 'src/app/interfaces/IResult';
+import { IUser } from 'src/app/interfaces/IUser';
+import { MesaService } from 'src/app/services/mesa-service';
+import { NotificationsService } from 'src/app/services/notifications-service';
 import { RealtimeService } from 'src/app/services/realtime-service';
 import { UserService } from 'src/app/services/user-service';
 
@@ -47,21 +53,17 @@ export class ChatIndividualComponent implements ViewWillEnter{
    * EL CLIENTE SE TIENE QUE TRAER TODOS LOS MENSAJES DE LA MESA X Y CON IGUAL ID AL PROPIO
    */
 
-
+  // SERVICIOS
+  realtimeServ = inject(RealtimeService);
+  userService = inject(UserService);
+  notiService = inject(NotificationsService);
+  mesaService = inject(MesaService);
   private route = inject(ActivatedRoute);
 
-  // mesaId = signal<string>(this.route.snapshot.paramMap.get('mesaId')!);
-  mesaId = signal<string>('6d37ffd8-2702-4cfc-9383-419b4fe8e025');
-  //mesa 1 id = 6d37ffd8-2702-4cfc-9383-419b4fe8e025
-
+  mesaId = signal<string>(this.route.snapshot.paramMap.get('mesaId')!);
+  client = signal<string | null>(null);
   messages = signal<IMensajeChat[]>([]);
-
   backUrl = signal<string>('/chat-room');
-
-  realtimeServ = inject(RealtimeService);
-
-  userService = inject(UserService)
-
   form = new FormGroup({
     mensaje: new FormControl('', [Validators.required, Validators.minLength(1)]),
   });
@@ -71,6 +73,9 @@ export class ChatIndividualComponent implements ViewWillEnter{
   }
   async ionViewWillEnter(): Promise<void> {
     await this.userService.loadUserData();
+    if(this.userService.userData()?.perfil === 'mozo'){
+      await this.getClientData();
+    }
     const resultMsgs = await this.realtimeServ.getAllMsgClient(this.mesaId());
     if(resultMsgs.success) this.messages.set(resultMsgs.data ?? []);
 
@@ -106,13 +111,17 @@ export class ChatIndividualComponent implements ViewWillEnter{
       nombre_mozo: user?.perfil === 'mozo' ? user.nombres : null,
     }
 
+    if(user?.perfil === 'cliente'){ 
+      await this.notiService.consultaParaMozo(user);
+    }else{
+      await this.notiService.respuestaDelMozo(user!, this.client()!);
+    }
     const result = await this.realtimeServ.sendMsg(msgToSend);
     if (!result.success) {
       console.log(result.error);
     }else{
       console.log('mensaje enviado con exito');
     }    
-
     this.form.reset();
   }
 
@@ -125,4 +134,16 @@ export class ChatIndividualComponent implements ViewWillEnter{
     }
     return `${msg.nombre_mozo ?? 'Mozo'} · ${time}`;
   }
+
+  async getClientData(){
+    const result : IResult<IMesa>=  await this.mesaService.getById(this.mesaId()); 
+    if(!result.success){
+      console.log(result.error);
+      return;
+    }
+    console.log(result.data);
+    this.client.set(result.data?.user_id!);
+  }
+
+  
 }
