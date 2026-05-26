@@ -1,6 +1,5 @@
 import {
   Component,
-  ElementRef,
   inject,
   signal,
   ViewChild,
@@ -80,7 +79,7 @@ export class ChatIndividualComponent implements ViewWillEnter {
     ]),
   });
 
-  @ViewChild('messagesContainer') private messagesContainer!: ElementRef;
+  @ViewChild('content') private content!: IonContent;
 
   constructor() {
     addIcons({ send, chatbubblesOutline });
@@ -92,6 +91,7 @@ export class ChatIndividualComponent implements ViewWillEnter {
     }
     const resultMsgs = await this.realtimeServ.getAllMsgClient(this.mesaId());
     if(resultMsgs.success) this.messages.set(resultMsgs.data ?? []);
+    this.scrollToBottom();
 
     this.realtimeServ.canal.on(
       'postgres_changes',
@@ -106,7 +106,8 @@ export class ChatIndividualComponent implements ViewWillEnter {
         const newMsg : IMensajeChat = payload.new as IMensajeChat;
         this.messages.update((old) =>{
           return [...old, newMsg];
-        })
+        });
+        this.scrollToBottom();
       }
     )
     .subscribe();
@@ -150,6 +151,12 @@ export class ChatIndividualComponent implements ViewWillEnter {
       return `Mesa #${1} · ${time}`;
     }
     return `${msg.nombre_mozo ?? 'Mozo'} · ${time}`;
+  }
+
+  private scrollToBottom(): void {
+    setTimeout(() => {
+      this.content?.scrollToBottom(500);
+    }, 100);
   }
 
   async getClientData() {
