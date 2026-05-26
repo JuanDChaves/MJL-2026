@@ -1,5 +1,16 @@
-import { Component, inject, signal } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  Component,
+  ElementRef,
+  inject,
+  signal,
+  ViewChild,
+} from '@angular/core';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import {
   IonHeader,
@@ -20,9 +31,7 @@ import { send, chatbubblesOutline } from 'ionicons/icons';
 import { IMensajeChat } from 'src/app/interfaces/IMensajeChat';
 import { IMensajeChatEnviado } from 'src/app/interfaces/IMensajeChatEnviado';
 import { IMesa } from 'src/app/interfaces/IMesa';
-import { IMesaCliente } from 'src/app/interfaces/IMesaCliente';
 import { IResult } from 'src/app/interfaces/IResult';
-import { IUser } from 'src/app/interfaces/IUser';
 import { MesaService } from 'src/app/services/mesa-service';
 import { NotificationsService } from 'src/app/services/notifications-service';
 import { RealtimeService } from 'src/app/services/realtime-service';
@@ -47,9 +56,9 @@ import { UserService } from 'src/app/services/user-service';
     ReactiveFormsModule,
   ],
 })
-export class ChatIndividualComponent implements ViewWillEnter{
+export class ChatIndividualComponent implements ViewWillEnter {
   /**
-   * LOS MOZOS SE TIENE QUE TRAER TODOS LOS MENSAJES DE LA MESA X 
+   * LOS MOZOS SE TIENE QUE TRAER TODOS LOS MENSAJES DE LA MESA X
    * EL CLIENTE SE TIENE QUE TRAER TODOS LOS MENSAJES DE LA MESA X Y CON IGUAL ID AL PROPIO
    */
 
@@ -65,15 +74,20 @@ export class ChatIndividualComponent implements ViewWillEnter{
   messages = signal<IMensajeChat[]>([]);
   backUrl = signal<string>('/chat-room');
   form = new FormGroup({
-    mensaje: new FormControl('', [Validators.required, Validators.minLength(1)]),
+    mensaje: new FormControl('', [
+      Validators.required,
+      Validators.minLength(1),
+    ]),
   });
+
+  @ViewChild('messagesContainer') private messagesContainer!: ElementRef;
 
   constructor() {
     addIcons({ send, chatbubblesOutline });
   }
   async ionViewWillEnter(): Promise<void> {
     await this.userService.loadUserData();
-    if(this.userService.userData()?.perfil === 'mozo'){
+    if (this.userService.userData()?.perfil === 'mozo') {
       await this.getClientData();
     }
     const resultMsgs = await this.realtimeServ.getAllMsgClient(this.mesaId());
@@ -104,30 +118,33 @@ export class ChatIndividualComponent implements ViewWillEnter{
     const text = this.form.value.mensaje?.trim();
     if (!text) return;
     const user = this.userService.userData();
-    const msgToSend : IMensajeChatEnviado = {
+    const msgToSend: IMensajeChatEnviado = {
       mensaje: text,
       mesa_id: this.mesaId(),
       user_id: user?.id ?? '',
       nombre_mozo: user?.perfil === 'mozo' ? user.nombres : null,
-    }
+    };
 
-    if(user?.perfil === 'cliente'){ 
+    if (user?.perfil === 'cliente') {
       await this.notiService.consultaParaMozo(user);
-    }else{
+    } else {
       await this.notiService.respuestaDelMozo(user!, this.client()!);
     }
     const result = await this.realtimeServ.sendMsg(msgToSend);
     if (!result.success) {
       console.log(result.error);
-    }else{
+    } else {
       console.log('mensaje enviado con exito');
-    }    
+    }
     this.form.reset();
   }
 
   bubbleInfo(msg: IMensajeChat): string {
     const time = msg.created_at
-      ? new Date(msg.created_at).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })
+      ? new Date(msg.created_at).toLocaleTimeString('es-AR', {
+          hour: '2-digit',
+          minute: '2-digit',
+        })
       : '';
     if (msg.nombre_mozo === null) {
       return `Mesa #${1} · ${time}`;
@@ -135,9 +152,11 @@ export class ChatIndividualComponent implements ViewWillEnter{
     return `${msg.nombre_mozo ?? 'Mozo'} · ${time}`;
   }
 
-  async getClientData(){
-    const result : IResult<IMesa>=  await this.mesaService.getById(this.mesaId()); 
-    if(!result.success){
+  async getClientData() {
+    const result: IResult<IMesa> = await this.mesaService.getById(
+      this.mesaId(),
+    );
+    if (!result.success) {
       console.log(result.error);
       return;
     }
