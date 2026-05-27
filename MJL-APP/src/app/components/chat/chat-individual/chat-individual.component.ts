@@ -48,7 +48,6 @@ import { UserService } from 'src/app/services/user-service';
     IonBackButton,
     IonContent,
     IonFooter,
-    IonItem,
     IonInput,
     IonButton,
     IonIcon,

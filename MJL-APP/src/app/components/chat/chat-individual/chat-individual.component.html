@@ -35,14 +35,13 @@
 
 <ion-footer class="chat-footer">
   <form [formGroup]="form" (ngSubmit)="sendMessage()" class="input-form">
-    <ion-item class="input-item" lines="none">
+    <div class="input-row">
       <ion-input
         formControlName="mensaje"
         placeholder="Escribí un mensaje..."
         class="chat-input"
       ></ion-input>
       <ion-button
-        slot="end"
         type="submit"
         fill="clear"
         class="send-btn"
@@ -50,6 +49,6 @@
       >
         <ion-icon slot="icon-only" name="send"></ion-icon>
       </ion-button>
-    </ion-item>
+    </div>
   </form>
 </ion-footer>
