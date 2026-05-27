@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   inject,
   signal,
@@ -40,6 +41,7 @@ import { UserService } from 'src/app/services/user-service';
   selector: 'app-chat-individual',
   templateUrl: './chat-individual.component.html',
   styleUrls: ['./chat-individual.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     IonHeader,
     IonToolbar,
