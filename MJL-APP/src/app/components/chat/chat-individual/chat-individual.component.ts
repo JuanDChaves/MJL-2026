@@ -20,14 +20,13 @@ import {
   IonBackButton,
   IonContent,
   IonFooter,
-  IonItem,
   IonInput,
   IonButton,
   IonIcon,
   ViewWillEnter,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { send, chatbubblesOutline } from 'ionicons/icons';
+import { send, chatbubblesOutline, happyOutline, personOutline, checkmarkCircle } from 'ionicons/icons';
 import { IMensajeChat } from 'src/app/interfaces/IMensajeChat';
 import { IMensajeChatEnviado } from 'src/app/interfaces/IMensajeChatEnviado';
 import { IMesa } from 'src/app/interfaces/IMesa';
@@ -57,12 +56,6 @@ import { UserService } from 'src/app/services/user-service';
   ],
 })
 export class ChatIndividualComponent implements ViewWillEnter {
-  /**
-   * LOS MOZOS SE TIENE QUE TRAER TODOS LOS MENSAJES DE LA MESA X
-   * EL CLIENTE SE TIENE QUE TRAER TODOS LOS MENSAJES DE LA MESA X Y CON IGUAL ID AL PROPIO
-   */
-
-  // SERVICIOS
   realtimeServ = inject(RealtimeService);
   userService = inject(UserService);
   notiService = inject(NotificationsService);
@@ -70,9 +63,11 @@ export class ChatIndividualComponent implements ViewWillEnter {
   private route = inject(ActivatedRoute);
 
   mesaId = signal<string>(this.route.snapshot.paramMap.get('mesaId')!);
+  numeroMesa = signal<string>(this.route.snapshot.paramMap.get('numeroMesa')!);
   client = signal<string | null>(null);
   messages = signal<IMensajeChat[]>([]);
   backUrl = signal<string>('/chat-room');
+  isSending = signal(false);
   form = new FormGroup({
     mensaje: new FormControl('', [
       Validators.required,
@@ -83,8 +78,9 @@ export class ChatIndividualComponent implements ViewWillEnter {
   @ViewChild('content') private content!: IonContent;
 
   constructor() {
-    addIcons({ send, chatbubblesOutline });
+    addIcons({ send, chatbubblesOutline, happyOutline, personOutline, checkmarkCircle });
   }
+
   async ionViewWillEnter(): Promise<void> {
     await this.userService.loadUserData();
     if (this.userService.userData()?.perfil === 'mozo') {
@@ -103,22 +99,19 @@ export class ChatIndividualComponent implements ViewWillEnter {
         filter: `mesa_id=eq.${this.mesaId()}`,
       },
       (payload) => {
-        console.log(payload);
         const newMsg : IMensajeChat = payload.new as IMensajeChat;
-        this.messages.update((old) =>{
-          return [...old, newMsg];
-        });
+        this.messages.update((old) => [...old, newMsg]);
         this.scrollToBottom();
       }
     )
     .subscribe();
-
   }
 
   async sendMessage(): Promise<void> {
-    if (this.form.invalid) return;
+    if (this.form.invalid || this.isSending()) return;
     const text = this.form.value.mensaje?.trim();
     if (!text) return;
+    this.isSending.set(true);
     const user = this.userService.userData();
     const msgToSend: IMensajeChatEnviado = {
       mensaje: text,
@@ -135,23 +128,31 @@ export class ChatIndividualComponent implements ViewWillEnter {
     const result = await this.realtimeServ.sendMsg(msgToSend);
     if (!result.success) {
       console.log(result.error);
-    } else {
-      console.log('mensaje enviado con exito');
     }
     this.form.reset();
+    this.isSending.set(false);
   }
 
-  bubbleInfo(msg: IMensajeChat): string {
-    const time = msg.created_at
-      ? new Date(msg.created_at).toLocaleTimeString('es-AR', {
-          hour: '2-digit',
-          minute: '2-digit',
-        })
-      : '';
-    if (msg.nombre_mozo === null) {
-      return `Mesa #${1} · ${time}`;
+  bubbleTime(msg: IMensajeChat): string {
+    if (!msg.created_at) return '';
+    const d = new Date(msg.created_at);
+    const time = d.toLocaleTimeString('es-AR', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    });
+    if (msg.nombre_mozo) {
+      return `${time} · ${msg.nombre_mozo}`;
     }
-    return `${msg.nombre_mozo ?? 'Mozo'} · ${time}`;
+    return time;
+  }
+
+  isOwnMessage(userId: string | undefined): boolean {
+    return userId === this.userService.userData()?.id;
+  }
+
+  getInitial(name: string | null): string {
+    return name?.charAt(0).toUpperCase() || '?';
   }
 
   private scrollToBottom(): void {
@@ -161,16 +162,11 @@ export class ChatIndividualComponent implements ViewWillEnter {
   }
 
   async getClientData() {
-    const result: IResult<IMesa> = await this.mesaService.getById(
-      this.mesaId(),
-    );
+    const result: IResult<IMesa> = await this.mesaService.getById(this.mesaId());
     if (!result.success) {
       console.log(result.error);
       return;
     }
-    console.log(result.data);
     this.client.set(result.data?.user_id!);
   }
-
-  
 }

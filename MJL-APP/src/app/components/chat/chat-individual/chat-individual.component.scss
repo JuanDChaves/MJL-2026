@@ -1,36 +1,66 @@
-// ─── Variables ───────────────────────────────────────────────────────────────
-$bg-amber:      #F5A623;
-$bg-beige:      #f3e9da;
-$btn-color:     #B71C1C;
-$btn-hover:     #D32F2F;
-$btn-text:      #FFFFFF;
-$text-dark:     #1A1A1A;
-$text-muted:    #6E4839;
-$shadow-card:   0 4px 16px rgba(0, 0, 0, 0.18);
-$radius:        12px;
+@use 'sass:color';
+$wine-dark: #3E1F1F;
+$wine-med: #5C2E2E;
+$amber: #F5A623;
+$beige: #f3e9da;
+$cream: #FFF8E7;
+$btn-red: #B71C1C;
+$text-dark: #1A1A1A;
+$text-muted: #6E4839;
 
-// ─── Header ────────────────────────────────────────────────────────────────────
 .chat-header {
-  --background: #{$bg-amber};
-  --box-shadow: none;
+  --background: #{$wine-dark};
 
   ion-toolbar {
-    --background: #{$bg-amber};
-    --padding-top: 0;
-    --padding-bottom: 0;
-    padding: 10px 4px;
+    --background: linear-gradient(135deg, #{$wine-dark} 0%, #{$wine-med} 100%);
+    padding: 8px 4px;
+    position: relative;
+    min-height: 56px;
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(255,255,255,0.025) 1px, rgba(255,255,255,0.025) 2px);
+      pointer-events: none;
+    }
   }
 
-  ion-title {
-    font-family: 'Georgia', serif;
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: $text-dark;
-  }
-
-  ion-back-button {
-    --color: #{$text-dark};
+  .back-btn {
+    --color: rgba(255,255,255,0.85);
     --icon-font-size: 1.4rem;
+  }
+
+  .header-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    flex: 1;
+    min-width: 0;
+    padding: 0 8px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .header-title {
+    --padding-start: 0;
+    --padding-end: 0;
+    font-family: 'Georgia', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.3;
+    letter-spacing: 0.3px;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+
+  .header-subtitle {
+    font-family: 'Georgia', serif;
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.55);
+    letter-spacing: 1px;
+    text-transform: uppercase;
   }
 }
 
@@ -38,21 +68,31 @@ $radius:        12px;
   display: block;
   width: 10px;
   height: 10px;
+  margin-right: 14px;
   border-radius: 50%;
-  background: #2E7D32;
-  margin-right: 12px;
-  box-shadow: 0 0 6px rgba(46, 125, 50, 0.5);
-  animation: pulse 2s ease-in-out infinite;
+  background: #{$amber};
+  box-shadow: 0 0 8px rgba(245, 166, 35, 0.5);
+  animation: warmPulse 2.4s ease-in-out infinite;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(245, 166, 35, 0.15);
+    animation: ringPulse 2.4s ease-in-out infinite;
+  }
 }
 
-// ─── Content ────────────────────────────────────────────────────────────────────
 .chat-content {
-  --background: #{$bg-amber};
-  --padding-top: 0;
-  --padding-bottom: 0;
+  --background: #{$amber};
+
+  &::part(scroll)::-webkit-scrollbar { width: 4px; }
+  &::part(scroll)::-webkit-scrollbar-track { background: transparent; }
+  &::part(scroll)::-webkit-scrollbar-thumb { background: rgba($text-muted, 0.25); border-radius: 2px; }
 }
 
-.messages-container {
+.messages-wrap {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -60,7 +100,6 @@ $radius:        12px;
   min-height: 100%;
 }
 
-// ─── Empty state ──────────────────────────────────────────────────────────────
 .empty-chat {
   display: flex;
   flex-direction: column;
@@ -69,180 +108,231 @@ $radius:        12px;
   flex: 1;
   text-align: center;
   gap: 8px;
+  padding: 32px;
 
-  ion-icon {
-    font-size: 3.5rem;
-    color: $text-muted;
-    opacity: 0.5;
+  .empty-cocktail {
+    width: 64px;
+    height: 70px;
+    animation: gentleBob 3s ease-in-out infinite;
   }
 
   .empty-title {
     font-family: 'Georgia', serif;
     font-size: 1.1rem;
-    font-weight: 600;
+    font-weight: 700;
     color: $text-dark;
-    margin: 0;
+    letter-spacing: 0.2px;
   }
 
   .empty-hint {
-    font-size: 0.85rem;
+    font-family: 'Georgia', serif;
+    font-size: 0.82rem;
     color: $text-muted;
-    margin: 0;
+    opacity: 0.7;
+    max-width: 200px;
+    line-height: 1.4;
   }
 }
 
-// ─── Message rows ──────────────────────────────────────────────────────────────
 .message-row {
   display: flex;
+  align-items: flex-end;
+  gap: 8px;
   animation: fadeInUp 0.3s ease-out;
   animation-fill-mode: both;
 
-  &.is-mine {
-    justify-content: flex-end;
-  }
+  &.is-mine { justify-content: flex-end; }
+  &:not(.is-mine) { justify-content: flex-start; }
+}
 
-  &:not(.is-mine) {
-    justify-content: flex-start;
+.msg-avatar {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #{$wine-dark}, #{$wine-med});
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+
+  ion-icon { font-size: 0.9rem; color: rgba(255,255,255,0.7); }
+
+  .avatar-initial {
+    font-family: 'Georgia', serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.85);
+    text-transform: uppercase;
   }
 }
 
-// ─── Bubbles ───────────────────────────────────────────────────────────────────
 .bubble {
-  max-width: 80%;
-  padding: 10px 14px;
-  border-radius: $radius;
-  word-wrap: break-word;
+  max-width: 78%;
+  padding: 12px 16px;
   overflow-wrap: break-word;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
 .bubble-mine {
-  background: $btn-color;
-  color: $btn-text;
-  border-radius: $radius 4px $radius $radius;
+  background: linear-gradient(135deg, #C62828 0%, #D32F2F 100%);
+  color: #fff;
+  border-radius: 18px 4px 18px 18px;
+  box-shadow: 0 3px 12px rgba(183, 28, 28, 0.25);
 }
 
 .bubble-other {
-  background: $bg-beige;
+  background: #{$cream};
   color: $text-dark;
-  border-radius: 4px $radius $radius $radius;
+  border-radius: 4px 18px 18px 18px;
+  border-left: 3px solid #{$amber};
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
 }
 
 .bubble-text {
-  font-size: 0.95rem;
-  line-height: 1.4;
-  margin: 0;
+  font-family: 'Georgia', serif;
+  font-size: 0.92rem;
+  line-height: 1.45;
   white-space: pre-wrap;
 }
 
-.bubble-info {
-  font-size: 0.65rem;
-  opacity: 0.7;
-  text-align: right;
-  display: block;
-  margin-top: 2px;
+.bubble-meta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  justify-content: flex-end;
+
+  .check-icon { font-size: 0.65rem; opacity: 0.5; }
 }
 
-// ─── Footer ────────────────────────────────────────────────────────────────────
+.bubble-time {
+  font-size: 0.62rem;
+  opacity: 0.55;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+}
+
+.bubble-mine {
+  .check-icon, .bubble-time { color: rgba(255,255,255,0.6); }
+}
+
+.bubble-other {
+  .check-icon, .bubble-time { color: $text-muted; }
+}
+
 .chat-footer {
   --padding-top: 0;
   --padding-bottom: 0;
   --padding-start: 0;
   --padding-end: 0;
   --min-height: 0;
-  background: $bg-beige;
+  background: transparent;
 }
 
 .input-form {
-  background: $bg-beige;
-  padding: 12px;
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
+  background: linear-gradient(to top, #{$beige} 0%, #{color.adjust($beige, $lightness: 2%)} 100%);
+  padding: 10px 12px;
+  padding-bottom: max(10px, env(safe-area-inset-bottom, 10px));
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
 }
 
 .input-row {
   display: flex;
   align-items: center;
-  gap: 8px;
-  background: #ffffff;
-  border-radius: $radius;
-  padding: 2px 2px 2px 4px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  gap: 6px;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(8px);
+  border-radius: 16px;
+  padding: 2px 2px 2px 10px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.8);
   transition: box-shadow 0.2s ease;
 
   &:focus-within {
-    box-shadow: 0 2px 12px rgba(183, 28, 28, 0.15);
+    background: #fff;
+    box-shadow: 0 2px 16px rgba(183, 28, 28, 0.12), inset 0 1px 0 rgba(255,255,255,0.9);
   }
+}
+
+.input-icon {
+  font-size: 1.2rem;
+  color: $text-muted;
+  opacity: 0.5;
+  flex-shrink: 0;
 }
 
 .chat-input {
   flex: 1;
   font-family: 'Georgia', serif;
-  font-size: 1rem;
+  font-size: 0.95rem;
   --highlight-height: 0;
-  --padding-start: 10px;
+  --padding-start: 6px;
   --padding-end: 4px;
-  --padding-top: 14px;
-  --padding-bottom: 14px;
+  --padding-top: 12px;
+  --padding-bottom: 12px;
   --placeholder-color: #{$text-muted};
-  --placeholder-opacity: 0.6;
+  --placeholder-opacity: 0.45;
   --background: transparent;
 }
 
 .send-btn {
   flex-shrink: 0;
-  --color: #{$btn-color};
+  --color: #{$btn-red};
   --padding-start: 0;
   --padding-end: 0;
-  min-width: 48px;
-  min-height: 48px;
+  --background-hover: none;
+  --background-activated: none;
+  min-width: 44px;
+  min-height: 44px;
   margin: 0;
 
   ion-icon {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
+    transition: transform 0.3s ease;
   }
 
+  &:hover ion-icon { transform: rotate(-15deg) scale(1.1); }
+
+  &.is-sending ion-icon { animation: spinSend 0.6s ease-in-out; }
+
   &[disabled] {
-    --color: #{rgba($btn-color, 0.3)};
+    --color: #{rgba($btn-red, 0.25)};
+    ion-icon { transform: none; }
   }
 }
 
-// ─── Animations ───────────────────────────────────────────────────────────────
-@keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50%      { opacity: 0.6; transform: scale(1.2); }
+@media (max-width: 480px) {
+  .messages-wrap { padding: 12px; gap: 8px; }
+  .bubble { max-width: 85%; padding: 10px 13px; }
+  .bubble-text { font-size: 0.88rem; }
+  .msg-avatar { width: 28px; height: 28px; }
+  .input-form { padding: 8px 10px; }
+  .chat-input { --padding-top: 10px; --padding-bottom: 10px; }
+  .send-btn { min-width: 40px; min-height: 40px; ion-icon { font-size: 1.3rem; } }
 }
 
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-// ─── Responsive ──────────────────────────────────────────────────────────────
-@media (max-width: 480px) {
-  .messages-container {
-    padding: 12px;
-    gap: 8px;
-  }
+@keyframes warmPulse {
+  0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 6px rgba(245, 166, 35, 0.4); }
+  50% { opacity: 0.7; transform: scale(1.2); box-shadow: 0 0 14px rgba(245, 166, 35, 0.7); }
+}
 
-  .bubble {
-    max-width: 85%;
-    padding: 8px 12px;
-  }
+@keyframes ringPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.4); }
+}
 
-  .bubble-text {
-    font-size: 0.9rem;
-  }
+@keyframes gentleBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+}
 
-  .input-form {
-    padding: 10px;
-  }
+@keyframes spinSend {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }

@@ -79,7 +79,7 @@ export const routes: Routes = [
       ),
   },
   {
-    path: 'chat/:mesaId',
+    path: 'chat/:mesaId/:numeroMesa',
     loadComponent: () =>
       import('./components/chat/chat-individual/chat-individual.component').then(
         (m) => m.ChatIndividualComponent
