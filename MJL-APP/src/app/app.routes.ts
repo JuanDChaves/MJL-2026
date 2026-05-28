@@ -79,7 +79,7 @@ export const routes: Routes = [
       ),
   },
   {
-    path: 'chat/:mesaId',
+    path: 'chat/:mesaId/:numeroMesa',
     loadComponent: () =>
       import('./components/chat/chat-individual/chat-individual.component').then(
         (m) => m.ChatIndividualComponent
@@ -193,6 +193,13 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./components/juegos/pantalla-juegos/pantalla-juegos.component').then(
         (m) => m.PantallaJuegosComponent
+      ),
+  },
+  {
+    path: 'propinas',
+    loadComponent: () =>
+      import('./components/seleccionar-propina/seleccionar-propina.component').then(
+        (m) => m.SeleccionarPropinaComponent
       ),
   }
 ];

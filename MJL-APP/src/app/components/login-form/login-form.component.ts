@@ -5,7 +5,7 @@ import {
   ReactiveFormsModule,
   FormControl,
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import {
   IonCard,
   IonCardHeader,
@@ -68,6 +68,7 @@ import { AnonymousUserRegistrationFormComponent } from '../anonymous-user-regist
     IonFabButton,
     IonFab,
     IonFabList,
+    RouterLink
   ],
 })
 export class LoginFormComponent {

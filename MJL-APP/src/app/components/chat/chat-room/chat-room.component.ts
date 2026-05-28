@@ -36,7 +36,7 @@ export class ChatRoomComponent implements ViewWillEnter {
   }
 
   chatearConMesa(mesa: IMesa) {
-    this.route.navigate(['/chat', mesa.id]);
+    this.route.navigate(['/chat', mesa.id,mesa.numero_mesa]);
   }
 
 }
