@@ -74,8 +74,15 @@ export const routes: Routes = [
   {
     path: 'chat-room',
     loadComponent: () =>
-      import('./components/chat-room/chat-room.component').then(
+      import('./components/chat/chat-room/chat-room.component').then(
         (m) => m.ChatRoomComponent
+      ),
+  },
+  {
+    path: 'chat/:mesaId',
+    loadComponent: () =>
+      import('./components/chat/chat-individual/chat-individual.component').then(
+        (m) => m.ChatIndividualComponent
       ),
   },
   {
