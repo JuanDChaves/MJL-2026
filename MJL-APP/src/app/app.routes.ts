@@ -194,5 +194,12 @@ export const routes: Routes = [
       import('./components/juegos/pantalla-juegos/pantalla-juegos.component').then(
         (m) => m.PantallaJuegosComponent
       ),
+  },
+  {
+    path: 'propinas',
+    loadComponent: () =>
+      import('./components/seleccionar-propina/seleccionar-propina.component').then(
+        (m) => m.SeleccionarPropinaComponent
+      ),
   }
 ];
