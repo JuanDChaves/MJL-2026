@@ -287,6 +287,34 @@ $reject-hover:  #D32F2F;
   color: $title-color;
 }
 
+.summary-games {
+  border-top: 1px solid rgba($title-color, 0.08);
+  margin-top: 8px;
+  padding-top: 12px;
+
+  .summary-label {
+    font-size: 0.8rem;
+    line-height: 1.3;
+    max-width: 60%;
+  }
+}
+
+.games-btn {
+  font-family: 'Georgia', serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  margin: 0;
+  --color: #{$btn-color};
+  flex-shrink: 0;
+
+  ion-icon {
+    font-size: 1.1rem;
+    margin-right: 4px;
+  }
+}
+
 // ─── Action buttons ──────────────────────────────────────────────────────────
 .actions {
   display: flex;

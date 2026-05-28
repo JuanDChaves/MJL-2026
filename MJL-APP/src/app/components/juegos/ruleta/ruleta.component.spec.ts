@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { ChatIndividualComponent } from './chat-individual.component';
+import { RuletaComponent } from './ruleta.component';
 
-describe('ChatIndividualComponent', () => {
-  let component: ChatIndividualComponent;
-  let fixture: ComponentFixture<ChatIndividualComponent>;
+describe('RuletaComponent', () => {
+  let component: RuletaComponent;
+  let fixture: ComponentFixture<RuletaComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ ChatIndividualComponent ],
+      declarations: [ RuletaComponent ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ChatIndividualComponent);
+    fixture = TestBed.createComponent(RuletaComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

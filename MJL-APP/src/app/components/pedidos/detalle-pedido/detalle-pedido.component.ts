@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, computed, inject, signal, WritableSignal } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, computed, inject, signal, WritableSignal, input, Input } from '@angular/core';
 import { LayoutComponent } from '../../layout/layout.component';
 import {
   IonAvatar,
@@ -9,7 +9,7 @@ import {
   IonBadge,
   ViewWillEnter,
 } from '@ionic/angular/standalone';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { OrdersService } from 'src/app/services/orders-service';
 import { IOrder } from 'src/app/interfaces/IOrder';
 import { addIcons } from 'ionicons';
@@ -20,8 +20,11 @@ import {
   timeOutline,
   checkmarkOutline,
   closeOutline,
+  gameControllerOutline,
 } from 'ionicons/icons';
 import { register } from 'swiper/element/bundle';
+import { LocalStorageService } from 'src/app/services/local-storage-service';
+import { UserService } from 'src/app/services/user-service';
 
 register();
 
@@ -38,25 +41,28 @@ register();
     IonBadge,
     IonIcon,
     LayoutComponent,
+    RouterLink,
   ],
 })
 export class DetallePedidoComponent implements ViewWillEnter {
-  pedidoId: WritableSignal<string> = signal('');
-  pedido: WritableSignal<IOrder | null> = signal(null);
   orderService = inject(OrdersService);
-
+  localStorageService = inject(LocalStorageService);
+  @Input() pedidoId: WritableSignal<string> = signal('');
+  order= signal<IOrder|null>(null);
+  userService = inject(UserService);
+  
   total = computed(() => {
-    const products = this.pedido()?.data ?? [];
+    const products = this.order()?.data ?? [];
     return products.reduce((sum, p) => sum + p.precio * p.cantidad, 0);
   });
 
   totalItems = computed(() => {
-    const products = this.pedido()?.data ?? [];
+    const products = this.order()?.data ?? [];
     return products.reduce((sum, p) => sum + p.cantidad, 0);
   });
 
   totalTime = computed(() => {
-    const products = this.pedido()?.data?.filter((p) => p.cantidad > 0) ?? [];
+    const products = this.order()?.data?.filter((p) => p.cantidad > 0) ?? [];
     if (products.length === 0) return 0;
     if (products.length === 1) return products[0].tiempo_elaboracion;
     return Math.trunc(
@@ -67,8 +73,13 @@ export class DetallePedidoComponent implements ViewWillEnter {
     );
   });
 
+  isRegisteredClient = computed(() => this.userService.userData()?.dni !== null); //TODO: check if user is registered client
+
+  showJuegosBtn = computed(() => this.isRegisteredClient() && this.order()?.estado !== 'pendiente');
+  
+
   badgeColor = computed(() => {
-    const estado = this.pedido()?.estado;
+    const estado = this.order()?.estado;
     switch (estado) {
       case 'pendiente':
         return 'warning';
@@ -91,10 +102,12 @@ export class DetallePedidoComponent implements ViewWillEnter {
       timeOutline,
       checkmarkOutline,
       closeOutline,
+      gameControllerOutline,
     });
   }
 
   async ionViewWillEnter(): Promise<void> {
+    await this.userService.loadUserData();
     await this.loadOrder();
   }
 
@@ -112,22 +125,6 @@ export class DetallePedidoComponent implements ViewWillEnter {
       return;
     }
     const data = response.data;
-    this.pedido.set(data);
-  }
-
-  approveOrder() {
-    console.log('approveOrder - pendiente → preparando');
-  }
-
-  rejectOrder() {
-    console.log('rejectOrder - devolver pedido');
-  }
-
-  markAsReady() {
-    console.log('markAsReady - preparando → hecho');
-  }
-
-  markAsDelivered() {
-    console.log('markAsDelivered - hecho → entregado');
-  }
+    this.order.set(data);
+  }  
 }

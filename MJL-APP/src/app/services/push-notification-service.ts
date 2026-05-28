@@ -48,7 +48,7 @@ export class PushNotificationService {
     const { error } = await this.sbServ.client
       .from('usuarios')
       .update({ fcm_token: token })
-      .eq('user_id', userData.user_id);
+      .eq('id', userData.id);
 
     if (error) {
       console.error('Error saving FCM token:', error);
@@ -64,6 +64,6 @@ export class PushNotificationService {
     await this.sbServ.client
       .from('usuarios')
       .update({ fcm_token: null })
-      .eq('user_id', userData.user_id);
+      .eq('id', userData.id);
   }
 }

@@ -16,6 +16,7 @@ import { OrdersService } from 'src/app/services/orders-service';
 import { IOrder } from 'src/app/interfaces/IOrder';
 import { TypeOrderState } from 'src/app/types/TypeOrderState';
 import { ProductsOrdersService } from 'src/app/services/products-orders-service';
+import { NotificationsService } from 'src/app/services/notifications-service';
 
 @Component({
   selector: 'app-pedidos-pendientes',
@@ -36,6 +37,7 @@ export class PedidosPendientesComponent implements ViewWillEnter {
   router = inject(Router);
   orderService = inject(OrdersService);
   productOrderService = inject(ProductsOrdersService)
+  notiService = inject(NotificationsService)
 
   constructor() {
     addIcons({ checkmark, close, checkmarkCircle });
@@ -47,18 +49,22 @@ export class PedidosPendientesComponent implements ViewWillEnter {
 
   async aprobarPedido(pedido: IOrder) {
     const response = await this.orderService.approveOrder(pedido);
+    await this.notiService.confirmacionPedidoACliente(pedido.id_cliente);
     if (response.error) {
       console.error('Error al aprobar el pedido: ', response.error);
       return;
     }
     //subir a la tabla producto_pedidos
     const resultado = await this.productOrderService.insertProductsOrders(pedido);
+    await this.notiService.enviarPedidoBar();
+    await this.notiService.enviarPedidoCocina();
     console.log(resultado);
     await this.cargarPedidosPendientes();
   }
 
   async rechazarPedido(pedido: IOrder) {
     const response = await this.orderService.rejectOrder(pedido);
+    await this.notiService.rechazaPedido(pedido.id_cliente);
     if (response.error) {
       console.error('Error al rechazar el pedido: ', response.error);
       return;

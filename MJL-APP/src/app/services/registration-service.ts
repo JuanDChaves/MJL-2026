@@ -57,18 +57,18 @@ export class RegistrationService {
   }): Promise<IResult<any>> {
     try {
       const user = await this.getUserObject(controls);
-      const isExist = await this.checkUserExists(user.dni);
+      const isExist = await this.checkUserExists(user.dni!);
       if (!isExist.success) return isExist;//revisar en algun momento
       let resultCreateAccount = null;
       if (this.userService.isLogged()) {
         resultCreateAccount = await this.createUserAccountViaEdgeFunction(
-          user.correo_electronico,
+          user.correo_electronico!,
           controls['clave'].value
         );
         if (!resultCreateAccount.success) return resultCreateAccount;
       } else {
         resultCreateAccount = await this.createUserAccountViaCreateAccount(
-          user.correo_electronico,
+          user.correo_electronico!,
           controls['clave'].value
         );
         if (!resultCreateAccount.success) return resultCreateAccount;
@@ -80,17 +80,20 @@ export class RegistrationService {
 
       user.user_id = resultCreateAccount.data!;
       user.url_foto_perfil = url;
+      const result = await this.insertUser(user);
+      if (!result.success) return result;
+      const registeredUser = result.data!;
 
-      if (user.perfil === 'cliente') {
+      if (registeredUser.perfil === 'cliente') {
         const resultAuth = await this.loadUserAuthorization(user);
         if (!resultAuth.success) return resultAuth;
 
-        const resultNotification = await this.loadNotificationToSuperOrDuenio(
-          user
+        const resultNotification = await this.notificationsService.nuevoUsuarioRegistrado(
+          registeredUser
         );
         if (!resultNotification.success) return resultNotification;
       }
-      return await this.insertUser(user);
+      return result;
     } catch (error: any) {
       return {
         success: false,
@@ -166,11 +169,11 @@ export class RegistrationService {
 
   private async loadUserAuthorization(user: IUserToRegister): Promise<IResult<void>> {
     const userUnauthorized: IUserUnauthorizedToRegister = {
-      apellidos: user.apellidos,
+      apellidos: user.apellidos!,
       nombres: user.nombres,
-      dni: user.dni,
+      dni: user.dni!,
       url_foto_perfil: user.url_foto_perfil,
-      correo_electronico: user.correo_electronico,
+      correo_electronico: user.correo_electronico!,
       estado:true
     };
     const { error: solicitudError } =
@@ -181,20 +184,6 @@ export class RegistrationService {
         error: {
           message: `Error al guardar en usuarios pendientes de aprobacion`,
         },
-        data: null,
-      };
-    }
-    return { success: true, error: null, data: null };
-  }
-
-  private async loadNotificationToSuperOrDuenio(
-    user: IUserToRegister
-  ): Promise<IResult<void>> {
-    const { error } = await this.notificationsService.insertNotification(user);
-    if (error) {
-      return {
-        success: false,
-        error: { message: 'Error al enviar notificacion' },
         data: null,
       };
     }

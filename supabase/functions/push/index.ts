@@ -1,126 +1,217 @@
-import { createClient } from 'npm:@supabase/supabase-js@2'
-import { JWT } from 'npm:google-auth-library@9'
-import serviceAccount from './service-account.json' with { type: 'json' }
+import { createClient } from "npm:@supabase/supabase-js@2";
+import { JWT } from "npm:google-auth-library@9";
+import serviceAccount from "./service-account.json" with { type: "json" };
 
 interface Notification {
-  id: string
-  user_id: string | null
-  title: string | null
-  body: string
-  data: Record<string, unknown> | null
+  id: string;
+  title: string | null;
+  body: string;
+  data: Record<string, unknown> | null;
+  perfiles_a_notificar: string[];
+  cliente_a_notificar: string | null;
 }
 
 interface WebhookPayload {
-  type: 'INSERT' | 'UPDATE' | 'DELETE'
-  table: string
-  record: Notification
-  schema: 'public'
-  old_record: null | Notification
+  type: "INSERT" | "UPDATE" | "DELETE";
+  table: string;
+  record: Notification;
+  schema: "public";
+  old_record: null | Notification;
 }
 
 const supabase = createClient(
-  Deno.env.get('SUPABASE_URL')!,
-  Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-)
+  Deno.env.get("SUPABASE_URL")!,
+  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+);
 
 const getAccessToken = ({
   clientEmail,
   privateKey,
 }: {
-  clientEmail: string
-  privateKey: string
+  clientEmail: string;
+  privateKey: string;
 }): Promise<string> => {
   return new Promise((resolve, reject) => {
     const jwtClient = new JWT({
       email: clientEmail,
       key: privateKey,
-      scopes: ['https://www.googleapis.com/auth/firebase.messaging'],
-    })
+      scopes: ["https://www.googleapis.com/auth/firebase.messaging"],
+    });
     jwtClient.authorize((err, tokens) => {
       if (err) {
-        reject(err)
-        return
+        reject(err);
+        return;
       }
-      resolve(tokens!.access_token!)
-    })
-  })
-}
+      resolve(tokens!.access_token!);
+    });
+  });
+};
 
-Deno.serve(async (req) => {
-  const payload: WebhookPayload = await req.json()
+const notificarCliente = async (notificacion: Notification) => {
 
-  if (payload.type !== 'INSERT') {
-    return new Response(JSON.stringify({ message: 'Ignored: not an INSERT' }), {
-      headers: { 'Content-Type': 'application/json' },
-    })
+  try{
+
+  const { data: user, error: recipientsError } = await supabase
+    .from("usuarios")
+    .select("fcm_token, id")
+    .eq("id", notificacion.cliente_a_notificar)
+    .not("fcm_token", "is", null)
+    .single();
+  if (recipientsError) {
+    console.error("Error fetching recipients:", recipientsError);
+    return new Response(
+      JSON.stringify({ error: "Error fetching cliente" }),
+      { status: 500, headers: { "Content-Type": "application/json" } },
+    );
   }
+ 
+  const accessToken = await getAccessToken({
+    clientEmail: serviceAccount.client_email,
+    privateKey: serviceAccount.private_key,
+  });
 
-  const notification = payload.record
+  const res = await fetch(
+    `https://fcm.googleapis.com/v1/projects/${serviceAccount.project_id}/messages:send`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({
+        message: {
+          token: user.fcm_token,
+          notification: {
+            title: notificacion.title || "Nueva notificación",
+            body: notificacion.body,
+          },
+          data: notificacion.data
+            ? Object.fromEntries(
+                Object.entries(notificacion.data).map(([k, v]) => [
+                  k,
+                  String(v),
+                ]),
+              )
+            : undefined,
+        },
+      }),
+    },
+  );
 
+  const resData = await res.json();
+  const result = {
+    user_id: user.id,
+    success: res.status >= 200 && res.status <= 299,
+    response: resData,
+  };
+
+  return new Response(JSON.stringify(result), {
+    status: 200,
+    headers: { "Content-Type": "application/json" },
+  });
+
+  }catch (err){
+    return new Response(JSON.stringify({ error: err }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+  
+};
+
+const notificarPerfiles = async (notificacion: Notification) => {
   const { data: recipients, error: recipientsError } = await supabase
-    .from('usuarios')
-    .select('fcm_token, user_id')
-    .in('perfil', ['supervisor', 'duenio'])
-    .not('fcm_token', 'is', null)
+    .from("usuarios")
+    .select("fcm_token, id")
+    .in("perfil", notificacion.perfiles_a_notificar)
+    .not("fcm_token", "is", null);
 
   if (recipientsError) {
-    console.error('Error fetching recipients:', recipientsError)
+    console.error("Error fetching recipients:", recipientsError);
     return new Response(
-      JSON.stringify({ error: 'Error fetching recipients' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
-    )
+      JSON.stringify({ error: "Error fetching recipients" }),
+      { status: 500, headers: { "Content-Type": "application/json" } },
+    );
   }
 
   if (!recipients || recipients.length === 0) {
     return new Response(
-      JSON.stringify({ message: 'No recipients with FCM token found' }),
-      { headers: { 'Content-Type': 'application/json' } }
-    )
+      JSON.stringify({ message: "No recipients with FCM token found" }),
+      { headers: { "Content-Type": "application/json" } },
+    );
   }
 
   const accessToken = await getAccessToken({
     clientEmail: serviceAccount.client_email,
     privateKey: serviceAccount.private_key,
-  })
+  });
 
-  const results = []
+  const results = [];
 
   for (const recipient of recipients) {
     try {
       const res = await fetch(
         `https://fcm.googleapis.com/v1/projects/${serviceAccount.project_id}/messages:send`,
         {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
             Authorization: `Bearer ${accessToken}`,
           },
           body: JSON.stringify({
             message: {
               token: recipient.fcm_token,
               notification: {
-                title: notification.title || 'Nueva notificación',
-                body: notification.body,
+                title: notificacion.title || "Nueva notificación",
+                body: notificacion.body,
               },
-              data: notification.data
+              data: notificacion.data
                 ? Object.fromEntries(
-                    Object.entries(notification.data).map(([k, v]) => [k, String(v)])
+                    Object.entries(notificacion.data).map(([k, v]) => [
+                      k,
+                      String(v),
+                    ]),
                   )
                 : undefined,
             },
           }),
-        }
-      )
+        },
+      );
 
-      const resData = await res.json()
-      results.push({ user_id: recipient.user_id, success: res.status >= 200 && res.status <= 299, response: resData })
+      const resData = await res.json();
+      results.push({
+        user_id: recipient.id,
+        success: res.status >= 200 && res.status <= 299,
+        response: resData,
+      });
     } catch (err) {
-      console.error(`Error sending to ${recipient.user_id}:`, err)
-      results.push({ user_id: recipient.user_id, success: false, error: String(err) })
+      console.error(`Error sending to ${recipient.id}:`, err);
+      results.push({
+        user_id: recipient.id,
+        success: false,
+        error: String(err),
+      });
     }
   }
 
   return new Response(JSON.stringify({ processed: results }), {
-    headers: { 'Content-Type': 'application/json' },
-  })
-})
+    headers: { "Content-Type": "application/json" },
+  });
+};
+
+Deno.serve(async (req) => {
+  const payload: WebhookPayload = await req.json();
+
+  if (payload.type !== "INSERT") {
+    return new Response(JSON.stringify({ message: "Ignored: not an INSERT" }), {
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+  const notification = payload.record;
+
+  if(notification.cliente_a_notificar){
+    return await notificarCliente(notification);
+  }
+  return await notificarPerfiles(notification);
+  
+});

@@ -1,0 +1,248 @@
+// ─── Variables ───────────────────────────────────────────────────────────────
+$bg-amber:      #F5A623;
+$bg-beige:      #f3e9da;
+$btn-color:     #B71C1C;
+$btn-hover:     #D32F2F;
+$btn-text:      #FFFFFF;
+$text-dark:     #1A1A1A;
+$text-muted:    #6E4839;
+$shadow-card:   0 4px 16px rgba(0, 0, 0, 0.18);
+$radius:        12px;
+
+// ─── Header ────────────────────────────────────────────────────────────────────
+.chat-header {
+  --background: #{$bg-amber};
+  --box-shadow: none;
+
+  ion-toolbar {
+    --background: #{$bg-amber};
+    --padding-top: 0;
+    --padding-bottom: 0;
+    padding: 10px 4px;
+  }
+
+  ion-title {
+    font-family: 'Georgia', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: $text-dark;
+  }
+
+  ion-back-button {
+    --color: #{$text-dark};
+    --icon-font-size: 1.4rem;
+  }
+}
+
+.status-dot {
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #2E7D32;
+  margin-right: 12px;
+  box-shadow: 0 0 6px rgba(46, 125, 50, 0.5);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+// ─── Content ────────────────────────────────────────────────────────────────────
+.chat-content {
+  --background: #{$bg-amber};
+  --padding-top: 0;
+  --padding-bottom: 0;
+}
+
+.messages-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  min-height: 100%;
+}
+
+// ─── Empty state ──────────────────────────────────────────────────────────────
+.empty-chat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  text-align: center;
+  gap: 8px;
+
+  ion-icon {
+    font-size: 3.5rem;
+    color: $text-muted;
+    opacity: 0.5;
+  }
+
+  .empty-title {
+    font-family: 'Georgia', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: $text-dark;
+    margin: 0;
+  }
+
+  .empty-hint {
+    font-size: 0.85rem;
+    color: $text-muted;
+    margin: 0;
+  }
+}
+
+// ─── Message rows ──────────────────────────────────────────────────────────────
+.message-row {
+  display: flex;
+  animation: fadeInUp 0.3s ease-out;
+  animation-fill-mode: both;
+
+  &.is-mine {
+    justify-content: flex-end;
+  }
+
+  &:not(.is-mine) {
+    justify-content: flex-start;
+  }
+}
+
+// ─── Bubbles ───────────────────────────────────────────────────────────────────
+.bubble {
+  max-width: 80%;
+  padding: 10px 14px;
+  border-radius: $radius;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.bubble-mine {
+  background: $btn-color;
+  color: $btn-text;
+  border-radius: $radius 4px $radius $radius;
+}
+
+.bubble-other {
+  background: $bg-beige;
+  color: $text-dark;
+  border-radius: 4px $radius $radius $radius;
+}
+
+.bubble-text {
+  font-size: 0.95rem;
+  line-height: 1.4;
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.bubble-info {
+  font-size: 0.65rem;
+  opacity: 0.7;
+  text-align: right;
+  display: block;
+  margin-top: 2px;
+}
+
+// ─── Footer ────────────────────────────────────────────────────────────────────
+.chat-footer {
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --padding-start: 0;
+  --padding-end: 0;
+  --min-height: 0;
+  background: $bg-beige;
+}
+
+.input-form {
+  background: $bg-beige;
+  padding: 12px;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  border-radius: $radius;
+  padding: 2px 2px 2px 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.2s ease;
+
+  &:focus-within {
+    box-shadow: 0 2px 12px rgba(183, 28, 28, 0.15);
+  }
+}
+
+.chat-input {
+  flex: 1;
+  font-family: 'Georgia', serif;
+  font-size: 1rem;
+  --highlight-height: 0;
+  --padding-start: 10px;
+  --padding-end: 4px;
+  --padding-top: 14px;
+  --padding-bottom: 14px;
+  --placeholder-color: #{$text-muted};
+  --placeholder-opacity: 0.6;
+  --background: transparent;
+}
+
+.send-btn {
+  flex-shrink: 0;
+  --color: #{$btn-color};
+  --padding-start: 0;
+  --padding-end: 0;
+  min-width: 48px;
+  min-height: 48px;
+  margin: 0;
+
+  ion-icon {
+    font-size: 1.5rem;
+  }
+
+  &[disabled] {
+    --color: #{rgba($btn-color, 0.3)};
+  }
+}
+
+// ─── Animations ───────────────────────────────────────────────────────────────
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.6; transform: scale(1.2); }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ─── Responsive ──────────────────────────────────────────────────────────────
+@media (max-width: 480px) {
+  .messages-container {
+    padding: 12px;
+    gap: 8px;
+  }
+
+  .bubble {
+    max-width: 85%;
+    padding: 8px 12px;
+  }
+
+  .bubble-text {
+    font-size: 0.9rem;
+  }
+
+  .input-form {
+    padding: 10px;
+  }
+}

@@ -74,8 +74,15 @@ export const routes: Routes = [
   {
     path: 'chat-room',
     loadComponent: () =>
-      import('./components/chat-room/chat-room.component').then(
+      import('./components/chat/chat-room/chat-room.component').then(
         (m) => m.ChatRoomComponent
+      ),
+  },
+  {
+    path: 'chat/:mesaId',
+    loadComponent: () =>
+      import('./components/chat/chat-individual/chat-individual.component').then(
+        (m) => m.ChatIndividualComponent
       ),
   },
   {
@@ -120,6 +127,18 @@ export const routes: Routes = [
         (m) => m.HomeClienteComponent
       ),
   },
+  {path: 'verificar-pedido',
+    loadComponent: () => 
+      import('./components/verificar-pedido/verificar-pedido.component').then(
+        (m) => m.VerificarPedidoComponent
+      ),
+  },
+  {path: 'entregar-pedido',
+    loadComponent: () => 
+      import('./components/entregar-pedido/entregar-pedido.component').then(
+        (m) => m.EntregarPedidoComponent
+      ),
+  },
   {
     path: 'ingreso-local-cliente',
     loadComponent: () =>
@@ -160,6 +179,20 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./components/juegos/mayor-menor/mayor-menor.component').then(
         (m) => m.MayorMenorComponent
+      ),
+  },
+  {
+    path:'ruleta',
+    loadComponent: () =>
+      import('./components/juegos/ruleta/ruleta.component').then(
+        (m) => m.RuletaComponent
+      ),
+  },
+  {
+    path:'juegos',
+    loadComponent: () =>
+      import('./components/juegos/pantalla-juegos/pantalla-juegos.component').then(
+        (m) => m.PantallaJuegosComponent
       ),
   }
 ];

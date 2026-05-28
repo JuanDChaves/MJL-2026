@@ -1,0 +1,33 @@
+<app-layout [title]="'Juegos'" [showBackButton]="true" [backUrl]="backUrl">
+  <div class="content-inner">
+    <swiper-container
+      slides-per-view="1"
+      space-between="0"
+      pagination="true"
+      pagination-clickable="true"
+      class="full-swiper"
+    >
+      @for (game of games; track game.name) {
+        <swiper-slide class="game-slide">
+          <ion-card class="game-card">
+            <ion-card-content>
+              <div class="game-icon-wrapper">
+                <ion-icon [name]="game.icon" class="game-icon"></ion-icon>
+              </div>
+              <h2 class="game-name">{{ game.name }}</h2>
+              <p class="game-desc">{{ game.description }}</p>
+              <ion-button
+                [disabled]="game.disabled"
+                [routerLink]="game.disabled ? null : game.route"
+                class="play-btn"
+                expand="block"
+              >
+                JUGAR
+              </ion-button>
+            </ion-card-content>
+          </ion-card>
+        </swiper-slide>
+      }
+    </swiper-container>
+  </div>
+</app-layout>

@@ -21,6 +21,7 @@ import {
   IonFabButton,
   IonFab,
   IonFabList,
+  ModalController,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
@@ -45,6 +46,7 @@ import { DbService } from 'src/app/services/db-service';
 import { LocalStorageService } from 'src/app/services/local-storage-service';
 import { PushNotificationService } from 'src/app/services/push-notification-service';
 import { IUser } from 'src/app/interfaces/IUser';
+import { AnonymousUserRegistrationFormComponent } from '../anonymous-user-registration-form/anonymous-user-registration-form.component';
 
 @Component({
   selector: 'app-login-form',
@@ -73,8 +75,8 @@ export class LoginFormComponent {
   private dbServ = inject(DbService);
   private storageServ = inject(LocalStorageService);
   private pushServ = inject(PushNotificationService);
-
   router = inject(Router);
+  modalAnon = inject(ModalController);
 
   email = new FormControl('', [Validators.required, Validators.email]);
   password = new FormControl('', [
@@ -157,13 +159,13 @@ export class LoginFormComponent {
       const { email, password } = this.loginForm.value;
       const { data, error } = await this.dbServ.getOneByEmail(
         'usuarios',
-        email!
+        email!,
       );
-      const user = data as IUser;
-      if (!user) {
+      if (!data || error) {
         this.errorMessage = 'Credenciales incorrectas';
         return;
       }
+      const user = data as IUser;
       if (user.perfil === 'cliente' && !user.activo) {
         this.errorMessage =
           'El usuario no ha sido aprobado por el administrador';
@@ -183,15 +185,12 @@ export class LoginFormComponent {
         await this.storageServ.saveData('user', response.data!);
         console.log('guardado en el local storage exitoso');
 
-        // Inicializar push notifications para supervisor/duenio
-        const perfil = response.data.perfil;
-        if (perfil === 'supervisor' || perfil === 'duenio') {
-          this.pushServ
-            .init()
-            .catch((err: any) =>
-              console.warn('Push notifications not available:', err)
-            );
-        }
+        // Cargamos el fcm token en la base de datos
+        this.pushServ
+          .init()
+          .catch((err: any) =>
+            console.warn('Push notifications not available:', err),
+          );
 
         this.router.navigate(['/home']);
       }
@@ -200,6 +199,22 @@ export class LoginFormComponent {
     } finally {
       this.isLoading = false;
     }
+  }
+
+  async loginAsAnonymusUser() {
+    const modal = await this.modalAnon.create({
+      component: AnonymousUserRegistrationFormComponent,
+    });
+    await modal.present();
+
+    const { data, role } = await modal.onWillDismiss();
+    if (role === 'confirm' && data) {
+      this.router.navigate(['/home']);
+    }else{
+      //mostrar error
+      console.log('no se pudo crear una session');
+    }
+
   }
 
   toRegister() {

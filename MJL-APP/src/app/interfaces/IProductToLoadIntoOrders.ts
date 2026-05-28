@@ -1,9 +1,9 @@
 export interface IProductToLoadIntoOrders {
   id_producto: string;
   nombre: string;
-  cantidad: number;
-  precio: number;
-  tipo: 'plato' | 'bebida';
-  tiempo_elaboracion: number;
   descripcion: string;
+  precio: number;
+  tiempo_elaboracion: number;
+  cantidad: number;
+  tipo: 'plato' | 'bebida';
 }
