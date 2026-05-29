@@ -68,7 +68,7 @@ export class ListaEsperaComponent implements ViewWillEnter {
 
     const { data, role } = await modal.onWillDismiss();
     if (role === 'confirm' && data) {
-      await this.mesaService.asignarMesa(clienteEsperando.cliente, data.mesaElegida,clienteEsperando.id);
+      await this.mesaService.asignarMesa(clienteEsperando.cliente, data.mesaElegida,clienteEsperando.id_lista_espera);
       await this.notiService.mesaAsingada(clienteEsperando.cliente, data.mesaElegida);
       await this.cargarclientesEnEsperaList();
     }
