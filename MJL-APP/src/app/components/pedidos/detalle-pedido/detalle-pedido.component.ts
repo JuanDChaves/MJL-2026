@@ -77,7 +77,7 @@ export class DetallePedidoComponent implements ViewWillEnter {
 
   isRegisteredClient = computed(() => this.userService.userData()?.dni !== null); 
 
-  showJuegosBtn = computed(() => this.isRegisteredClient() && this.order()?.estado !== 'pendiente');
+  showJuegosBtn = computed(() => this.isRegisteredClient());
   showEncuestaYPedirCuenta = computed(() => this.order()?.estado === 'entregado');
   // entregado
   

@@ -68,7 +68,6 @@ import { AnonymousUserRegistrationFormComponent } from '../anonymous-user-regist
     IonFabButton,
     IonFab,
     IonFabList,
-    RouterLink
   ],
 })
 export class LoginFormComponent {

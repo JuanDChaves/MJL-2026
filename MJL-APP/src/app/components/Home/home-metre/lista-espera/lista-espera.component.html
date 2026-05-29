@@ -1,6 +1,6 @@
 <app-layout [title]="'Clientes en espera'" [showBackButton]="true" [backUrl]="'/home'">
   <div class="auth-panel-content">
-    @for (item of clientesEnEsperaList(); track item.id) {
+    @for (item of clientesEnEsperaList(); track item.id_lista_espera) {
       <ion-card class="user-card">
         <ion-card-content>
           <div class="user-info">

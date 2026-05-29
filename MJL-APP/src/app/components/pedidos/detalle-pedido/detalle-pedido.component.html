@@ -87,7 +87,7 @@
             <span class="summary-label">Total</span>
             <span class="summary-value">$ {{ total() }}</span>
           </div>
-          @if (showJuegosBtn() || showEncuestaYPedirCuenta()) {
+          @if (this.order()?.estado !== 'pendiente') {
             <div class="summary-games-row">
               @if (showJuegosBtn()) {
                 <ion-button fill="clear" class="games-btn" routerLink="/juegos" [queryParams]="{pedidoId: pedidoId()}">

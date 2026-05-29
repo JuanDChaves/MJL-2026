@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { IonHeader, IonToolbar, IonTitle, IonNote, IonContent, IonIcon, IonButton } from '@ionic/angular/standalone';
+import { IonIcon, IonButton } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
   addCircleOutline,
@@ -14,8 +14,7 @@ import {
   styleUrls: ['./home-cantinero.page.scss'],
   standalone: true,
   imports: [
-    IonHeader, IonToolbar, IonTitle,
-    IonContent, IonIcon,
+    IonIcon,
     IonButton
 ],
 })
