@@ -42,19 +42,8 @@ export class ClientService {
       data: null,
     };
     if (response.success) {
-      const clientesEsperando: ClienteEnEspera[] = [];
-      response.data!.map((clienteEsperando) => {
-        let cliente = clienteEsperando.cliente as IUser;
-        let clientWaiting: ClienteEnEspera = {
-          en_espera: clienteEsperando.en_espera,
-          id_lista_espera: clienteEsperando.id,
-          mesa_id: clienteEsperando.mesa_id,
-          cliente: cliente,
-        };
-        clientesEsperando.push(clientWaiting);
-      });
       result.success = true;
-      result.data = response.data;
+      result.data = response.data as ClienteEnEspera[] ?? null;
     } else {
       result.error = response.error;
     }

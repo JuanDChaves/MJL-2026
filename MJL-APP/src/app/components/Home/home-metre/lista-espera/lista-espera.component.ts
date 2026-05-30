@@ -3,9 +3,6 @@ import {
   IonIcon,
   ViewWillEnter,
   IonButton,
-  IonAvatar,
-  IonCardContent,
-  IonCard,
   ModalController,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
@@ -25,9 +22,6 @@ import { NotificationsService } from 'src/app/services/notifications-service';
     LayoutComponent,
     IonIcon,
     IonButton,
-    IonAvatar,
-    IonCardContent,
-    IonCard,
   ],
 })
 export class ListaEsperaComponent implements ViewWillEnter {
@@ -49,6 +43,7 @@ export class ListaEsperaComponent implements ViewWillEnter {
     const response = await this.clientService.waitingCustomerList();
     if (response.success) {
       this.clientesEnEsperaList.set(response.data!);
+      console.log(this.clientesEnEsperaList());
     }
   }
 
