@@ -1,12 +1,11 @@
 <div class="keyboard ion-padding-top">
   @for (letter of letters; track letter) {
     <ion-button
+      class="key"
       (click)="guess(letter)"
       [disabled]="usedLetters().has(letter)"
       [class.used]="usedLetters().has(letter)"
-      size="small"
-      fill="outline"
-      shape="round">
+      size="small">
       {{ letter }}
     </ion-button>
   }

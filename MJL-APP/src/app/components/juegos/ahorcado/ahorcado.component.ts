@@ -6,6 +6,7 @@ import { LayoutComponent } from 'src/app/components/layout/layout.component';
 import { KeyboardComponent } from './keyboard/keyboard.component';
 import { alertCircleOutline, checkmarkCircleOutline, closeCircleOutline, playCircleOutline, starOutline, timeOutline, warningOutline } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
+import { ConstantPool } from '@angular/compiler';
 
 
 @Component({
@@ -17,15 +18,13 @@ import { addIcons } from 'ionicons';
   ]
 })
 export class AhorcadoComponent  implements ViewWillEnter {
-  //authService = inject(AuthService);
-  //scoreRecordService = inject(ScoreRecordService);
-  //timeService = inject(TimeService);
-  //navCtrl = inject(NavController);
+  manejador = inject(ManejadorJuegos);
+  juegoEmpezado = signal<boolean>(false);
+  juegoTerminado = signal<boolean>(false);
+  porcentaje = signal<number>(20);
+  gano = signal<boolean>(false);
+  failedAttempts: WritableSignal<number> = signal(0);
 
-
-  isPlaying: WritableSignal<boolean> = signal(false);
-  timeLeft: WritableSignal<number> = signal(60);
-  currentScore: WritableSignal<number> = signal(0);
   attempts: WritableSignal<number> = signal(0);
 
   keyboard = viewChild(KeyboardComponent);
@@ -47,7 +46,6 @@ export class AhorcadoComponent  implements ViewWillEnter {
   );
  
  
-  private intervalId: ReturnType<typeof setInterval> | null = null;
   manejadorJuegos = inject(ManejadorJuegos);
 
   constructor() { 
@@ -68,57 +66,54 @@ export class AhorcadoComponent  implements ViewWillEnter {
   }
 
   ionViewWillLeave() {
-    if(this.isPlaying()) {
+    if(this.juegoEmpezado()) {
       this.stop();
     }
   }
 
-  ngOnDestroy(): void {
-    this.clearInterval();
-  }
-
   start(): void {
-    this.isPlaying.set(true);
-    this.timeLeft.set(60);
-    this.currentScore.set(0);
+    this.juegoEmpezado.set(true);
+    this.porcentaje.set(20);
     this.attempts.set(0);
     this.imageIndex.set(0);
     this.currentWordIndex.set(0);
     this.currentWordArray.set(this.getRandomWords());
-    //this.timeService.startClock();
     this.setCurrentWord();
-    //this.startTimer();
   }
  
   stop(): void {
-    this.clearInterval();
-    //this.timeService.stopClock();
-    this.isPlaying.set(false);
+    this.juegoEmpezado.set(false);
  
-    if (this.currentScore() > 0) {
-      //this.sendScoreToDB();
+    if (this.porcentaje() > 0) {
+      console.log("Tiene descuento")
     }
- 
     this.resetState();
   }
  
   onLetterGuessed(letter: string): void {
     this.attempts.update((prev) => prev + 1);
- 
     if (this.word().includes(letter)) {
       this.wordLetters.update((prev) => prev.filter((l) => l !== letter));
-      this.currentScore.update((prev) => prev + 500);
  
       if (this.wordLetters().length === 0) {
-        this.currentScore.update((prev) => prev + 2000);
+        this.gano.set(true);
         this.nextWord();
       }
     } else {
-      if (this.attempts() > 5 && this.currentScore() > 0) {
-        this.currentScore.update((prev) => prev - 200);
+      this.failedAttempts.update((prev) => prev + 1)
+      this.imageIndex.update((prev) => Math.min(prev + 1, 5)); // cap at last image
+      if(this.failedAttempts() === 3) {
+        this.porcentaje.set(15);
+      } else if(this.failedAttempts() === 4) {
+        this.porcentaje.set(10);
+      } else if (this.failedAttempts() > 4 ) {
+        this.porcentaje.set(0);
+        this.juegoEmpezado.set(false);
+        this.juegoTerminado.set(true);
       }
-      this.imageIndex.update((prev) => Math.min(prev + 1, 6)); // cap at last image
     }
+    console.log("attempts:", this.attempts())
+    console.log("failed attempts:", this.failedAttempts())
   }
 
     private nextWord(): void {
@@ -132,7 +127,6 @@ export class AhorcadoComponent  implements ViewWillEnter {
       this.setCurrentWord();
     } else {
       // Bonus for clearing all words
-      this.currentScore.update((prev) => prev + 5000);
       this.stop();
     }
   }
@@ -144,33 +138,9 @@ export class AhorcadoComponent  implements ViewWillEnter {
     this.wordLettersDisplay.set(letters);
   }
  
-  private startTimer(): void {
-    this.clearInterval();
-    this.intervalId = setInterval(() => {
-      //const elapsed = this.timeService.getTimeElapsed() ?? 0;
-      const elapsed = 0
-      const remaining = 60 - elapsed;
- 
-      if (remaining <= 0) {
-        this.timeLeft.set(0);
-        this.stop();
-      } else {
-        this.timeLeft.set(remaining);
-      }
-    }, 1000);
-  }
- 
-  private clearInterval(): void {
-    if (this.intervalId !== null) {
-      clearInterval(this.intervalId);
-      this.intervalId = null;
-    }
-  }
- 
   private resetState(): void {
     this.currentWordIndex.set(0);
     this.attempts.set(0);
-    this.currentScore.set(0);
     this.imageIndex.set(0);
     this.wordLetters.set([]);
     this.wordLettersDisplay.set([]);
@@ -181,12 +151,10 @@ export class AhorcadoComponent  implements ViewWillEnter {
   }
  
   private async sendScoreToDB(): Promise<void> {
-    //const user = this.authService.currentUser()?.user_metadata?.['nombre'] ?? 'Unknown';
-    const score = this.currentScore();
     const game = 'ahorcado';
-    //await this.scoreRecordService.insertMessage(user, score, game);
   }
-  
+
+  reiniciarJuego () {}
     
 }
 const hamburguesaWords: string[] = [
