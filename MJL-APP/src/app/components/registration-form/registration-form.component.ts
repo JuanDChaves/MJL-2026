@@ -120,7 +120,6 @@ export class RegistrationFormComponent implements ViewWillEnter, OnInit {
     await this.formService.buildForm();
   }
 
-  
   resetForm() {
     this.formService.cleanForm();
     this.profilePhotoUrl.set(null);
@@ -142,10 +141,10 @@ export class RegistrationFormComponent implements ViewWillEnter, OnInit {
 
     if (path) {
       this.viewProfilePhoto.set(path);
-      
+
       // patchValue actualiza el campo de forma segura
       this.form().patchValue({
-        profileImg: path as any
+        profileImg: path as any,
       });
     }
   }
@@ -155,7 +154,11 @@ export class RegistrationFormComponent implements ViewWillEnter, OnInit {
   }
 
   goBack() {
-    this.router.navigate(['/home']);
+    if (this.userService.isLogged()) {
+      this.router.navigate(['/home']);
+    } else {
+      this.router.navigate(['/login']);
+    }
   }
 
   async onSubmit() {
@@ -170,7 +173,7 @@ export class RegistrationFormComponent implements ViewWillEnter, OnInit {
 
     try {
       const result = await this.registrationService.registerUser(
-        this.form().controls
+        this.form().controls,
       );
       if (!result.success) {
         this.errorMessage = result.error?.message ?? 'Error desconocido';
