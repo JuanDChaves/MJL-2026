@@ -56,6 +56,17 @@ export class PredidosPreparadosComponent  implements ViewWillEnter {
     if(result.success) {
       this.pedidosPreparadosList.set(result.data!);
     }
+
     //console.log(pedidos)
+  }
+  async entregarPedido(pedido: IOrder) {
+    const response = await this.orderService.finishOrder(pedido);
+    
+    if (response.success) {
+      console.log('Pedido entregado a la mesa');
+      this.cargarPedidosPreparados(); // Recargamos la lista
+    } else {
+      console.error(response.error);
+    }
   }
 }

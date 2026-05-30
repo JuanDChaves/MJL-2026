@@ -11,104 +11,150 @@
 </ion-header>
 
 <ion-content class="menu-content" [scrollY]="false">
-  <!-- Segment selector -->
-  <ion-segment class="menu-segment">
-    <ion-segment-button value="drinks" (click)="changeSegment('drinks')">
-      <ion-icon name="beer-outline"></ion-icon>
-      <ion-label>Bebidas</ion-label>
-    </ion-segment-button>
-    <ion-segment-button value="food" (click)="changeSegment('food')">
-      <ion-icon name="restaurant-outline"></ion-icon>
-      <ion-label>Platos</ion-label>
-    </ion-segment-button>
-  </ion-segment>
 
-  <!-- Scroll horizontal de productos -->
-  <div class="products-scroll">
-    @for (product of currentProducts(); track product.id) {
-      <div class="product-card">
-        <!-- Carrusel de fotos con Swiper Element -->
-        <swiper-container
-          pagination="true"
-          slides-per-view="1"
-          space-between="0"
-          class="photo-swiper"
-        >
-          @for (photo of product.fotos; track $index) {
-            <swiper-slide class="photo-slide">
-              <img [src]="photo" alt="Foto de {{ product.nombre }}" />
-            </swiper-slide>
-          }
-        </swiper-container>
+  @if (miPedidoActivo()?.estado?.toLowerCase() === 'pendiente' || 
+       miPedidoActivo()?.estado?.toLowerCase() === 'preparando' || 
+       miPedidoActivo()?.estado?.toLowerCase() === 'hecho') {
+    <div class="recepcion-overlay text-center">
+      <ion-icon name="time-outline" class="recepcion-icon" style="color: #f39c12;"></ion-icon>
+      <h2>Pedido en curso</h2>
+      <p style="font-size: 1.2rem; color: var(--ion-color-primary);">
+        Estado: <strong>{{ miPedidoActivo()?.estado | uppercase }}</strong>
+      </p>
+      <p>Tu comida está en proceso. Podés salir y volver a escanear el QR de tu mesa más tarde para revisar si el estado cambió.</p>
+    </div>
+  }
 
-        <!-- Info del producto -->
-        <div class="product-info">
-          <h3 class="product-name">{{ product.nombre }}</h3>
-          <p class="product-desc">{{ product.descripcion }}</p>
-          <div class="product-meta">
-            <span class="product-price">$ {{ product.precio }}</span>
-            <span class="product-time">
-              <ion-icon name="time-outline"></ion-icon>
-              {{ product.tiempo_elaboracion }} minutos
-            </span>
-          </div>
+  @else if (miPedidoActivo()?.estado?.toLowerCase() === 'entregado') {
+    <div class="recepcion-overlay text-center">
+      <ion-icon name="restaurant-outline" class="recepcion-icon"></ion-icon>
+      <h2>¡Tu pedido está en la mesa!</h2>
+      <p>El mozo acaba de entregar tu comida. Por favor, confirmá la recepción.</p>
+      <ion-button expand="block" color="success" (click)="confirmarRecepcion()" class="mt-3">
+        <ion-icon slot="start" name="checkmark-done-circle-outline"></ion-icon>
+        Confirmar Recepción
+      </ion-button>
+    </div>
+  } 
 
-          <!-- Controles de cantidad -->
-          <div class="quantity-controls">
-            <ion-button
-              size="small"
-              fill="outline"
-              class="qty-btn"
-              (click)="removeOne(product)"
-            >
-              <ion-icon slot="icon-only" name="remove-outline"></ion-icon>
-            </ion-button>
+  @else if (miPedidoActivo()?.estado?.toLowerCase() === 'recibido') {
+    <div class="recepcion-overlay text-center">
+      <h2>Opciones de Mesa</h2>
+      <p>Elegí una opción para continuar:</p>
+      <div class="mt-3">
+        <ion-button expand="block" color="warning" routerLink="/ruleta" class="mb-2">
+          <ion-icon slot="start" name="pie-chart-outline"></ion-icon> Jugar Ruleta
+        </ion-button>
+        <ion-button expand="block" color="warning" routerLink="/mayor-menor" class="mb-2">
+          <ion-icon slot="start" name="game-controller-outline"></ion-icon> Mayor o Menor
+        </ion-button>
+        <ion-button expand="block" color="tertiary" routerLink="/encuesta" class="mb-2">
+          <ion-icon slot="start" name="clipboard-outline"></ion-icon> Encuesta
+        </ion-button>
+        <ion-button expand="block" color="danger" (click)="pedirCuenta()">
+          <ion-icon slot="start" name="cash-outline"></ion-icon> Pedir Cuenta
+        </ion-button> 
+      </div>
+    </div>
+  }
 
-            <span class="quantity-display">{{ product.cantidad }}</span>
+  @else {
+    <ion-segment class="menu-segment">
+      <ion-segment-button value="drinks" (click)="changeSegment('drinks')">
+        <ion-icon name="beer-outline"></ion-icon>
+        <ion-label>Bebidas</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="food" (click)="changeSegment('food')">
+        <ion-icon name="restaurant-outline"></ion-icon>
+        <ion-label>Platos</ion-label>
+      </ion-segment-button>
+    </ion-segment>
 
-            <ion-button
-              size="small"
-              fill="outline"
-              class="qty-btn"
-              (click)="addOne(product)"
-            >
-              <ion-icon slot="icon-only" name="add-outline"></ion-icon>
-            </ion-button>
+    <div class="products-scroll">
+      @for (product of currentProducts(); track product.id) {
+        <div class="product-card">
+          <swiper-container
+            pagination="true"
+            slides-per-view="1"
+            space-between="0"
+            class="photo-swiper"
+          >
+            @for (photo of product.fotos; track $index) {
+              <swiper-slide class="photo-slide">
+                <img [src]="photo" alt="Foto de {{ product.nombre }}" />
+              </swiper-slide>
+            }
+          </swiper-container>
 
-            <ion-button
-              size="small"
-              fill="clear"
-              color="danger"
-              class="delete-btn"
-              (click)="deleteItem(product)"
-            >
-              <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
-            </ion-button>
+          <div class="product-info">
+            <h3 class="product-name">{{ product.nombre }}</h3>
+            <p class="product-desc">{{ product.descripcion }}</p>
+            <div class="product-meta">
+              <span class="product-price">$ {{ product.precio }}</span>
+              <span class="product-time">
+                <ion-icon name="time-outline"></ion-icon>
+                {{ product.tiempo_elaboracion }} minutos
+              </span>
+            </div>
+
+            <div class="quantity-controls">
+              <ion-button
+                size="small"
+                fill="outline"
+                class="qty-btn"
+                (click)="removeOne(product)"
+              >
+                <ion-icon slot="icon-only" name="remove-outline"></ion-icon>
+              </ion-button>
+
+              <span class="quantity-display">{{ product.cantidad }}</span>
+
+              <ion-button
+                size="small"
+                fill="outline"
+                class="qty-btn"
+                (click)="addOne(product)"
+              >
+                <ion-icon slot="icon-only" name="add-outline"></ion-icon>
+              </ion-button>
+
+              <ion-button
+                size="small"
+                fill="clear"
+                color="danger"
+                class="delete-btn"
+                (click)="deleteItem(product)"
+              >
+                <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+              </ion-button>
+            </div>
           </div>
         </div>
-      </div>
-    }
-  </div>
+      }
+    </div>
+  }
 </ion-content>
 
-<ion-footer class="menu-footer">
-  <div class="total-bar">
-    <span class="total-label">Total</span>
-    <span class="total-amount">$ {{ total() }}</span>
-  </div>
-  <div class="total-time">
-    <span class="total-label">Tiempo de elaboracion</span>
-    <span class="total-amount"> {{ total_time_computed() }} minutos</span>
-  </div>
+@if (!miPedidoActivo() || miPedidoActivo()?.estado === 'editando') {
+  <ion-footer class="menu-footer">
+    <div class="total-bar">
+      <span class="total-label">Total</span>
+      <span class="total-amount">$ {{ total() }}</span>
+    </div>
+    <div class="total-time">
+      <span class="total-label">Tiempo de elaboracion</span>
+      <span class="total-amount"> {{ total_time_computed() }} minutos</span>
+    </div>
 
-  <div class="footer-action">
-    <ion-button
-      expand="block"
-      class="confirm-order-btn"
-      (click)="confirmOrder()"
-      [disabled]="product_count() === 0"
-    >
-      Confirmar pedido
-    </ion-button>
-  </div>
-</ion-footer>
+    <div class="footer-action">
+      <ion-button
+        expand="block"
+        class="confirm-order-btn"
+        (click)="confirmOrder()"
+        [disabled]="product_count() === 0"
+      >
+        Confirmar pedido
+      </ion-button>
+    </div>
+  </ion-footer>
+}

@@ -20,7 +20,7 @@ import {
   IonButtons,
   ViewWillEnter,
 } from '@ionic/angular/standalone';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router'; // <-- Agregado RouterLink
 import { addIcons } from 'ionicons';
 import {
   gameControllerOutline,
@@ -32,6 +32,10 @@ import {
   trophyOutline,
   pieChartOutline,
   chatbubblesOutline,
+  checkmarkDoneCircleOutline, // <-- Nuevo
+  cashOutline,                // <-- Nuevo
+  timeOutline,                // <-- Nuevo
+  clipboardOutline            // <-- Nuevo
 } from 'ionicons/icons';
 import { IMesa } from 'src/app/interfaces/IMesa';
 import { IOrder } from 'src/app/interfaces/IOrder';
@@ -47,6 +51,7 @@ import { TypeOrderState } from 'src/app/types/TypeOrderState';
 import { NotificationsService } from 'src/app/services/notifications-service';
 import { LocalStorageService } from 'src/app/services/local-storage-service';
 import { IResult } from 'src/app/interfaces/IResult';
+import { UpperCasePipe } from '@angular/common';
 
 register();
 
@@ -67,6 +72,8 @@ register();
     IonTitle,
     IonButtons,
     FormsModule,
+    RouterLink, // <-- Necesario para los routerLink del HTML
+    UpperCasePipe,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
@@ -87,6 +94,9 @@ export class PantallaMenuClienteComponent implements ViewWillEnter {
   currentProducts = signal<IProductoMenu[]>([]);
   segSelected = signal<string>('food');
 
+  // --- NUEVA SEÑAL PARA EL ESTADO DEL PEDIDO ---
+  miPedidoActivo = signal<IOrder | null>(null);
+
   constructor() {
     addIcons({
       gameControllerOutline,
@@ -98,13 +108,59 @@ export class PantallaMenuClienteComponent implements ViewWillEnter {
       trophyOutline,
       pieChartOutline,
       chatbubblesOutline,
+      checkmarkDoneCircleOutline,
+      cashOutline,
+      timeOutline,
+      clipboardOutline
     });
   }
+
   async ionViewWillEnter(): Promise<void> {
     await this.userService.loadUserData();
     await this.loadMesa();
-    await this.loadProductsInit();
+    
+    // 1. Buscamos si ya hay un pedido activo para esta mesa
+    await this.loadActiveOrderFromDB();
+    
+    // 2. Si no hay pedido o se está editando recién, cargamos los productos
+    if (!this.miPedidoActivo() || this.miPedidoActivo()?.estado === 'editando') {
+      await this.loadProductsInit();
+    }
   }
+
+  // --- MÉTODOS NUEVOS PARA EL FLUJO DE ESTADOS (Punto 19) ---
+
+  async loadActiveOrderFromDB() {
+    const result = await this.checkExistOrder();
+    if (result.success && result.data) {
+      // Ignoramos pedidos ya pagados o finalizados para que puedan pedir de nuevo si quieren
+      if (result.data.estado !== 'pagado' && result.data.estado !== 'finalizado') {
+        this.miPedidoActivo.set(result.data);
+      }
+    }
+  }
+
+  async confirmarRecepcion() {
+    const pedido = this.miPedidoActivo();
+    if (pedido && pedido.id) {
+      // Pasamos el pedido a estado RECIBIDO
+      const response = await this.orderService.receiveOrder(pedido); 
+      if (response.success) {
+        await this.loadActiveOrderFromDB(); // Recargamos para que aparezcan los juegos
+      }
+    }
+  }
+
+  async pedirCuenta() {
+    const pedido = this.miPedidoActivo();
+    if (pedido) {
+      // Acá redirigís a la pantalla de propinas o pagos
+      console.log('Solicitando cuenta...');
+      // this.router.navigate(['/pagos']); 
+    }
+  }
+
+  // --- MÉTODOS DE TU COMPAÑERO Y DEL CARRITO (INFERIORES) ---
 
   changeSegment(segProduct: string) {
     this.segSelected.set(segProduct);
@@ -196,7 +252,6 @@ export class PantallaMenuClienteComponent implements ViewWillEnter {
     else this.currentProducts.set(this.food());
   }
 
-
   async loadProductsInit() {
     const result = await this.checkExistOrder();
     if (result.success && result.data?.estado === 'editando') {
@@ -218,26 +273,31 @@ export class PantallaMenuClienteComponent implements ViewWillEnter {
   }
 
   async confirmOrder() {
-
     const orderToLoad = this.buildOrder();
 
     if (!orderToLoad.success) {
-      //mostrar mensaje de error
       return orderToLoad.error?.message;
     }
     const response = await this.orderService.insertOrder(orderToLoad.data!);
     if (!response.success) {
-      //mostrar mensaje de error
       return response.error?.message;
     }
+
+    // --- CORRECCIÓN DEL ID AL CREAR EL PEDIDO ---
+    const datosInsertados = response.data as any;
+    const orderId = Array.isArray(datosInsertados) ? datosInsertados[0].id : datosInsertados.id;
+
     await this.localStorageService.saveData('productos_pedido', this.cart);
-    await this.localStorageService.saveData('id_pedido', {
-      id: response.data?.id,
-    });
+    
+    // Guardamos el ID correcto en el storage
+    await this.localStorageService.saveData('id_pedido', { id: orderId });
+
     await this.notiService.confirmacionPedidoAMozo(
       this.userService.userData()!,
     );
-    console.log(response);
+    console.log('Pedido guardado correctamente:', orderId);
+    
+    // Redireccionamos obligando a que vuelva a escanear
     this.router.navigate(['/ingreso-local-cliente']);
     return;
   }
@@ -289,7 +349,6 @@ export class PantallaMenuClienteComponent implements ViewWillEnter {
     const result = await this.mesaService.getByIdUser(
       this.userService.userData()!.id!,
     );
-    console.log(result,'aca');
     this.mesa.set(result.data);
   }
 
