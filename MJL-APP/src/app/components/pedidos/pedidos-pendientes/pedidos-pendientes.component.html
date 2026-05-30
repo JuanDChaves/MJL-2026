@@ -1,38 +1,81 @@
 <app-layout [title]="'Pedidos pendientes'" [showBackButton]="true" [backUrl]="'/home'">
-  <div class="auth-panel-content">
-    @for (item of pedidosPendientesList(); track item.id_cliente) {
-      <ion-card class="user-card">
-        <ion-card-content>
-          <div class="user-info">
-            <ion-avatar class="user-avatar">
-            </ion-avatar>
-            <div class="user-details">
-              <h2 class="user-name">Nombre del Cliente: {{ item.nombre_cliente }}</h2>
-              <h2 class="user-name">Mesa: #{{ item.numero_mesa }}</h2>
-            </div>
+  <div class="tickets-container">
+    @for (item of pedidosPendientesList(); track item.id_cliente; let i = $index) {
+      <div class="ticket-card" [style.--anim-delay]="i * 0.08 + 's'">
+        <div class="ticket-header">
+          <span class="ticket-ref">#{{ getOrderRef(item.id) }}</span>
+          <span class="ticket-badge" [class.urgent]="i < 2">Pedido #{{ i + 1 }}</span>
+        </div>
+
+        <div class="ticket-divider"></div>
+
+        <div class="ticket-client">
+          <div class="client-row">
+            <ion-icon name="person-outline" class="row-icon"></ion-icon>
+            <span class="client-value">{{ item.nombre_cliente }}</span>
           </div>
-          <div class="actions">
-            <ion-button fill="solid" class="action-btn approve" (click)="aprobarPedido(item)">
-              <ion-icon slot="start" name="checkmark"></ion-icon>
-              <span>Enviar a Cocina</span>
-            </ion-button>
-            <ion-button fill="solid" class="action-btn reject" (click)="rechazarPedido(item)">
-              <ion-icon slot="start" name="close"></ion-icon>
-              <span>Devolver</span>
-            </ion-button>
-            <ion-button fill="solid" class="action-btn reject" (click)="irAPedido(item)">
-              <ion-icon slot="start" name="close"></ion-icon>
-              <span>Ver Pedido</span>
-            </ion-button>
+          <div class="client-row">
+            <ion-icon name="restaurant-outline" class="row-icon"></ion-icon>
+            <span class="client-value">Mesa #{{ item.numero_mesa }}</span>
           </div>
-        </ion-card-content>
-      </ion-card>
+        </div>
+
+        @if (item.data && item.data.length > 0) {
+          <div class="ticket-divider"></div>
+
+          <div class="ticket-products">
+            <div class="products-header">Productos</div>
+            @for (prod of item.data; track prod.id_producto; let pi = $index) {
+              @if (pi < 4) {
+                <div class="product-row">
+                  <span class="prod-qty">{{ prod.cantidad }}×</span>
+                  <span class="prod-name">{{ prod.nombre }}</span>
+                  <span class="prod-price">{{ formatPrice(prod.precio * prod.cantidad) }}</span>
+                </div>
+              }
+            }
+            @if (item.data.length > 4) {
+              <div class="product-more">
+                y {{ item.data.length - 4 }} productos más
+              </div>
+            }
+          </div>
+        }
+
+        <div class="ticket-divider"></div>
+
+        <div class="ticket-footer">
+          <div class="footer-stat">
+            <span class="stat-label">Total</span>
+            <span class="stat-value total">{{ formatPrice(calculateTotal(item.data)) }}</span>
+          </div>
+          <div class="footer-stat prep">
+            <ion-icon name="timer-outline" class="stat-icon"></ion-icon>
+            <span class="stat-label">Prep</span>
+            <span class="stat-value">~{{ calculatePrepTime(item.data) }} minutos</span>
+          </div>
+        </div>
+
+        <div class="ticket-actions">
+          <ion-button class="action-btn approve" (click)="aprobarPedido(item)">
+            <ion-icon slot="start" name="checkmark"></ion-icon>
+            Aprobar
+          </ion-button>
+          <ion-button class="action-btn reject" (click)="rechazarPedido(item)">
+            <ion-icon slot="start" name="close"></ion-icon>
+            Devolver
+          </ion-button>
+        </div>
+      </div>
     }
 
     @empty {
       <div class="empty-state">
-        <ion-icon name="checkmark-circle" class="empty-icon"></ion-icon>
-        <p>No hay solicitudes pendientes</p>
+        <div class="empty-icon-wrap">
+          <div class="ticket-icon">📋</div>
+        </div>
+        <p class="empty-title">Sin pedidos pendientes</p>
+        <p class="empty-hint">El bar está tranquilo — los nuevos pedidos aparecerán aquí</p>
       </div>
     }
   </div>
