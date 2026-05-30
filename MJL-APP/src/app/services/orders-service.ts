@@ -79,14 +79,20 @@ export class OrdersService {
   async rejectOrder(pedido: IOrder) {
     return await this.updateOrderState(pedido, TypeOrderState.Editando);    
   }
-
-  async finishOrder(pedido: IOrder) {
-    return await this.updateOrderState(pedido, TypeOrderState.Hecho);    
-  }
-
+  
   async deliverOrder(pedido: IOrder) {
     return await this.updateOrderState(pedido, TypeOrderState.Hecho);    
   }
+
+  async finishOrder(pedido: IOrder) {
+    return await this.updateOrderState(pedido, TypeOrderState.Entregado);    
+  }
+
+  // NUEVO: El cliente usa este método para pasarlo a Recibido
+  async receiveOrder(pedido: IOrder) {
+    return await this.updateOrderState(pedido, TypeOrderState.Recibido);
+  }
+
 
   private async updateOrderState(pedido: IOrder, estadoNuevo: TypeOrderState) {
     const result : IResult<IOrder> = {
