@@ -1,0 +1,308 @@
+$bg-beige:       #f3e9da;
+$btn-color:      #B71C1C;
+$btn-hover:      #D32F2F;
+$text-dark:      #1A1A1A;
+$text-muted:     #6E4839;
+$gold:           #D4AF37;
+$gold-dark:      #b8942e;
+$blue:           #4A90D9;
+$amber:          #F5A623;
+$radius:         12px;
+$shadow-card:    0 4px 16px rgba(0, 0, 0, 0.12);
+
+.chats-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+  min-height: 100%;
+}
+
+.chat-card {
+  display: flex;
+  flex-direction: column;
+  background: $bg-beige;
+  border-radius: $radius;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  position: relative;
+  border-left: 4px solid $text-muted;
+  animation: fadeInUp 0.4s ease both;
+  animation-delay: var(--anim-delay, 0s);
+  transition: box-shadow 0.2s ease;
+
+  &.type-estandar { border-left-color: $btn-color; }
+  &.type-vip { border-left-color: $gold; }
+  &.type-movilidadReducida { border-left-color: $blue; }
+
+  &:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.chat-card:not(.ocupada) {
+  opacity: 0.6;
+
+  .card-main {
+    cursor: default;
+
+    &:hover { background: transparent; }
+    &:active { background: transparent; }
+  }
+
+  .photo-placeholder {
+    background: rgba($text-muted, 0.08);
+
+    ion-icon {
+      opacity: 0.35;
+    }
+  }
+
+  .mesa-title {
+    opacity: 0.7;
+  }
+
+  &:hover {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  }
+}
+
+.card-main {
+  display: flex;
+  gap: 14px;
+  padding: 14px 14px 10px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &:hover { background: rgba(0, 0, 0, 0.02); }
+  &:active { background: rgba(0, 0, 0, 0.06); }
+}
+
+.card-photo {
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.photo-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba($btn-color, 0.06), rgba($amber, 0.12));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ion-icon {
+    font-size: 1.6rem;
+    color: $btn-color;
+    opacity: 0.6;
+  }
+}
+
+.card-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+}
+
+.card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.mesa-title {
+  font-family: 'Georgia', serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: $text-dark;
+  margin: 0;
+}
+
+.type-badge {
+  font-family: 'Georgia', serif;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 20px;
+  flex-shrink: 0;
+  background: rgba($text-muted, 0.12);
+  color: $text-muted;
+
+  &.badge-vip {
+    background: rgba($gold, 0.2);
+    color: $gold-dark;
+  }
+
+  &.badge-movilidadReducida {
+    background: rgba($blue, 0.12);
+    color: $blue;
+  }
+}
+
+.comensales {
+  font-size: 0.8rem;
+  color: $text-muted;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  opacity: 0.8;
+
+  ion-icon { font-size: 0.75rem; }
+}
+
+.estado-libre {
+  font-size: 0.8rem;
+  color: $text-muted;
+  margin: 0;
+  font-style: italic;
+  opacity: 0.6;
+}
+
+.tipo-desc {
+  font-size: 0.75rem;
+  color: $text-muted;
+  margin: 0;
+  opacity: 0.65;
+}
+
+.card-actions {
+  padding: 0 14px 14px;
+}
+
+.chat-btn {
+  --background: #{$btn-color};
+  --background-hover: #{$btn-hover};
+  --color: #ffffff;
+  --border-radius: 8px;
+  --box-shadow: 0 3px 10px rgba($btn-color, 0.3);
+  font-family: 'Georgia', serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  height: 44px;
+  margin: 0;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover {
+    transform: scale(1.02);
+    --box-shadow: 0 4px 14px rgba($btn-color, 0.4);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &[disabled] {
+    --background: #000000;
+    --box-shadow: none;
+    opacity: 0.5;
+    pointer-events: none;
+
+    ion-icon { opacity: 0.6; }
+  }
+
+  ion-icon {
+    font-size: 1.1rem;
+  }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  text-align: center;
+  gap: 8px;
+  padding: 40px 20px;
+
+  .empty-icon-wrap {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: rgba($btn-color, 0.06);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 4px;
+
+    ion-icon {
+      font-size: 2.5rem;
+      color: $btn-color;
+      opacity: 0.4;
+    }
+  }
+
+  .empty-title {
+    font-family: 'Georgia', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: $text-dark;
+    margin: 0;
+  }
+
+  .empty-hint {
+    font-size: 0.85rem;
+    color: $text-muted;
+    margin: 0;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 480px) {
+  .chats-container {
+    padding: 8px;
+    gap: 10px;
+  }
+
+  .card-main {
+    padding: 12px 12px 8px;
+    gap: 12px;
+  }
+
+  .card-photo {
+    width: 52px;
+    height: 52px;
+  }
+
+  .mesa-title {
+    font-size: 0.95rem;
+  }
+
+  .card-actions {
+    padding: 0 12px 12px;
+  }
+
+  .chat-btn {
+    font-size: 0.8rem;
+    height: 40px;
+  }
+}

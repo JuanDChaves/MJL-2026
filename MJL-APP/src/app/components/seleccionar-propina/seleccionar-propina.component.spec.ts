@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { ChatRoomComponent } from './chat-room.component';
+import { SeleccionarPropinaComponent } from './seleccionar-propina.component';
 
-describe('ChatRoomComponent', () => {
-  let component: ChatRoomComponent;
-  let fixture: ComponentFixture<ChatRoomComponent>;
+describe('SeleccionarPropinaComponent', () => {
+  let component: SeleccionarPropinaComponent;
+  let fixture: ComponentFixture<SeleccionarPropinaComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ ChatRoomComponent ],
+      declarations: [ SeleccionarPropinaComponent ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ChatRoomComponent);
+    fixture = TestBed.createComponent(SeleccionarPropinaComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

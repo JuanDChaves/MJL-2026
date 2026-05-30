@@ -14,6 +14,10 @@ import {
   IonIcon,
   IonButton,
   IonFooter,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonButtons,
   ViewWillEnter,
 } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
@@ -27,6 +31,7 @@ import {
   trashOutline,
   trophyOutline,
   pieChartOutline,
+  chatbubblesOutline,
 } from 'ionicons/icons';
 import { IMesa } from 'src/app/interfaces/IMesa';
 import { IOrder } from 'src/app/interfaces/IOrder';
@@ -57,6 +62,10 @@ register();
     IonIcon,
     IonButton,
     IonFooter,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonButtons,
     FormsModule,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -88,6 +97,7 @@ export class PantallaMenuClienteComponent implements ViewWillEnter {
       trashOutline,
       trophyOutline,
       pieChartOutline,
+      chatbubblesOutline,
     });
   }
   async ionViewWillEnter(): Promise<void> {
@@ -266,6 +276,13 @@ export class PantallaMenuClienteComponent implements ViewWillEnter {
       })),
     };
     return result;
+  }
+
+  openChat() {
+    const mesaId = this.mesa()?.id;
+    if (mesaId) {
+      this.router.navigate(['/chat', mesaId]);
+    }
   }
 
   async loadMesa(): Promise<void> {

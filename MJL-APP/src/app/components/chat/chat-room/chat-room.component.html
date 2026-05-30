@@ -1,0 +1,52 @@
+<app-layout
+  [title]="'Chat de Mesas'"
+  [showBackButton]="true"
+  [backUrl]="'/mozo-home-page'"
+>
+  <div class="chats-container">
+    @for (mesa of mesas(); track mesa.id) {
+      <div class="chat-card" [class]="'type-' + mesa.tipo_mesa" [class.ocupada]="mesa.ocupada" [style.--anim-delay]="$index * 0.08 + 's'">
+        <div class="card-main" (click)="chatearConMesa(mesa)">
+          <div class="card-photo">
+            @if (mesa.url_foto_mesa) {
+              <img [src]="mesa.url_foto_mesa" [alt]="'Mesa ' + mesa.numero_mesa" />
+            } @else {
+              <div class="photo-placeholder">
+                <ion-icon [name]="getIconForType(mesa.tipo_mesa)"></ion-icon>
+              </div>
+            }
+          </div>
+          <div class="card-body">
+            <div class="card-top">
+              <h2 class="mesa-title">Mesa #{{ mesa.numero_mesa }}</h2>
+              <span class="type-badge" [class]="'badge-' + mesa.tipo_mesa">{{ getBadgeLabel(mesa.tipo_mesa) }}</span>
+            </div>
+            @if (mesa.ocupada) {
+              <p class="comensales">
+                <ion-icon name="person-outline"></ion-icon>
+                {{ mesa.cantidad_comensales }} comensales
+              </p>
+              <p class="tipo-desc">{{ getTipoDesc(mesa.tipo_mesa) }}</p>
+            } @else {
+              <p class="estado-libre">Mesa libre</p>
+            }
+          </div>
+        </div>
+        <div class="card-actions">
+          <ion-button class="chat-btn" expand="block" [disabled]="!mesa.ocupada" (click)="chatearConMesa(mesa)">
+            <ion-icon name="chatbubble-outline" slot="start"></ion-icon>
+            {{ mesa.ocupada ? 'Chatear con la mesa' : 'Mesa desocupada' }}
+          </ion-button>
+        </div>
+      </div>
+    } @empty {
+      <div class="empty-state">
+        <div class="empty-icon-wrap">
+          <ion-icon name="chatbubbles-outline"></ion-icon>
+        </div>
+        <p class="empty-title">No hay mesas ocupadas</p>
+        <p class="empty-hint">Aquí verás las mesas con clientes activos</p>
+      </div>
+    }
+  </div>
+</app-layout>

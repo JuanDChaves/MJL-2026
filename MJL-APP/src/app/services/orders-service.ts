@@ -80,8 +80,8 @@ export class OrdersService {
     return await this.updateOrderState(pedido, TypeOrderState.Editando);    
   }
 
-  async finishOrder(pedido: IOrder) {
-    return await this.updateOrderState(pedido, TypeOrderState.Hecho);    
+  async confirmedPayment(pedido: IOrder) {
+    return await this.updateOrderState(pedido, TypeOrderState.Finalizado);    
   }
 
   async deliverOrder(pedido: IOrder) {

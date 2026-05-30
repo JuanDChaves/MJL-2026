@@ -87,18 +87,30 @@
             <span class="summary-label">Total</span>
             <span class="summary-value">$ {{ total() }}</span>
           </div>
-          @if (showJuegosBtn()) {
-            <div class="summary-row summary-games">
-              <span class="summary-label">Sumá un descuento jugando</span>
-              <ion-button
-                fill="clear"
-                class="games-btn"
-                routerLink="/juegos"
-                [queryParams]="{pedidoId: pedidoId()}"
-              >
-                <ion-icon name="game-controller-outline" slot="start"></ion-icon>
-                Jugar
-              </ion-button>
+          @if (this.order()?.estado !== 'pendiente') {
+            <div class="summary-games-row">
+              @if (showJuegosBtn()) {
+                <ion-button fill="clear" class="games-btn" routerLink="/juegos" [queryParams]="{pedidoId: pedidoId()}">
+                  <div class="btn-content">
+                    <ion-icon name="game-controller-outline"></ion-icon>
+                    <span class="btn-label">Jugar</span>
+                  </div>
+                </ion-button>
+              }
+              @if (showEncuestaYPedirCuenta()) {
+                <ion-button fill="clear" class="games-btn" routerLink="/propinas" [queryParams]="{pedidoId: pedidoId()}">
+                  <div class="btn-content">
+                    <ion-icon name="qr-code-outline"></ion-icon>
+                    <span class="btn-label">Propinas</span>
+                  </div>
+                </ion-button>
+                <ion-button fill="clear" class="games-btn" routerLink="/pagos" [queryParams]="{pedidoId: pedidoId()}">
+                  <div class="btn-content">
+                    <ion-icon name="wallet-outline"></ion-icon>
+                    <span class="btn-label">Cuenta</span>
+                  </div>
+                </ion-button>
+              }
             </div>
           }
         </ion-card-content>

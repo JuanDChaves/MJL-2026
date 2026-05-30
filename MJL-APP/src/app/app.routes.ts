@@ -74,8 +74,15 @@ export const routes: Routes = [
   {
     path: 'chat-room',
     loadComponent: () =>
-      import('./components/chat-room/chat-room.component').then(
+      import('./components/chat/chat-room/chat-room.component').then(
         (m) => m.ChatRoomComponent
+      ),
+  },
+  {
+    path: 'chat/:mesaId/:numeroMesa',
+    loadComponent: () =>
+      import('./components/chat/chat-individual/chat-individual.component').then(
+        (m) => m.ChatIndividualComponent
       ),
   },
   {
@@ -197,9 +204,9 @@ export const routes: Routes = [
   },
   {
     path: 'propinas',
-    loadComponent: () => 
-      import('./components/propinas/propinas.component').then(
-        (m) => m.PropinasComponent
-      )
+    loadComponent: () =>
+      import('./components/seleccionar-propina/seleccionar-propina.component').then(
+        (m) => m.SeleccionarPropinaComponent
+      ),
   }
 ];

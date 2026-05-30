@@ -11,6 +11,8 @@ export class LocalStorageService {
     return data ? JSON.parse(data.value!) as T : null;
   }
 
+  deleteData = async(key:string) => await Preferences.remove({key});
+
   clearData = async() => await Preferences.clear();
 
   saveData = async(key:string, data:any) => await Preferences.set({key:key, value:JSON.stringify(data)});

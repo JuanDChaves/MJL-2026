@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
-import { SplashScreen } from '@capacitor/splash-screen';
 import { SplashScreenComponent } from './splash-screen/splash-screen.component';
 
 @Component({
@@ -17,15 +16,5 @@ export class AppComponent implements OnInit{
     }, 3000)
   }
 
-  constructor() {
-    //  this.showSplashScreen();
-  }
-
-
-  async showSplashScreen() {
-    await SplashScreen.show({
-    autoHide: true,
-    showDuration: 3000
-    });
-  }
+  constructor() {}
 }
