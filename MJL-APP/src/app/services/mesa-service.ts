@@ -107,24 +107,36 @@ export class MesaService {
     }
   }
 
+  async mesas(){
+    const result: IResult<IMesa[]> = { success: false, error: null, data: null };
+    const { data, error} = await this.dbService.getAll('mesas');
+    if (error) {
+      result.error = { message: 'Error al obtener mesas' };
+      return result;
+    };
+    result.success = true;
+    result.data = data as IMesa[];
+    return result;
+  }
+
   async asignarMesa(
     cliente: IUser,
     mesaElegida: IMesa,
     id_lista_espera: string,
   ): Promise<IResult<any>> {
     try {
-      const { data: mesa, error: mesaError } = await this.dbService.getOneById(
-        'mesas',
-        mesaElegida.id,
-      );
+      // const { data: mesa, error: mesaError } = await this.dbService.getOneById(
+      //   'mesas',
+      //   mesaElegida.id,
+      // );
 
-      if (mesaError || !mesa)
-        throw mesaError || new Error('Mesa no encontrada');
+      // if (mesaError || !mesa)
+      //   throw mesaError || new Error('Mesa no encontrada');
 
       const { error: updateMesaError } = await this.dbService.update(
         'mesas',
         'id',
-        mesa.id,
+        mesaElegida.id,
         { ocupada: true, user_id: cliente.id },
       );
 
@@ -142,7 +154,7 @@ export class MesaService {
       return {
         success: true,
         error: null,
-        data: { mesa, cliente: cliente.id },
+        data: { mesaElegida, cliente: cliente.id },
       };
     } catch (error) {
       return {
@@ -194,7 +206,7 @@ export class MesaService {
       'mesas',
       'numer_mesa',
       numer_mesa,
-      { ocupada: false, dni: null },
+      { ocupada: false, user_id: null },
     );
     return result;
   }

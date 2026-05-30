@@ -1,0 +1,41 @@
+.keyboard {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 8px;
+}
+
+ion-button.key {
+  --background:        #B71C1C;;        // dark espresso — pops on amber
+  --background-hover:  #3D2510;
+  --background-activated: #1A0E06;
+  --color:             #F5ECD7;        // warm cream text
+  --border-radius:     8px;
+  --box-shadow:        0 3px 0 #0d0804;  // physical key depth
+  --padding-start:     0;
+  --padding-end:       0;
+
+  margin: 0;
+  width: 36px;
+  height: 40px;
+  font-family: 'Arial', serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+
+  &:active {
+    transform: translateY(2px);
+    --box-shadow: 0 1px 0 #0d0804;
+  }
+
+  // Already-used letters
+  &.used {
+    --background:    #8B6B52;          // muted warm brown
+    --color:         #C4A882;          // faded, clearly spent
+    --box-shadow:    none;
+    opacity: 1;                         // override Ionic's disabled dimming
+    pointer-events: none;
+  }
+}

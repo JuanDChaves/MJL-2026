@@ -1,0 +1,88 @@
+<app-layout [title]="'Ahorcado'" [showBackButton]="true" [backUrl]="'/home'">
+
+  <ion-content class="game-content">
+
+    @if (!juegoEmpezado()) {
+      <div class="start-screen">
+        <div class="start-logo">
+          <p class="logo-card">Aa</p>
+        </div>
+        <h1 class="start-title">Ahorcado</h1>
+        <p class="start-desc">
+          @if (manejador.primeraVez()) {
+            Ganá un descuento adivinando una palabra 
+          } @else {
+            Adiviná una palabra mientras esperas tu orden.
+          }
+        </p>
+        <ion-button expand="block" class="play-btn" (click)="start()">
+          <p>{{ manejador.primeraVez() ? 'Jugar y ganar descuento' : 'Jugar' }}</p>
+        </ion-button>
+      </div>
+    }
+
+    @if (juegoEmpezado() && !juegoTerminado()) {
+      <div class="game-screen">
+        <!-- Stats bar -->
+        <div class="stats-bar">
+          <div class="stat aciertos">
+            <ion-icon name="trophy-outline" class="stat-icon"></ion-icon>
+            <p>{{ porcentaje() }}%</p>
+          </div>
+        </div>
+        <div class="cards-area">
+          <img class="hangman-img" [src]="imageSrc()">
+          <div class="word-row">
+            @for(letter of this.wordLettersDisplay(); track $index) {
+              <span class="letras" [class.guessed]="!wordLetters().includes(letter)">{{letter}}</span>
+            }
+          </div>
+        </div>
+
+            <app-keyboard (letterGuessed)="onLetterGuessed($event)"></app-keyboard>
+      </div>
+    }
+
+    @if (juegoTerminado()) {
+      <div class="end-screen">
+        <div class="end-card" [class.end-win]="gano()" [class.end-lose]="!gano()">
+          <div class="end-icon-wrapper">
+            @if (gano()) {
+              <p class="end-icon">🎉</p>
+            } @else {
+              <p class="end-icon">😞</p>
+            }
+          </div>
+
+          <h2 class="end-title">{{ gano() ? '¡Ganaste!' : '¡Perdiste!' }}</h2>
+
+          @if (gano() && manejador.tieneDescuento()) {
+            <p class="end-discount">🎁 Obtuviste un descuento especial</p>
+          }
+
+          <div class="end-stats">
+            <div class="end-stat">
+              <p class="end-stat-label">Palabra</p>
+              <p class="end-stat-value">{{ word() }}</p>
+            </div>
+            <div class="end-stat">
+              <p class="end-stat-label">Intentos fallidos</p>
+              <p class="end-stat-value">{{ failedAttempts() }}</p>
+            </div>
+            <div class="end-stat">
+              <p class="end-stat-label">Porcentaje ganado</p>
+              <p class="end-stat-value">{{ porcentaje() }}%</p>
+            </div>
+          </div>
+
+          <ion-button expand="block" class="replay-btn" (click)="reiniciarJuego()">
+            <ion-icon slot="start" name="reload-outline"></ion-icon>
+            Jugar de nuevo
+          </ion-button>
+        </div>
+      </div>
+    }
+
+  </ion-content>
+
+</app-layout>

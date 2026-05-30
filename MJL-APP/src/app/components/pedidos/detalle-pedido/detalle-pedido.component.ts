@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, computed, inject, signal, WritableSignal, input, Input } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, computed, inject, signal, WritableSignal, Input } from '@angular/core';
 import { LayoutComponent } from '../../layout/layout.component';
 import {
   IonAvatar,
@@ -21,6 +21,8 @@ import {
   checkmarkOutline,
   closeOutline,
   gameControllerOutline,
+  qrCodeOutline,
+  walletOutline,
 } from 'ionicons/icons';
 import { register } from 'swiper/element/bundle';
 import { LocalStorageService } from 'src/app/services/local-storage-service';
@@ -73,9 +75,11 @@ export class DetallePedidoComponent implements ViewWillEnter {
     );
   });
 
-  isRegisteredClient = computed(() => this.userService.userData()?.dni !== null); //TODO: check if user is registered client
+  isRegisteredClient = computed(() => this.userService.userData()?.dni !== null); 
 
-  showJuegosBtn = computed(() => this.isRegisteredClient() && this.order()?.estado !== 'pendiente');
+  showJuegosBtn = computed(() => this.isRegisteredClient());
+  showEncuestaYPedirCuenta = computed(() => this.order()?.estado === 'entregado');
+  // entregado
   
 
   badgeColor = computed(() => {
@@ -103,6 +107,8 @@ export class DetallePedidoComponent implements ViewWillEnter {
       checkmarkOutline,
       closeOutline,
       gameControllerOutline,
+      qrCodeOutline,
+      walletOutline,
     });
   }
 

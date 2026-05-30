@@ -10,7 +10,6 @@ import {
   IonIcon,
   ViewWillEnter,
 } from '@ionic/angular/standalone';
-import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { OrdersService } from 'src/app/services/orders-service';
 import { IOrder } from 'src/app/interfaces/IOrder';
@@ -28,7 +27,6 @@ import { NotificationsService } from 'src/app/services/notifications-service';
     IonAvatar,
     IonButton,
     IonIcon,
-    DatePipe,
     LayoutComponent,
   ],
 })

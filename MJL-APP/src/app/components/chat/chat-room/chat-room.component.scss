@@ -1,65 +1,111 @@
-$bg-beige:      #f3e9da;
-$btn-color:     #B71C1C;
-$text-dark:     #1A1A1A;
-$text-muted:    #6E4839;
-$shadow-card:   0 4px 16px rgba(0, 0, 0, 0.18);
-$radius:        12px;
+$bg-beige:       #f3e9da;
+$btn-color:      #B71C1C;
+$btn-hover:      #D32F2F;
+$text-dark:      #1A1A1A;
+$text-muted:     #6E4839;
+$gold:           #D4AF37;
+$gold-dark:      #b8942e;
+$blue:           #4A90D9;
+$amber:          #F5A623;
+$radius:         12px;
+$shadow-card:    0 4px 16px rgba(0, 0, 0, 0.12);
 
 .chats-container {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   padding: 12px;
   min-height: 100%;
 }
 
-// ─── Chat card ─────────────────────────────────────────────────────────────────
 .chat-card {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px;
-  border-radius: $radius;
+  flex-direction: column;
   background: $bg-beige;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-  animation: fadeInUp 0.4s ease-out both;
+  border-radius: $radius;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  position: relative;
+  border-left: 4px solid $text-muted;
+  animation: fadeInUp 0.4s ease both;
+  animation-delay: var(--anim-delay, 0s);
+  transition: box-shadow 0.2s ease;
 
-  @for $i from 1 through 20 {
-    &:nth-child(#{$i}) {
-      animation-delay: #{$i * 0.06}s;
+  &.type-estandar { border-left-color: $btn-color; }
+  &.type-vip { border-left-color: $gold; }
+  &.type-movilidadReducida { border-left-color: $blue; }
+
+  &:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.chat-card:not(.ocupada) {
+  opacity: 0.6;
+
+  .card-main {
+    cursor: default;
+
+    &:hover { background: transparent; }
+    &:active { background: transparent; }
+  }
+
+  .photo-placeholder {
+    background: rgba($text-muted, 0.08);
+
+    ion-icon {
+      opacity: 0.35;
     }
   }
 
+  .mesa-title {
+    opacity: 0.7;
+  }
+
   &:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-  }
-
-  &:active {
-    transform: translateY(1px);
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
   }
 }
 
-.card-left {
+.card-main {
+  display: flex;
+  gap: 14px;
+  padding: 14px 14px 10px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &:hover { background: rgba(0, 0, 0, 0.02); }
+  &:active { background: rgba(0, 0, 0, 0.06); }
+}
+
+.card-photo {
+  width: 64px;
+  height: 64px;
   flex-shrink: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 }
 
-.mesa-avatar {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: $btn-color;
-  color: #ffffff;
-  font-family: 'Georgia', serif;
-  font-size: 1.1rem;
-  font-weight: 700;
+.photo-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba($btn-color, 0.06), rgba($amber, 0.12));
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(183, 28, 28, 0.3);
+
+  ion-icon {
+    font-size: 1.6rem;
+    color: $btn-color;
+    opacity: 0.6;
+  }
 }
 
 .card-body {
@@ -67,66 +113,117 @@ $radius:        12px;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  justify-content: center;
+  gap: 3px;
 }
 
-.card-header-row {
+.card-top {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  gap: 8px;
 }
 
 .mesa-title {
   font-family: 'Georgia', serif;
-  font-size: 0.95rem;
+  font-size: 1.05rem;
   font-weight: 700;
   color: $text-dark;
   margin: 0;
 }
 
-.mesa-time {
-  font-size: 0.7rem;
-  color: $text-muted;
+.type-badge {
+  font-family: 'Georgia', serif;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 20px;
   flex-shrink: 0;
-  margin-left: 8px;
+  background: rgba($text-muted, 0.12);
+  color: $text-muted;
+
+  &.badge-vip {
+    background: rgba($gold, 0.2);
+    color: $gold-dark;
+  }
+
+  &.badge-movilidadReducida {
+    background: rgba($blue, 0.12);
+    color: $blue;
+  }
 }
 
-.cliente-nombre {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: $text-dark;
-  margin: 0;
-}
-
-.ultimo-mensaje {
+.comensales {
   font-size: 0.8rem;
   color: $text-muted;
   margin: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.card-right {
-  flex-shrink: 0;
-  margin-left: 8px;
-}
-
-.unread-badge {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  justify-content: center;
-  min-width: 20px;
-  height: 20px;
-  border-radius: 10px;
-  background: $btn-color;
-  color: #ffffff;
-  font-size: 0.7rem;
-  font-weight: 700;
-  padding: 0 6px;
+  gap: 4px;
+  opacity: 0.8;
+
+  ion-icon { font-size: 0.75rem; }
 }
 
-// ─── Empty state ───────────────────────────────────────────────────────────────
+.estado-libre {
+  font-size: 0.8rem;
+  color: $text-muted;
+  margin: 0;
+  font-style: italic;
+  opacity: 0.6;
+}
+
+.tipo-desc {
+  font-size: 0.75rem;
+  color: $text-muted;
+  margin: 0;
+  opacity: 0.65;
+}
+
+.card-actions {
+  padding: 0 14px 14px;
+}
+
+.chat-btn {
+  --background: #{$btn-color};
+  --background-hover: #{$btn-hover};
+  --color: #ffffff;
+  --border-radius: 8px;
+  --box-shadow: 0 3px 10px rgba($btn-color, 0.3);
+  font-family: 'Georgia', serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  height: 44px;
+  margin: 0;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover {
+    transform: scale(1.02);
+    --box-shadow: 0 4px 14px rgba($btn-color, 0.4);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &[disabled] {
+    --background: #000000;
+    --box-shadow: none;
+    opacity: 0.5;
+    pointer-events: none;
+
+    ion-icon { opacity: 0.6; }
+  }
+
+  ion-icon {
+    font-size: 1.1rem;
+  }
+}
+
 .empty-state {
   display: flex;
   flex-direction: column;
@@ -135,11 +232,23 @@ $radius:        12px;
   flex: 1;
   text-align: center;
   gap: 8px;
+  padding: 40px 20px;
 
-  ion-icon {
-    font-size: 3.5rem;
-    color: $text-muted;
-    opacity: 0.5;
+  .empty-icon-wrap {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: rgba($btn-color, 0.06);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 4px;
+
+    ion-icon {
+      font-size: 2.5rem;
+      color: $btn-color;
+      opacity: 0.4;
+    }
   }
 
   .empty-title {
@@ -157,7 +266,6 @@ $radius:        12px;
   }
 }
 
-// ─── Animations ───────────────────────────────────────────────────────────────
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -169,25 +277,32 @@ $radius:        12px;
   }
 }
 
-// ─── Responsive ──────────────────────────────────────────────────────────────
 @media (max-width: 480px) {
   .chats-container {
     padding: 8px;
-    gap: 8px;
-  }
-
-  .chat-card {
-    padding: 10px;
     gap: 10px;
   }
 
-  .mesa-avatar {
-    width: 38px;
-    height: 38px;
-    font-size: 1rem;
+  .card-main {
+    padding: 12px 12px 8px;
+    gap: 12px;
+  }
+
+  .card-photo {
+    width: 52px;
+    height: 52px;
   }
 
   .mesa-title {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
+  }
+
+  .card-actions {
+    padding: 0 12px 12px;
+  }
+
+  .chat-btn {
+    font-size: 0.8rem;
+    height: 40px;
   }
 }
