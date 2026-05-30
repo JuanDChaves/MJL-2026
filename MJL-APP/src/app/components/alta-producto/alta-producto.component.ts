@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms'; 
 import { PhotoService } from 'src/app/services/photo-service';
@@ -6,7 +6,7 @@ import { DbService } from 'src/app/services/db-service';
 import { UserService } from 'src/app/services/user-service';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonItem,
-  IonLabel, IonInput, IonTextarea, IonGrid, IonRow, IonCol,
+  IonGrid, IonRow, IonCol,
   IonIcon, IonButton, IonSpinner, IonList, IonButtons, IonBackButton,
   ViewWillEnter
 } from '@ionic/angular/standalone';
@@ -27,7 +27,7 @@ import {
     ReactiveFormsModule,
     CommonModule, 
     IonHeader, IonToolbar, IonTitle, IonContent, IonItem,
-    IonLabel, IonInput, IonTextarea, IonGrid, IonRow, IonCol,
+     IonGrid, IonRow, IonCol,
     IonIcon, IonButton, IonSpinner, IonList, IonButtons, IonBackButton
   ]
 })

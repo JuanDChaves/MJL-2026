@@ -86,6 +86,8 @@ export class OrdersService {
 
   async finishOrder(pedido: IOrder) {
     return await this.updateOrderState(pedido, TypeOrderState.Entregado);    
+  async confirmedPayment(pedido: IOrder) {
+    return await this.updateOrderState(pedido, TypeOrderState.Finalizado);    
   }
 
   // NUEVO: El cliente usa este método para pasarlo a Recibido

@@ -3,7 +3,6 @@ import { addIcons } from 'ionicons';
 import { checkmark, close, checkmarkCircle } from 'ionicons/icons';
 import { LayoutComponent } from '../../layout/layout.component';
 import { IonAvatar, IonButton, IonCard, IonCardContent, IonIcon, ViewWillEnter } from '@ionic/angular/standalone';
-import { DatePipe } from '@angular/common';
 import { OrdersService } from 'src/app/services/orders-service';
 import { TypeOrderState } from 'src/app/types/TypeOrderState';
 import { IOrder } from 'src/app/interfaces/IOrder';
@@ -18,7 +17,6 @@ import { IOrder } from 'src/app/interfaces/IOrder';
     IonAvatar,
     IonButton,
     IonIcon,
-    DatePipe,
     LayoutComponent
   ]
 })

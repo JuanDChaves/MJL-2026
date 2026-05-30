@@ -17,7 +17,4 @@ export class HomeMetreComponent {
     addIcons({ addCircleOutline, pencilOutline });
   }
 
-  asignarMesa() {
-    throw new Error('Method not implemented.');
-  }
 }

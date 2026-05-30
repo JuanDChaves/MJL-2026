@@ -1,5 +1,35 @@
-<p>
-  pagos works!
-</p>
-
-<ion-button>Volver</ion-button>
+<app-layout [title]="'Pagos'" [showBackButton]="true" [backUrl]="'/home'">
+    <div class="pagos-content">
+    @for (order of paidOrders(); track order.id; let i = $index) {
+      <ion-card class="order-card" style="--delay: {{ i * 0.1 }}s">
+        <ion-card-content>
+          <div class="order-header">
+            <ion-avatar class="order-avatar">
+              <ion-icon name="cash-outline"></ion-icon>
+            </ion-avatar>
+            <div class="order-info">
+              <h2 class="order-name">{{ order.nombre_cliente }}</h2>
+              <span class="order-mesa">Mesa #{{ order.numero_mesa }}</span>
+            </div>
+            <ion-badge color="success" class="order-badge">Pagado</ion-badge>
+          </div>
+          <div class="order-total-row">
+            <span class="total-label">Total</span>
+            <span class="total-value">$ {{ getTotal(order) }}</span>
+          </div>
+          <div class="order-actions">
+            <ion-button expand="block" class="confirm-btn" (click)="confirmPayment(order)">
+              <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
+              Confirmar Pago
+            </ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    } @empty {
+      <div class="empty-state">
+        <ion-icon name="wallet-outline" class="empty-icon"></ion-icon>
+        <p class="empty-text">No hay pedidos pendientes de pago</p>
+      </div>
+    }
+  </div>
+</app-layout>

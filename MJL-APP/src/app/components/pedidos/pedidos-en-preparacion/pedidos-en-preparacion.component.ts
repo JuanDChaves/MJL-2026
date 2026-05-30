@@ -1,9 +1,8 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { addIcons } from 'ionicons';
 import { checkmark, close, checkmarkCircle } from 'ionicons/icons';
 import { LayoutComponent } from '../../layout/layout.component';
 import { IonAvatar, IonButton, IonCard, IonCardContent, IonIcon, ViewWillEnter } from '@ionic/angular/standalone';
-import { DatePipe } from '@angular/common';
 import { EstadoPedido, IPedido } from 'src/app/interfaces/IPedido';
 import { SupabaseService } from 'src/app/services/supabase-service';
 import { DbService } from 'src/app/services/db-service';
@@ -20,7 +19,6 @@ import { OrdersService } from 'src/app/services/orders-service';
     IonAvatar,
     IonButton,
     IonIcon,
-    DatePipe, 
     LayoutComponent
   ]
 })

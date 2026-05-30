@@ -3,7 +3,7 @@ import { RouterLink, ActivatedRoute } from '@angular/router';
 import { IonCard, IonCardContent, IonButton, IonIcon } from '@ionic/angular/standalone';
 import { LayoutComponent } from '../../layout/layout.component';
 import { addIcons } from 'ionicons';
-import { gameControllerOutline, trophyOutline, helpCircleOutline } from 'ionicons/icons';
+import { gameControllerOutline, trophyOutline, helpCircleOutline, textOutline } from 'ionicons/icons';
 import { register } from 'swiper/element/bundle';
 
 register();
@@ -45,14 +45,14 @@ export class PantallaJuegosComponent {
     },
     {
       name: 'El Ahoracado',
-      icon: 'help-circle-outline',
+      icon: 'text-outline',
       route: '/ahoracado',
-      description: 'Próximamente...',
-      disabled: true,
+      description: 'Adivina una palabra en menos de 5 intentos',
+      disabled: false,
     },
   ];
 
   constructor() {
-    addIcons({ gameControllerOutline, trophyOutline, helpCircleOutline });
+    addIcons({ gameControllerOutline, trophyOutline, helpCircleOutline, textOutline });
   }
 }
