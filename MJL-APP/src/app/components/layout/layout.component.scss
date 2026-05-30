@@ -1,7 +1,7 @@
 :host {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100%;
 }
 
 // Variables globales del layout
@@ -26,6 +26,8 @@ ion-header {
 }
 
 ion-content {
+  flex: 1;
+  min-height: 0;
   --background: #{$bg-color};
   --padding-top: 0;
   --padding-start: 16px;

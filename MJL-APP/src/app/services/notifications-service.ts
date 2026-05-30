@@ -60,7 +60,7 @@ export class NotificationsService {
     return await this.insertNotification(['metre'], notiInfo);
   }
 
-  async consultaCliente(user: IUser) {
+  async consultaParaMozo(user: IUser) {
     const notiInfo: INotificacionInfo = {
       title: 'Mensaje nuevo de un cliente',
       body: `${user.nombres} ${user.apellidos} realizo una consulta en el chat.`,
@@ -72,16 +72,16 @@ export class NotificationsService {
     return await this.insertNotification(['mozo'], notiInfo);
   }
 
-  async respuestaMozo(user: IUser) {
+  async respuestaDelMozo(mozo: IUser, id_cliente: string) {
     const notiInfo: INotificacionInfo = {
       title: 'Tiene un mensaje de un mozo',
-      body: `${user.nombres} ha respondido un mensaje.`,
+      body: `${mozo.nombres} ha respondido un mensaje.`,
       data: {
-        cliente_id: user.id,
+        cliente_id: id_cliente,
         tipo: 'mensaje_pendiente',
       },
     };
-    return await this.insertNotification(['cliente'], notiInfo, user.id);
+    return await this.insertNotification(['cliente'], notiInfo, id_cliente);
   }
 
   async confirmacionPedidoACliente(id_user: string) {

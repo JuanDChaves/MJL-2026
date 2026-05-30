@@ -3,9 +3,6 @@ import {
   IonIcon,
   ViewWillEnter,
   IonButton,
-  IonAvatar,
-  IonCardContent,
-  IonCard,
   ModalController,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
@@ -25,9 +22,6 @@ import { NotificationsService } from 'src/app/services/notifications-service';
     LayoutComponent,
     IonIcon,
     IonButton,
-    IonAvatar,
-    IonCardContent,
-    IonCard,
   ],
 })
 export class ListaEsperaComponent implements ViewWillEnter {
@@ -49,12 +43,13 @@ export class ListaEsperaComponent implements ViewWillEnter {
     const response = await this.clientService.waitingCustomerList();
     if (response.success) {
       this.clientesEnEsperaList.set(response.data!);
+      console.log(this.clientesEnEsperaList());
     }
   }
 
   async asignarMesa(clienteEsperando: ClienteEnEspera) {
     console.log(clienteEsperando,'cliente recibido')
-    const mesas = await this.mesaService.getAvailableMesas();
+    const mesas = await this.mesaService.mesasDisponibles();
     if (!mesas.success || !mesas.data?.length) return;
 
     const modal = await this.modalCtrl.create({
@@ -68,7 +63,7 @@ export class ListaEsperaComponent implements ViewWillEnter {
 
     const { data, role } = await modal.onWillDismiss();
     if (role === 'confirm' && data) {
-      await this.mesaService.asignarMesa(clienteEsperando.cliente, data.mesaElegida,clienteEsperando.id);
+      await this.mesaService.asignarMesa(clienteEsperando.cliente, data.mesaElegida,clienteEsperando.id_lista_espera);
       await this.notiService.mesaAsingada(clienteEsperando.cliente, data.mesaElegida);
       await this.cargarclientesEnEsperaList();
     }
