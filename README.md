@@ -81,6 +81,26 @@ _Completar_
 
 ## Tareas del equipo
 
+### Entrega Preliminar 6 - 30/05 
+### Briceño Castillo, Matías Emanuel 
+- Módulo: Envio de correo electrónico.  
+- Inicio y fin: 17/05 - 30/05 
+- Branch: feature/sala-de-chat, feature/asignacion-mesa, feature/juegos, feature/propinas
+
+### Pokoik, Lucia Laura 
+- Módulo: Form alta al menú 
+- Inicio y fin: 17/05 - 30/05 
+- Branch: juego/ruleta, feature/pedido-cocina, feature/entrega-pedido
+
+### Chaves Rodriguez, Juan David 
+- Módulo: Home del Mozo, pedidos
+- Inicio y fin: 17/05 - 30/05 
+- Branch: feature/pedidos_preparados, feature/ahorcado2
+
+---
+
+## Tareas del equipo
+
 ### Entrega Preliminar 5 - 16/05 
 ### Briceño Castillo, Matías Emanuel 
 - Módulo: Envio de correo electrónico.  
