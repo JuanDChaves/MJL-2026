@@ -22,6 +22,7 @@ import { addIcons } from 'ionicons';
 import { restaurantOutline } from 'ionicons/icons';
 import { ClienteEnEspera } from 'src/app/interfaces/ClienteEnEspera';
 import { IMesa } from 'src/app/interfaces/IMesa';
+import { VibrationsService } from 'src/app/services/vibrations-service';
 
 @Component({
   selector: 'app-asignar-mesa-modal',
@@ -46,6 +47,7 @@ export class AsignarMesaModalComponent {
   @Input() mesasDisponibles: IMesa[] = [];
 
   private modalCtrl = inject(ModalController);
+  vibrationService= inject(VibrationsService)
 
   constructor() {
     addIcons({ restaurantOutline });
@@ -67,9 +69,10 @@ export class AsignarMesaModalComponent {
     this.modalCtrl.dismiss(null, 'cancel');
   }
 
-  confirmar() {
+  async confirmar() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      await this.vibrationService.vibrate();
       return;
     }
     const mesaElegida = this.mesasDisponibles.find((mesa) => mesa.numero_mesa === this.form.value.numeroMesa);
