@@ -47,6 +47,7 @@ import { LocalStorageService } from 'src/app/services/local-storage-service';
 import { PushNotificationService } from 'src/app/services/push-notification-service';
 import { IUser } from 'src/app/interfaces/IUser';
 import { AnonymousUserRegistrationFormComponent } from '../anonymous-user-registration-form/anonymous-user-registration-form.component';
+import { VibrationsService } from 'src/app/services/vibrations-service';
 
 @Component({
   selector: 'app-login-form',
@@ -75,6 +76,7 @@ export class LoginFormComponent {
   private dbServ = inject(DbService);
   private storageServ = inject(LocalStorageService);
   private pushServ = inject(PushNotificationService);
+  vibrateServ = inject(VibrationsService);
   router = inject(Router);
   modalAnon = inject(ModalController);
 
@@ -163,12 +165,14 @@ export class LoginFormComponent {
       );
       if (!data || error) {
         this.errorMessage = 'Credenciales incorrectas';
+        await this.vibrateServ.vibrate();
         return;
       }
       const user = data as IUser;
       if (user.perfil === 'cliente' && !user.activo) {
         this.errorMessage =
           'El usuario no ha sido aprobado por el administrador';
+          await this.vibrateServ.vibrate();
         return;
       }
       const response = await this.loginServ.initSession(email!, password!);
@@ -179,6 +183,8 @@ export class LoginFormComponent {
         } else {
           this.errorMessage = 'Error al iniciar sesión';
         }
+        await this.vibrateServ.vibrate();
+        return;
       } else {
         const response = await this.dbServ.getOneByEmail('usuarios', email!);
         await this.storageServ.saveData('perfil', response.data.perfil);
@@ -196,6 +202,7 @@ export class LoginFormComponent {
       }
     } catch (error: any) {
       this.errorMessage = 'Credenciales incorrectas';
+      await this.vibrateServ.vibrate();
     } finally {
       this.isLoading = false;
     }
@@ -211,8 +218,8 @@ export class LoginFormComponent {
     if (role === 'confirm' && data) {
       this.router.navigate(['/home']);
     }else{
-      //mostrar error
-      console.log('no se pudo crear una session');
+      await this.vibrateServ.vibrate();
+      this.errorMessage = 'no se pudo crear una session';
     }
 
   }

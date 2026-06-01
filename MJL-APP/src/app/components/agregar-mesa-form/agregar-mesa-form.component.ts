@@ -25,6 +25,8 @@ import { TipoMesa } from 'src/app/types/TipoMesa';
 import { QrService } from 'src/app/services/qr-service';
 import { MesaService } from 'src/app/services/mesa-service';
 import { IMesaACargar } from 'src/app/interfaces/IMesaACargar';
+import { ToastService } from 'src/app/services/toast-service';
+import { VibrationsService } from 'src/app/services/vibrations-service';
 
 @Component({
   selector: 'app-agregar-mesa-form',
@@ -51,6 +53,8 @@ export class AgregarMesaFormComponent implements ViewWillEnter {
   photoPreview: string | null = null;
   isSubmitting = signal(false);
   errorMessage: string | null = null;
+  toastService = inject(ToastService);
+  vibrationService = inject(VibrationsService);
 
   form = new FormGroup({
     numeroMesa: new FormControl('', [
@@ -95,17 +99,19 @@ export class AgregarMesaFormComponent implements ViewWillEnter {
         this.errorMessage = null;
       }
     } catch (error) {
-      console.error('Error al tomar la foto', error);
+      this.toastService.showError('Error al tomar la foto');
     }
   }
 
   async onSubmit() {
     if (this.photoPreview === null) {
       this.errorMessage = 'Por favor, agrega una foto de la mesa';
+      this.vibrationService.vibrate();
       return;
     }
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      this.vibrationService.vibrate();
       return;
     }    
 
@@ -121,7 +127,7 @@ export class AgregarMesaFormComponent implements ViewWillEnter {
 
     const response = await this.mesaService.cargarMesa(mesa);
     if(!response.success){
-      this.errorMessage = response.error!.message;
+      this.toastService.showError(response.error!.message);
       return;
     }
     this.errorMessage = null;

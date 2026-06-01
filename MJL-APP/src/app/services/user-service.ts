@@ -79,7 +79,7 @@ export class UserService {
       error: null
     }  
     if(loadError){
-      result.error = {message: 'Error al inserte usuario' }
+      result.error = {message: 'Error al crear usuario' }
       return result;
     }
     result.data = registeredUser;

@@ -6,6 +6,7 @@ import { chatbubblesOutline, chatbubbleOutline, restaurantOutline, starOutline, 
 import { LayoutComponent } from 'src/app/components/layout/layout.component';
 import { IMesa } from 'src/app/interfaces/IMesa';
 import { MesaService } from 'src/app/services/mesa-service';
+import { ToastService } from 'src/app/services/toast-service';
 import { UserService } from 'src/app/services/user-service';
 import { TipoMesa } from 'src/app/types/TipoMesa';
 
@@ -21,6 +22,7 @@ export class ChatRoomComponent implements ViewWillEnter {
   mesaService = inject(MesaService);
   userService = inject(UserService);
   route = inject(Router);
+  toastService = inject(ToastService);
 
   constructor() {
     addIcons({ chatbubblesOutline, chatbubbleOutline, restaurantOutline, starOutline, accessibilityOutline });
@@ -29,7 +31,7 @@ export class ChatRoomComponent implements ViewWillEnter {
   async ionViewWillEnter(): Promise<void> {
     await this.userService.loadUserData();
     const result = await this.mesaService.mesas();
-    if (result.error) { console.log(result.error.message); return; }
+    if (result.error) { this.toastService.showError(result.error.message); return; }
     this.mesas.set(result.data!.sort((a, b) => a.numero_mesa - b.numero_mesa));
   }
 

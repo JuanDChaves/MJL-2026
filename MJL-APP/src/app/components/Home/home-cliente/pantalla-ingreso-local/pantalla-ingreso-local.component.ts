@@ -17,6 +17,7 @@ import { IDatosMesaParaQr } from 'src/app/interfaces/IDatosMesaParaQr';
 import { NotificationsService } from 'src/app/services/notifications-service';
 import { LocalStorageService } from 'src/app/services/local-storage-service';
 import { OrdersService } from 'src/app/services/orders-service';
+import { ToastService } from 'src/app/services/toast-service';
 
 @Component({
   selector: 'app-pantalla-ingreso-local',
@@ -33,6 +34,7 @@ export class PantallaIngresoLocalComponent implements ViewWillEnter {
   notiService = inject(NotificationsService);
   localStorageService = inject(LocalStorageService);
   orderService = inject(OrdersService);
+  toastService = inject(ToastService);
 
   constructor() {
     addIcons({
@@ -55,7 +57,7 @@ export class PantallaIngresoLocalComponent implements ViewWillEnter {
         await this.notiService.ingresoListaEspera(user);
         return;
       }
-      console.log(response.error);
+      await this.toastService.showError(response.error?.message!);
       return;
     }
   }
@@ -70,7 +72,7 @@ export class PantallaIngresoLocalComponent implements ViewWillEnter {
       );
       console.log(resultMesa);
       if (!resultMesa.success) {
-        console.log(resultMesa.error?.message);
+        await this.toastService.showError(resultMesa.error?.message || 'Error al obtener mesa');
         return;
       }
       const mesa = resultMesa.data!;
@@ -79,15 +81,15 @@ export class PantallaIngresoLocalComponent implements ViewWillEnter {
         if(mesa.ocupada){
           messageError = 'Mesa ocupada';
         }
-        //mostrar algun mensaje de error
-        console.log(messageError);
+        await this.toastService.showError(messageError);
         return;
       }
+
       const id_pedido = await this.localStorageService.getData<{id: string;}>('id_pedido');
       if (id_pedido && id_pedido.id ) {
         const resultOrder = await this.orderService.getOneOrder(id_pedido!.id);
         if (!resultOrder.success) {
-          console.log(resultOrder.error?.message);
+          await this.toastService.showError(resultOrder.error?.message!);
           return;
         }
         if (
@@ -111,7 +113,5 @@ export class PantallaIngresoLocalComponent implements ViewWillEnter {
   verEncuestas() {
     this.router.navigate(['/ver-encuesta']);
   }
-  hacerEncuesta() {
-    this.router.navigate(['/encuesta']);
-  }
+  
 }

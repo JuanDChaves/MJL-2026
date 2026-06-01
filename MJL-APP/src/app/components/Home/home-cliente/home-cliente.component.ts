@@ -5,6 +5,7 @@ import { qrCodeOutline, personCircleOutline } from 'ionicons/icons';
 import { BarcodeScannerService } from '../../../services/barcode-scanner-service';
 import { UserService } from '../../../services/user-service';
 import { Router } from '@angular/router';
+import { ToastService } from 'src/app/services/toast-service';
 
 @Component({
   selector: 'app-home-cliente',
@@ -16,7 +17,7 @@ export class HomeClienteComponent {
   private scannerService = inject(BarcodeScannerService);
   userService = inject(UserService);
   router = inject(Router);
-
+  toastService = inject(ToastService);
   constructor() {
     addIcons({ qrCodeOutline, personCircleOutline });
   }
@@ -25,16 +26,13 @@ export class HomeClienteComponent {
     const response = await this.scannerService.scanQrGeneric();
     console.log(response);
 
-    if (response) {
-      // 1. Generamos el token único para esta nueva visita
+    if (response === 'ingreso-local-cliente') {
       const nuevaEstadia = crypto.randomUUID();
-      
-      // 2. Lo guardamos en el almacenamiento del celular
       localStorage.setItem('id_estadia', nuevaEstadia);
       console.log('Estadía iniciada desde la puerta:', nuevaEstadia);
-
-      // 3. Continuamos con la navegación dinámica que ya tenías
       this.router.navigate([`/${response}`]);
+    }else{
+      await this.toastService.showError('QR no reconocido');
     }
   }
 }

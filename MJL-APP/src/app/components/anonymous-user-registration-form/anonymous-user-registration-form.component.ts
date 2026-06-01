@@ -28,6 +28,8 @@ import { ClientService } from 'src/app/services/client-service';
 import { IUserToRegister } from 'src/app/interfaces/IUserToRegister';
 import { addIcons } from 'ionicons';
 import { camera, flash, person } from 'ionicons/icons';
+import { ToastService } from 'src/app/services/toast-service';
+import { VibrationsService } from 'src/app/services/vibrations-service';
 
 @Component({
   selector: 'app-anonymous-user-registration-form',
@@ -57,6 +59,8 @@ export class AnonymousUserRegistrationFormComponent {
   userService = inject(UserService);
   viewProfilePhoto = signal<string | null>(null);
   modalCtrl = inject(ModalController);
+  toastService = inject(ToastService);
+  vibrationService = inject(VibrationsService);
 
   errorMessage: string | null = null;
   isSubmitting = signal(false);
@@ -80,7 +84,7 @@ export class AnonymousUserRegistrationFormComponent {
   async onSelectPhoto() {
     const path = await this.photoService.takePicture();
     if (path === null) {
-      console.log('error al obtener el path de la foto');
+      this.toastService.showError('Error al tomar la foto');
       return;
     }
     this.viewProfilePhoto.set(path!);
@@ -100,6 +104,7 @@ export class AnonymousUserRegistrationFormComponent {
   async onSubmit() {
     if (this.formModal.invalid || !this.viewProfilePhoto()) {
       this.formModal.markAllAsTouched();
+      this.vibrationService.vibrate();
       return;
     }
     this.isSubmitting.set(true);
@@ -120,11 +125,16 @@ export class AnonymousUserRegistrationFormComponent {
     const result = await this.userService.insert(userAnon);
     if (result.success) {
       this.localStorage.saveData('user', result.data!);
-    }else{
       this.isSubmitting.set(false);
+    } else {
       this.errorMessage = result.error?.message!;
+      this.vibrationService.vibrate();
+      return;
     }
-    this.modalCtrl.dismiss({ user: result.data  }, result.success ? 'confirm' : 'cancel');
+    this.modalCtrl.dismiss(
+      { user: result.data },
+      result.success ? 'confirm' : 'cancel',
+    );
   }
 
   get f() {

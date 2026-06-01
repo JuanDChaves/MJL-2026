@@ -34,7 +34,9 @@ import { IResult } from 'src/app/interfaces/IResult';
 import { MesaService } from 'src/app/services/mesa-service';
 import { NotificationsService } from 'src/app/services/notifications-service';
 import { RealtimeService } from 'src/app/services/realtime-service';
+import { ToastService } from 'src/app/services/toast-service';
 import { UserService } from 'src/app/services/user-service';
+import { VibrationsService } from 'src/app/services/vibrations-service';
 
 @Component({
   selector: 'app-chat-individual',
@@ -61,6 +63,8 @@ export class ChatIndividualComponent implements ViewWillEnter {
   notiService = inject(NotificationsService);
   mesaService = inject(MesaService);
   private route = inject(ActivatedRoute);
+  toastService = inject(ToastService);
+  vibrationService = inject(VibrationsService);
 
   mesaId = signal<string>(this.route.snapshot.paramMap.get('mesaId')!);
   numeroMesa = signal<string>(this.route.snapshot.paramMap.get('numeroMesa')!);
@@ -87,7 +91,11 @@ export class ChatIndividualComponent implements ViewWillEnter {
       await this.getClientData();
     }
     const resultMsgs = await this.realtimeServ.getAllMsgClient(this.mesaId());
-    if(resultMsgs.success) this.messages.set(resultMsgs.data ?? []);
+    if(!resultMsgs.success){
+      this.toastService.showError(resultMsgs.error?.message!);
+      return;
+    } 
+    this.messages.set(resultMsgs.data ?? []);
     this.scrollToBottom();
 
     this.realtimeServ.canal.on(
@@ -110,7 +118,10 @@ export class ChatIndividualComponent implements ViewWillEnter {
   async sendMessage(): Promise<void> {
     if (this.form.invalid || this.isSending()) return;
     const text = this.form.value.mensaje?.trim();
-    if (!text) return;
+    if (!text) {
+      this.toastService.showError('Debes escribir un mensaje');
+      return;
+    };
     this.isSending.set(true);
     const user = this.userService.userData();
     const msgToSend: IMensajeChatEnviado = {
@@ -127,7 +138,9 @@ export class ChatIndividualComponent implements ViewWillEnter {
     }
     const result = await this.realtimeServ.sendMsg(msgToSend);
     if (!result.success) {
-      console.log(result.error);
+      this.toastService.showError(result.error?.message!);
+      this.isSending.set(false);
+      return;
     }
     this.form.reset();
     this.isSending.set(false);
@@ -164,7 +177,7 @@ export class ChatIndividualComponent implements ViewWillEnter {
   async getClientData() {
     const result: IResult<IMesa> = await this.mesaService.getById(this.mesaId());
     if (!result.success) {
-      console.log(result.error);
+      this.toastService.showError(result.error?.message!);
       return;
     }
     this.client.set(result.data?.user_id!);
