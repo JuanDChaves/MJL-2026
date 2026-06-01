@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { PushNotifications } from '@capacitor/push-notifications';
 import { SupabaseService } from './supabase-service';
 import { LocalStorageService } from './local-storage-service';
+import { IResult } from '../interfaces/IResult';
 
 @Injectable({
   providedIn: 'root',
@@ -57,13 +58,25 @@ export class PushNotificationService {
     }
   }
 
-  async removeTokenFromDb() {
+  async removeTokenFromDb():  Promise<IResult<void>> {
+    const result : IResult<void> = {success: false, error: null, data: null};
     const userData = await this.storageServ.getData<any>('user');
-    if (!userData) return;
+    if (!userData) {
+      result.error = { message: 'Datos de usuario no encontrados para borrar el token para notificaciones' };
+      return result;
+    };
 
-    await this.sbServ.client
+    const { error } = await this.sbServ.client
       .from('usuarios')
       .update({ fcm_token: null })
       .eq('id', userData.id);
+
+    if (error) {
+      result.error = { message: 'Error al borrar el token para notificaciones' };
+      return result;
+    } else {
+      result.success = true;
+      return result;
+    }
   }
 }
