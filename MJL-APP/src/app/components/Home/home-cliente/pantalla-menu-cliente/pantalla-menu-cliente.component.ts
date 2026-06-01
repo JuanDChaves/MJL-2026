@@ -47,6 +47,7 @@ import { TypeOrderState } from 'src/app/types/TypeOrderState';
 import { NotificationsService } from 'src/app/services/notifications-service';
 import { LocalStorageService } from 'src/app/services/local-storage-service';
 import { IResult } from 'src/app/interfaces/IResult';
+import { ToastService } from 'src/app/services/toast-service';
 
 register();
 
@@ -79,6 +80,7 @@ export class PantallaMenuClienteComponent implements ViewWillEnter {
   notiService = inject(NotificationsService);
   localStorageService = inject(LocalStorageService);
   router = inject(Router);
+  toastService = inject(ToastService);
 
   drinks = signal<IProductoMenu[]>([]);
   food = signal<IProductoMenu[]>([]);
@@ -86,6 +88,25 @@ export class PantallaMenuClienteComponent implements ViewWillEnter {
   mesa = signal<IMesa | null>(null);
   currentProducts = signal<IProductoMenu[]>([]);
   segSelected = signal<string>('food');
+
+  total = computed(() => {
+    let all: IProductoMenu[] = this.cart;
+    return all.reduce((sum, p) => sum + p.precio * p.cantidad, 0);
+  });
+
+  product_count = computed(() => {
+    let all: IProductoMenu[] = this.cart;
+    return all.reduce((sum, p) => sum + p.cantidad, 0);
+  });
+
+  total_time_computed = computed(() => {
+    let all: IProductoMenu[] = this.cart;
+    if (this.product_count() === 0) return 0;
+    if (this.product_count() === 1) return all[0].tiempo_elaboracion;
+    return Math.trunc(
+      all.reduce((sum, p) => sum + p.tiempo_elaboracion * p.cantidad, 0) / 2,
+    );
+  });
 
   constructor() {
     addIcons({
@@ -115,25 +136,6 @@ export class PantallaMenuClienteComponent implements ViewWillEnter {
     this.currentProducts.set(this.food());
     return;
   }
-
-  total = computed(() => {
-    let all: IProductoMenu[] = this.cart;
-    return all.reduce((sum, p) => sum + p.precio * p.cantidad, 0);
-  });
-
-  product_count = computed(() => {
-    let all: IProductoMenu[] = this.cart;
-    return all.reduce((sum, p) => sum + p.cantidad, 0);
-  });
-
-  total_time_computed = computed(() => {
-    let all: IProductoMenu[] = this.cart;
-    if (this.product_count() === 0) return 0;
-    if (this.product_count() === 1) return all[0].tiempo_elaboracion;
-    return Math.trunc(
-      all.reduce((sum, p) => sum + p.tiempo_elaboracion * p.cantidad, 0) / 2,
-    );
-  });
 
   addOne(product: IProductoMenu) {
     this.updateProduct(product, product.cantidad + 1);
@@ -177,8 +179,7 @@ export class PantallaMenuClienteComponent implements ViewWillEnter {
     }
     const resultOrder = await this.orderService.getOneOrder(order_id!.id);
     if (!resultOrder.success) {
-      result.error = { message: 'Error al obtener el pedido' };
-      return result;
+      return resultOrder;
     }
     result.data = resultOrder.data;
     result.success = true;
@@ -200,9 +201,11 @@ export class PantallaMenuClienteComponent implements ViewWillEnter {
   async loadProductsInit() {
     const result = await this.checkExistOrder();
     if (result.success && result.data?.estado === 'editando') {
-      await this.loadOrderPreview();
-      return;
+      return await this.loadOrderPreview();
+    }else if (!result.success) {
+      return await this.toastService.showError(result.error?.message!);
     }
+
     let drinks = await this.productService.getDrinks();
     drinks = drinks.map((p) => ({ ...p, cantidad: 0 })) as IProductoMenu[];
 
@@ -222,13 +225,11 @@ export class PantallaMenuClienteComponent implements ViewWillEnter {
     const orderToLoad = this.buildOrder();
 
     if (!orderToLoad.success) {
-      //mostrar mensaje de error
-      return orderToLoad.error?.message;
+      return await this.toastService.showError(orderToLoad.error?.message!);
     }
     const response = await this.orderService.insertOrder(orderToLoad.data!);
     if (!response.success) {
-      //mostrar mensaje de error
-      return response.error?.message;
+      return await this.toastService.showError(response.error?.message!);
     }
     await this.localStorageService.saveData('productos_pedido', this.cart);
     await this.localStorageService.saveData('id_pedido', {
@@ -237,7 +238,6 @@ export class PantallaMenuClienteComponent implements ViewWillEnter {
     await this.notiService.confirmacionPedidoAMozo(
       this.userService.userData()!,
     );
-    console.log(response);
     this.router.navigate(['/ingreso-local-cliente']);
     return;
   }
@@ -289,8 +289,11 @@ export class PantallaMenuClienteComponent implements ViewWillEnter {
     const result = await this.mesaService.getByIdUser(
       this.userService.userData()!.id!,
     );
-    console.log(result,'aca');
-    this.mesa.set(result.data);
+    if(!result.success){
+      await this.toastService.showError(result.error?.message!);
+    }else{
+      this.mesa.set(result.data);
+    }
   }
 
   get cart() {

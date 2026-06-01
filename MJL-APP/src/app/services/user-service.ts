@@ -53,6 +53,12 @@ export class UserService {
   }
 
   async enableOrRejectUser(identifiacion: string, enable: boolean) {
+    const result: IResult<void> = {
+      success: false,
+      error: null,
+      data: null
+    }
+
     const response = await this.dbService.update(
       'usuarios',
       'dni',
@@ -66,6 +72,12 @@ export class UserService {
       identifiacion,
       { estado: false }
     )
+    if(response.error || response_req.error){
+      result.error = {message: `Error al ${enable ? 'aprobar' : ' rechazar'} al usuario`};
+      return result;
+    }
+    result.success = true;
+    return result;
   }
 
   async insert(user: IUserToRegister) : Promise<IResult<IUser>>{

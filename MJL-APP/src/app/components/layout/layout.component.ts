@@ -7,6 +7,7 @@ import { LocalStorageService } from '../../services/local-storage-service';
 import { PushNotificationService } from '../../services/push-notification-service';
 import { addIcons } from 'ionicons';
 import { powerSharp } from 'ionicons/icons';
+import { ToastService } from 'src/app/services/toast-service';
 
 @Component({
   selector: 'app-layout',
@@ -24,15 +25,19 @@ export class LayoutComponent {
   storageServ = inject(LocalStorageService);
   pushServ = inject(PushNotificationService);
   router = inject(Router);
+  toastService = inject(ToastService);
 
   constructor() {
     addIcons({ powerSharp });
   }
 
   async closeSession() {
-    console.log('cerrar session');
-    await this.pushServ.removeTokenFromDb();
-    await this.loginServ.closeSession();
+    let error: string = '';
+    const resultRemoveToken = await this.pushServ.removeTokenFromDb();
+    if(resultRemoveToken.error) error = resultRemoveToken.error.message;
+    const resultCloseSession = await this.loginServ.closeSession();
+    if(resultCloseSession.error) error = resultCloseSession.error.message;
+    if(error) return this.toastService.showError(error);
     await this.storageServ.clearData();
     await this.userServ.loadUserData();
     this.backToLogin();

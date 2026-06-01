@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, inject } from '@angular/core';
 import { PedidosSectoresService } from 'src/app/services/pedidos-sectores.service';
 import { ActivatedRoute } from '@angular/router';
 import {
@@ -12,6 +12,7 @@ import {
 } from '@ionic/angular/standalone';
 import { LayoutComponent } from '../layout/layout.component';
 import { DatePipe, UpperCasePipe } from '@angular/common';
+import { ToastService } from 'src/app/services/toast-service';
 
 @Component({
   selector: 'app-entregar-pedido',
@@ -30,6 +31,8 @@ import { DatePipe, UpperCasePipe } from '@angular/common';
   ]
 })
 export class EntregarPedidoComponent implements OnInit {
+  toastService = inject(ToastService)
+
   rolEmpleado: string = 'cocinero';
   
   pedidosPreparando: any[] = [];
@@ -54,22 +57,30 @@ export class EntregarPedidoComponent implements OnInit {
   }
 
   async cargarPedidos() {
-    // Como ya guardamos el rol arriba, acá se lo mandamos al servicio
-    const todosLosPedidos = await this.pedidosService.obtenerPedidosPorSector(this.rolEmpleado);
-    // Preparando: Los más viejos arriba (Ascendente)
-    this.pedidosPreparando = todosLosPedidos
-      .filter(p => p.estado === 'preparando')
-      .sort((a, b) => new Date(a.fecha).getTime() - new Date(b.fecha).getTime());
-
-    // Resto (Hecho, Entregado): Los más nuevos arriba, más viejos abajo (Descendente)
-    this.pedidosResto = todosLosPedidos
-      .filter(p => p.estado === 'hecho' || p.estado === 'entregado')
-      .sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
+    try {
+      // Como ya guardamos el rol arriba, acá se lo mandamos al servicio
+      const todosLosPedidos = await this.pedidosService.obtenerPedidosPorSector(this.rolEmpleado);
+      // Preparando: Los más viejos arriba (Ascendente)
+      this.pedidosPreparando = todosLosPedidos
+        .filter(p => p.estado === 'preparando')
+        .sort((a, b) => new Date(a.fecha).getTime() - new Date(b.fecha).getTime());
+  
+      // Resto (Hecho, Entregado): Los más nuevos arriba, más viejos abajo (Descendente)
+      this.pedidosResto = todosLosPedidos
+        .filter(p => p.estado === 'hecho' || p.estado === 'entregado')
+        .sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
+    } catch (error) {
+      await this.toastService.showError('Error al cargar los pedidos');
+    }
   }
 
   async entregarPedido(pedido: any) {
     // Al finalizar su parte, lo pasa a 'hecho'. El mozo será quien lo vea listo.
-    await this.pedidosService.cambiarEstadoPedido(pedido.id, 'hecho');
+    const {data, error } = await this.pedidosService.cambiarEstadoPedido(pedido.id, 'hecho');
+    if(error){
+      await this.toastService.showError('Error al entregar el pedido');
+      return;
+    }
     this.cargarPedidos(); 
   }
 }

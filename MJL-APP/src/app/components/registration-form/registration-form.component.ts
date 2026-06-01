@@ -46,6 +46,8 @@ import { PhotoService } from 'src/app/services/photo-service';
 import { BarcodeScannerService } from 'src/app/services/barcode-scanner-service';
 import { ErrorMessagePipe } from 'src/app/pipes/error-message.pipe';
 import { RegistrationService } from 'src/app/services/registration-service';
+import { ToastService } from 'src/app/services/toast-service';
+import { VibrationsService } from 'src/app/services/vibrations-service';
 
 @Component({
   selector: 'app-registration-form',
@@ -79,6 +81,8 @@ export class RegistrationFormComponent implements ViewWillEnter, OnInit {
   photoService = inject(PhotoService);
   scannerService = inject(BarcodeScannerService);
   registrationService = inject(RegistrationService);
+  toastService = inject(ToastService);
+  vibrationService = inject(VibrationsService);
 
   form = toSignal(this.formService.form$, {
     initialValue: this.formService.registerForm,
@@ -146,6 +150,8 @@ export class RegistrationFormComponent implements ViewWillEnter, OnInit {
       this.form().patchValue({
         profileImg: path as any,
       });
+    } else {
+      await this.toastService.showError('Error al tomar la foto');
     }
   }
 
@@ -165,6 +171,7 @@ export class RegistrationFormComponent implements ViewWillEnter, OnInit {
     if (this.form().invalid || !this.viewProfilePhoto()) {
       this.form().markAllAsTouched();
       this.errorMessage = 'Por favor, complete todos los campos';
+      await this.vibrationService.vibrate();
       return;
     }
 
@@ -177,6 +184,7 @@ export class RegistrationFormComponent implements ViewWillEnter, OnInit {
       );
       if (!result.success) {
         this.errorMessage = result.error?.message ?? 'Error desconocido';
+        await this.vibrationService.vibrate();
         return;
       }
       this.resetForm();
@@ -198,6 +206,7 @@ export class RegistrationFormComponent implements ViewWillEnter, OnInit {
 
   async scanQr() {
     const { apellidos, nombres, dni } = await this.scannerService.scanQrDni();
+    if(!apellidos || !nombres || !dni) return await this.toastService.showError('Error al escanear dni');
     this.form().controls.nombres.setValue(nombres);
     this.form().controls.apellidos.setValue(apellidos);
     this.form().controls.dni.setValue(dni);

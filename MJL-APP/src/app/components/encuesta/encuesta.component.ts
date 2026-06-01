@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { EncuestasService } from 'src/app/services/encuestas.service';
@@ -11,6 +11,8 @@ import {
 
 import { addIcons } from 'ionicons';
 import { star, starOutline, sadOutline, happyOutline, checkmarkCircle } from 'ionicons/icons';
+import { VibrationsService } from 'src/app/services/vibrations-service';
+import { ToastService } from 'src/app/services/toast-service';
 
 @Component({
   selector: 'app-encuesta',
@@ -25,6 +27,8 @@ import { star, starOutline, sadOutline, happyOutline, checkmarkCircle } from 'io
   ]
 })
 export class EncuestaComponent implements OnInit {
+  vibrationService = inject(VibrationsService);
+  toastService = inject(ToastService);
   encuestaForm: FormGroup;
   estrellas = [1, 2, 3, 4, 5];
   ratingComida = 0; 
@@ -81,6 +85,7 @@ export class EncuestaComponent implements OnInit {
   async enviarEncuesta() {
     if (this.encuestaForm.invalid) {
       this.encuestaForm.markAllAsTouched();
+      await this.vibrationService.vibrate();
       return; 
     }
 
@@ -99,7 +104,7 @@ export class EncuestaComponent implements OnInit {
 
       this.encuestaYaRealizada = true; 
     } catch (error) {
-      console.error('Hubo un problema al enviar la encuesta', error);
+      await this.toastService.showError('Hubo un problema al enviar la encuesta');
     } finally {
       this.cargando = false;
     }

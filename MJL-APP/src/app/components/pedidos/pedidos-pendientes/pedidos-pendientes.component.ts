@@ -14,6 +14,7 @@ import { TypeOrderState } from 'src/app/types/TypeOrderState';
 import { ProductsOrdersService } from 'src/app/services/products-orders-service';
 import { NotificationsService } from 'src/app/services/notifications-service';
 import { IProductToLoadIntoOrders } from 'src/app/interfaces/IProductToLoadIntoOrders';
+import { ToastService } from 'src/app/services/toast-service';
 
 @Component({
   selector: 'app-pedidos-pendientes',
@@ -31,6 +32,8 @@ export class PedidosPendientesComponent implements ViewWillEnter {
   orderService = inject(OrdersService);
   productOrderService = inject(ProductsOrdersService);
   notiService = inject(NotificationsService);
+  toastService = inject(ToastService);
+  
 
   constructor() {
     addIcons({ checkmark, close, checkmarkCircle, timerOutline, personOutline, restaurantOutline });
@@ -42,12 +45,12 @@ export class PedidosPendientesComponent implements ViewWillEnter {
 
   async aprobarPedido(pedido: IOrder) {
     const response = await this.orderService.approveOrder(pedido);
-    await this.notiService.confirmacionPedidoACliente(pedido.id_cliente);
     if (response.error) {
-      console.error('Error al aprobar el pedido: ', response.error);
-      return;
+      return await this.toastService.showError(response.error?.message!);
     }
+    await this.notiService.confirmacionPedidoACliente(pedido.id_cliente);
     const resultado = await this.productOrderService.insertProductsOrders(pedido);
+    if(resultado.error) return await this.toastService.showError('Error al cargar los productos del pedido');
     await this.notiService.enviarPedidoBar();
     await this.notiService.enviarPedidoCocina();
     console.log(resultado);
@@ -58,8 +61,7 @@ export class PedidosPendientesComponent implements ViewWillEnter {
     const response = await this.orderService.rejectOrder(pedido);
     await this.notiService.rechazaPedido(pedido.id_cliente);
     if (response.error) {
-      console.error('Error al rechazar el pedido: ', response.error);
-      return;
+      return await this.toastService.showError(response.error?.message!);
     }
     await this.cargarPedidosPendientes();
   }
@@ -92,6 +94,8 @@ export class PedidosPendientesComponent implements ViewWillEnter {
     const result = await this.orderService.getOrdersWithStateFilter(TypeOrderState.Pendiente);
     if (result.success) {
       this.pedidosPendientesList.set(result.data!);
+    }else{
+      await this.toastService.showError(result.error?.message!);
     }
   }
 }
