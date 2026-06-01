@@ -63,11 +63,10 @@ export class PedidosSectoresService {
   }
 
   async cambiarEstadoPedido(pedidoId: string, nuevoEstado: string) {
-    const { error } = await this.db.client
+    return await this.db.client
       .from('pedidos')
       .update({ estado: nuevoEstado })
       .eq('id', pedidoId);
       
-    if (error) console.error('Error al actualizar estado', error);
   }
 }
