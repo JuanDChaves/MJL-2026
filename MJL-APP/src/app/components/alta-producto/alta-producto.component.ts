@@ -1,22 +1,47 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms'; 
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { PhotoService } from 'src/app/services/photo-service';
 import { DbService } from 'src/app/services/db-service';
 import { UserService } from 'src/app/services/user-service';
 import {
-  IonHeader, IonToolbar, IonTitle, IonContent, IonItem,
-  IonGrid, IonRow, IonCol,
-  IonIcon, IonButton, IonSpinner, IonList, IonButtons, IonBackButton,
-  ViewWillEnter
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonItem,
+  IonGrid,
+  IonRow,
+  IonCol,
+  IonIcon,
+  IonButton,
+  IonSpinner,
+  IonList,
+  IonButtons,
+  IonBackButton,
+  ViewWillEnter,
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
 import {
-  camera, restaurant, documentText, time,
-  cash, alertCircle, addCircle, pencil, save,
-  imagesOutline
+  camera,
+  restaurant,
+  documentText,
+  time,
+  cash,
+  alertCircle,
+  addCircle,
+  pencil,
+  save,
+  imagesOutline,
 } from 'ionicons/icons';
+import { ToastService } from 'src/app/services/toast-service';
+import { VibrationsService } from 'src/app/services/vibrations-service';
 
 @Component({
   selector: 'app-alta-producto',
@@ -25,23 +50,58 @@ import {
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    CommonModule, 
-    IonHeader, IonToolbar, IonTitle, IonContent, IonItem,
-     IonGrid, IonRow, IonCol,
-    IonIcon, IonButton, IonSpinner, IonList, IonButtons, IonBackButton
-  ]
+    CommonModule,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonContent,
+    IonItem,
+    IonGrid,
+    IonRow,
+    IonCol,
+    IonIcon,
+    IonButton,
+    IonSpinner,
+    IonList,
+    IonButtons,
+    IonBackButton,
+  ],
 })
 export class AltaProductoComponent implements ViewWillEnter {
   private fb = inject(FormBuilder);
   private photoService = inject(PhotoService);
-  private dbService = inject(DbService<any>); 
+  private dbService = inject(DbService<any>);
   private userService = inject(UserService);
+  toastService = inject(ToastService);
+  vibrationService = inject(VibrationsService);
 
   productoForm: FormGroup = this.fb.group({
-    nombre: ['', [Validators.required, Validators.minLength(3), Validators.pattern(/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$/)]],
+    nombre: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(3),
+        Validators.pattern(/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$/),
+      ],
+    ],
     descripcion: ['', [Validators.required, Validators.minLength(10)]],
-    tiempoElaboracion: ['', [Validators.required, Validators.min(1), Validators.max(120), Validators.pattern(/^[0-9]+$/)]],
-    precio: ['', [Validators.required, Validators.min(1), Validators.pattern(/^[0-9]+(\.[0-9]{1,2})?$/)]],
+    tiempoElaboracion: [
+      '',
+      [
+        Validators.required,
+        Validators.min(1),
+        Validators.max(120),
+        Validators.pattern(/^[0-9]+$/),
+      ],
+    ],
+    precio: [
+      '',
+      [
+        Validators.required,
+        Validators.min(1),
+        Validators.pattern(/^[0-9]+(\.[0-9]{1,2})?$/),
+      ],
+    ],
   });
 
   fotos: (string | null)[] = [null, null, null];
@@ -50,34 +110,48 @@ export class AltaProductoComponent implements ViewWillEnter {
 
   constructor() {
     // Registramos los íconos visuales
-    addIcons({ camera, restaurant, documentText, time, cash, alertCircle, addCircle, pencil, save, imagesOutline });
+    addIcons({
+      camera,
+      restaurant,
+      documentText,
+      time,
+      cash,
+      alertCircle,
+      addCircle,
+      pencil,
+      save,
+      imagesOutline,
+    });
   }
 
   ionViewWillEnter() {
     const usuarioActual = this.userService.userData();
-    const rolUsuario = usuarioActual?.perfil; 
+    const rolUsuario = usuarioActual?.perfil;
     this.tipoProducto = rolUsuario === 'cantinero' ? 'bebida' : 'plato';
   }
 
   async tomarFoto(index: number) {
     try {
-      const fotoUrl = await this.photoService.takePicture(); 
+      const fotoUrl = await this.photoService.takePicture();
       if (fotoUrl) {
         this.fotos[index] = fotoUrl;
       }
     } catch (error) {
-      console.error('Error al tomar la foto', error);
+      this.toastService.showError('Error al tomar la foto');
     }
   }
 
   async onSubmit() {
     if (this.productoForm.invalid) {
       this.productoForm.markAllAsTouched();
+      this.vibrationService.vibrate();
       return;
     }
 
     if (this.fotos.includes(null)) {
-      alert('Debes cargar obligatoriamente las 3 fotos del producto.');
+      this.toastService.showError(
+        'Debes cargar obligatoriamente las 3 fotos del producto.',
+      );
       return;
     }
 
@@ -85,33 +159,36 @@ export class AltaProductoComponent implements ViewWillEnter {
     const formValues = this.productoForm.value;
 
     try {
-      const existe = await this.dbService.verificarProductoExistente(formValues.nombre, this.tipoProducto);
+      const existe = await this.dbService.verificarProductoExistente(
+        formValues.nombre,
+        this.tipoProducto,
+      );
 
       if (existe) {
-        alert(`Este ${this.tipoProducto} ya existe en el menú.`);
+        this.toastService.showError(
+          `Este ${this.tipoProducto} ya existe en el menú.`,
+        );
         this.cargando = false;
         return;
       }
 
-      const urlsFotos = await this.photoService.uploadProductPhotos(this.fotos as string[], formValues.nombre);
+      const urlsFotos = await this.photoService.uploadProductPhotos(
+        this.fotos as string[],
+        formValues.nombre,
+      );
 
       const nuevoProducto = {
         ...formValues,
         tipo: this.tipoProducto,
         fotos: urlsFotos,
-        estado: 'activo'
+        estado: 'activo',
       };
 
       await this.dbService.agregarProducto(nuevoProducto);
-      alert(`${this.tipoProducto.toUpperCase()} guardado con éxito.`);
       this.productoForm.reset();
       this.fotos = [null, null, null];
-      
     } catch (error: any) {
-      // ---> ¡ESTE ES EL CAMBIO! <---
-      console.error('Error detallado:', error);
-      alert('Error de Supabase: ' + (error?.message || JSON.stringify(error)));
-      
+      this.toastService.showError('Error al cargar el producto');
     } finally {
       this.cargando = false;
     }
@@ -121,15 +198,15 @@ export class AltaProductoComponent implements ViewWillEnter {
     return this.productoForm.controls;
   }
 
-  async fromGallery(){
+  async fromGallery() {
     try {
       const result = await this.photoService.chooseFromGallery();
       console.log(result);
       for (let i = 0; i < result.length; i++) {
-        this.fotos[i] = result[i].webPath !;
+        this.fotos[i] = result[i].webPath!;
       }
     } catch (error) {
-      console.log('error');
+      this.toastService.showError('Error al seleccionar las fotos de la galeria');
     }
   }
 }

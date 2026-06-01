@@ -26,8 +26,10 @@ export class ClientService {
       result.success = false;
       if (response.error.code === '23505') {
         result.error = { message: 'Ya estas en la lista de espera' };
-        return result;
+      }else{
+        result.error = { message: 'Error al ingresar en la lista de espera' };
       }
+      return result;
     }
     result.data = response.data;
     result.success = true;
