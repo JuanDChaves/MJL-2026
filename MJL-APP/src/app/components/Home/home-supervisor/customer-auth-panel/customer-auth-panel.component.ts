@@ -15,6 +15,7 @@ import { UserService } from '../../../../services/user-service';
 import { LayoutComponent } from '../../../../components/layout/layout.component';
 import { SendEmailService } from 'src/app/services/send-email-service';
 import { IEmailData } from 'src/app/interfaces/IEmailData';
+import { ToastService } from 'src/app/services/toast-service';
 
 @Component({
   selector: 'app-customer-auth-panel',
@@ -34,6 +35,7 @@ export class CustomerAuthPanelComponent implements ViewWillEnter {
   unauthorizedUsersList = signal<IUserUnauthorized[]>([]);
   userServ = inject(UserService);
   sendEmailServ = inject(SendEmailService);
+  toastService = inject(ToastService);
 
   constructor() {
     addIcons({ checkmark, close, checkmarkCircle });
@@ -50,12 +52,13 @@ export class CustomerAuthPanelComponent implements ViewWillEnter {
       apellido: user.apellidos,
       resultado: false
     }
-    const result = await this.sendEmailServ.sendEmail(emailData,false);
-    console.log(result);
-    await this.userServ.enableOrRejectUser(
+    const result = await this.sendEmailServ.sendEmail(emailData);
+    if(!result.success) return await this.toastService.showError(result.error?.message!);
+    const result_reject =await this.userServ.enableOrRejectUser(
       user.dni.toString(),
       false
     );
+    if(!result_reject.success) await this.toastService.showError(result_reject.error?.message!);
     await this.reloadUsersList(user);
   }
 
@@ -66,12 +69,13 @@ export class CustomerAuthPanelComponent implements ViewWillEnter {
       apellido: user.apellidos,
       resultado: true
     }
-    const result = await this.sendEmailServ.sendEmail(emailData,true);
-    console.log(result);
-    await this.userServ.enableOrRejectUser(
+    const result = await this.sendEmailServ.sendEmail(emailData);
+    if(!result.success) return await this.toastService.showError(result.error?.message!);
+    const result_enable =await this.userServ.enableOrRejectUser(
       user.dni.toString(),
       true
     );
+    if(!result_enable.success) await this.toastService.showError(result_enable.error?.message!);
     await this.reloadUsersList(user);
   }
 
@@ -86,6 +90,7 @@ export class CustomerAuthPanelComponent implements ViewWillEnter {
   private async loadUser() {
     const response = await this.userServ.getUnauthorizedUsers();
     if (response.error) {
+      await this.toastService.showError(response.error?.message!);
       this.unauthorizedUsersList.set([]);
       return;
     }
