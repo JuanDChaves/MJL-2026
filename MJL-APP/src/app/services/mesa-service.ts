@@ -107,13 +107,17 @@ export class MesaService {
     }
   }
 
-  async mesas(){
-    const result: IResult<IMesa[]> = { success: false, error: null, data: null };
-    const { data, error} = await this.dbService.getAll('mesas');
+  async mesas() {
+    const result: IResult<IMesa[]> = {
+      success: false,
+      error: null,
+      data: null,
+    };
+    const { data, error } = await this.dbService.getAll('mesas');
     if (error) {
       result.error = { message: 'Error al obtener mesas' };
       return result;
-    };
+    }
     result.success = true;
     result.data = data as IMesa[];
     return result;
@@ -201,13 +205,24 @@ export class MesaService {
     }
   }
 
-  async liberarMesa(numer_mesa: number) {
-    const result = await this.dbService.update(
+  async liberarMesa(numer_mesa: number): Promise<IResult<void>> {
+    const result: IResult<void> = {
+      success: false,
+      error: null,
+      data: null,
+    };
+    const { data, error } = await this.dbService.update(
       'mesas',
       'numer_mesa',
       numer_mesa,
       { ocupada: false, user_id: null },
     );
+
+    if (error) {
+      result.error = { message: 'Error al liberar la mesa' };
+      return result;
+    }
+    result.success = true;
     return result;
   }
 
@@ -226,7 +241,7 @@ export class MesaService {
     return { success: true, error: null, data: result.data[0] };
   }
 
-  async getById(id_mesa: string):Promise<IResult<IMesa>>{
+  async getById(id_mesa: string): Promise<IResult<IMesa>> {
     const result = await this.dbService.getOneById('mesas', id_mesa);
     if (result.error || !result.data || result.data.length === 0)
       return {
