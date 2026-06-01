@@ -70,7 +70,7 @@ export class EntregarPedidoComponent implements OnInit {
         .filter(p => p.estado === 'hecho' || p.estado === 'entregado')
         .sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
     } catch (error) {
-      this.toastService.showError('Error al cargar los pedidos');
+      await this.toastService.showError('Error al cargar los pedidos');
     }
   }
 
@@ -78,7 +78,7 @@ export class EntregarPedidoComponent implements OnInit {
     // Al finalizar su parte, lo pasa a 'hecho'. El mozo será quien lo vea listo.
     const {data, error } = await this.pedidosService.cambiarEstadoPedido(pedido.id, 'hecho');
     if(error){
-      this.toastService.showError('Error al entregar el pedido');
+      await this.toastService.showError('Error al entregar el pedido');
       return;
     }
     this.cargarPedidos(); 

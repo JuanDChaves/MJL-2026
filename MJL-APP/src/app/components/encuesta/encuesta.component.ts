@@ -85,7 +85,7 @@ export class EncuestaComponent implements OnInit {
   async enviarEncuesta() {
     if (this.encuestaForm.invalid) {
       this.encuestaForm.markAllAsTouched();
-      this.vibrationService.vibrate();
+      await this.vibrationService.vibrate();
       return; 
     }
 
@@ -104,7 +104,7 @@ export class EncuestaComponent implements OnInit {
 
       this.encuestaYaRealizada = true; 
     } catch (error) {
-      this.toastService.showError('Hubo un problema al enviar la encuesta');
+      await this.toastService.showError('Hubo un problema al enviar la encuesta');
     } finally {
       this.cargando = false;
     }
