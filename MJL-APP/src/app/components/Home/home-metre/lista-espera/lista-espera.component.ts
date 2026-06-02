@@ -58,6 +58,7 @@ export class ListaEsperaComponent implements ViewWillEnter {
       return await this.toastService.showError(mesas.error?.message!);
     };
 
+    console.log(mesas.data,'mesas data');
     const modal = await this.modalCtrl.create({
       component: AsignarMesaModalComponent,
       componentProps: {
@@ -68,11 +69,12 @@ export class ListaEsperaComponent implements ViewWillEnter {
     await modal.present();
 
     const { data, role } = await modal.onWillDismiss();
+    console.log(data, 'modal data');
     if (role === 'confirm' && data) {
-      const response_1 = await this.mesaService.asignarMesa(clienteEsperando.cliente, data.mesaElegida,clienteEsperando.id_lista_espera);
+      console.log('entro aca');
+      const response_1 = await this.mesaService.asignarMesa(clienteEsperando.cliente, data.mesaElegida,clienteEsperando.id);
       if(!response_1.success) return await this.toastService.showError(response_1.error?.message!);
-      const response_2 = await this.notiService.mesaAsingada(clienteEsperando.cliente, data.mesaElegida);
-      if(!response_2.success) return await this.toastService.showError(response_2.error?.message!);
+      await this.notiService.mesaAsingada(clienteEsperando.cliente, data.mesaElegida);
       await this.cargarclientesEnEsperaList();
     }
   }

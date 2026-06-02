@@ -51,13 +51,6 @@ export const routes: Routes = [
       ).then((m) => m.PedidosPendientesComponent),
   },
   {
-    path: 'pedidos-en-preparacion',
-    loadComponent: () =>
-      import(
-        './components/pedidos/pedidos-en-preparacion/pedidos-en-preparacion.component'
-      ).then((m) => m.PedidosEnPreparacionComponent),
-  },
-  {
     path: 'pedidos-preparados',
     loadComponent: () =>
       import(
