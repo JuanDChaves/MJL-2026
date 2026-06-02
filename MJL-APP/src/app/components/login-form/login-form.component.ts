@@ -217,9 +217,9 @@ export class LoginFormComponent {
     const { data, role } = await modal.onWillDismiss();
     if (role === 'confirm' && data) {
       this.router.navigate(['/home']);
-    }else{
+    }else if(role === 'error') {
       await this.vibrateServ.vibrate();
-      this.errorMessage = 'no se pudo crear una session';
+      this.errorMessage = data.message;
     }
 
   }

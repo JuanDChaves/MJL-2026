@@ -123,18 +123,19 @@ export class AnonymousUserRegistrationFormComponent {
     };
 
     const result = await this.userService.insert(userAnon);
+    let resultData = null;
+    let resultMsg = '';
     if (result.success) {
       this.localStorage.saveData('user', result.data!);
       this.isSubmitting.set(false);
     } else {
       this.errorMessage = result.error?.message!;
-      this.vibrationService.vibrate();
-      return;
+      await this.vibrationService.vibrate();
     }
-    this.modalCtrl.dismiss(
-      { user: result.data },
-      result.success ? 'confirm' : 'cancel',
-    );
+    resultData = result.success ? { user: result.data } : { message: this.errorMessage };
+    resultMsg = result.success ? 'confirm' : 'error';
+    this.modalCtrl.dismiss(resultData, resultMsg);
+    return;
   }
 
   get f() {
