@@ -33,14 +33,21 @@ export class PredidosPreparadosComponent  implements ViewWillEnter {
   }
 
   async servirPedido(pedido: IOrder) {
+    console.log('1. Apretaste el botón. ID del pedido es:', pedido.id);
+    
+    // Llamamos a Supabase
     const response = await this.orderService.deliverOrder(pedido);
+    
+    console.log('2. Supabase respondió esto:', response);
+
     if (response.error) {
-      console.error('Error al rechazar el pedido: ', response.error);
+      console.error('3. ERROR en la base de datos: ', response.error);
       return;
     }
-    await this.cargarPedidosPreparados();
+    
+    // Borrado visual optimista
+    this.pedidosPreparadosList.update(pedidos => pedidos.filter(p => p.id !== pedido.id));
   }
-
   // FALTA CREAR EL ESTADO PREVIO A PENDIENTE
   async rechazarPedido(pedido: IOrder) {
     const response = await this.orderService.rejectOrder(pedido);

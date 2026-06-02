@@ -190,6 +190,7 @@ $approve-color: #2E7D32;
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 1;
+  line-clamp: 1; /* <-- Propiedad estándar agregada por compatibilidad */
   -webkit-box-orient: vertical;
 }
 
@@ -329,6 +330,44 @@ $approve-color: #2E7D32;
     letter-spacing: 0.03em;
     line-height: 1.2;
   }
+}
+
+// ─── Recepción Card (Punto 19) ────────────────────────────────────────────────
+.recepcion-card {
+  margin: 4px 0 10px;
+  border-radius: $radius;
+  box-shadow: $shadow;
+  background: #ffffff;
+  border-left: 5px solid $approve-color;
+  flex-shrink: 0;
+}
+
+.recepcion-card ::ng-deep ion-card-content {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.recepcion-icon {
+  font-size: 3.5rem;
+  color: $approve-color;
+  margin-bottom: 8px;
+}
+
+.recepcion-title {
+  font-family: 'Georgia', serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: $title-color;
+  margin: 0 0 8px;
+}
+
+.recepcion-text {
+  font-size: 0.85rem;
+  color: $text-muted;
+  margin: 0 0 16px;
+  line-height: 1.3;
 }
 
 // ─── Keyframes ───────────────────────────────────────────────────────────────

@@ -1,6 +1,6 @@
 <app-layout [title]="'Pedidos preparados'" [showBackButton]="true" [backUrl]="'/home'">
   <div class="auth-panel-content">
-    @for (item of pedidosPreparadosList(); track item.id_cliente) {
+    @for (item of pedidosPreparadosList(); track item.id) {
       <ion-card class="user-card">
         <ion-card-content>
           <div class="user-info">

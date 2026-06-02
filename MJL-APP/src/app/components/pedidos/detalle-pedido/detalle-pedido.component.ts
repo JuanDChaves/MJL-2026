@@ -50,9 +50,12 @@ export class DetallePedidoComponent implements ViewWillEnter {
   orderService = inject(OrdersService);
   localStorageService = inject(LocalStorageService);
   @Input() pedidoId: WritableSignal<string> = signal('');
-  order= signal<IOrder|null>(null);
+  order = signal<IOrder|null>(null);
   userService = inject(UserService);
   
+  // --- NUEVA SEÑAL: Identificamos si es Cliente, Mozo, etc. ---
+  perfilActual = computed(() => this.userService.userData()?.perfil?.toLowerCase());
+
   total = computed(() => {
     const products = this.order()?.data ?? [];
     return products.reduce((sum, p) => sum + p.precio * p.cantidad, 0);
@@ -77,24 +80,21 @@ export class DetallePedidoComponent implements ViewWillEnter {
 
   isRegisteredClient = computed(() => this.userService.userData()?.dni !== null); 
 
-  showJuegosBtn = computed(() => this.isRegisteredClient());
-  showEncuestaYPedirCuenta = computed(() => this.order()?.estado === 'entregado');
-  // entregado
+  // --- MODIFICADO: Solo se muestran si el estado ya pasó a 'recibido' ---
+  // Forzamos el toLowerCase() acá
+  showJuegosBtn = computed(() => this.isRegisteredClient() && this.order()?.estado?.toLowerCase() === 'recibido');
   
+  showEncuestaYPedirCuenta = computed(() => this.order()?.estado?.toLowerCase() === 'recibido');
 
   badgeColor = computed(() => {
-    const estado = this.order()?.estado;
+    const estado = this.order()?.estado?.toLowerCase(); // Forzamos minúscula acá también
     switch (estado) {
-      case 'pendiente':
-        return 'warning';
-      case 'preparando':
-        return 'primary';
-      case 'hecho':
-        return 'success';
-      case 'entregado':
-        return 'medium';
-      default:
-        return 'medium';
+      case 'pendiente': return 'warning';
+      case 'preparando': return 'primary';
+      case 'hecho': return 'success';
+      case 'entregado': return 'medium';
+      case 'recibido': return 'tertiary';
+      default: return 'medium';
     }
   });
 
@@ -133,4 +133,17 @@ export class DetallePedidoComponent implements ViewWillEnter {
     const data = response.data;
     this.order.set(data);
   }  
+
+  // --- NUEVO MÉTODO PARA EL PUNTO 19 ---
+  async confirmarRecepcion() {
+    const pedidoActual = this.order(); 
+    if (pedidoActual && pedidoActual.id) {
+      const response = await this.orderService.receiveOrder(pedidoActual);
+      if (response.success) {
+        console.log('Pedido confirmado por el cliente');
+        // Recargamos el pedido para que la pantalla detecte el estado 'recibido'
+        await this.loadOrder(); 
+      }
+    }
+  }
 }

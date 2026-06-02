@@ -85,7 +85,12 @@ export class OrdersService {
   }
 
   async deliverOrder(pedido: IOrder) {
-    return await this.updateOrderState(pedido, TypeOrderState.Hecho);    
+    // Cambiamos TypeOrderState.Hecho por TypeOrderState.Entregado
+    return await this.updateOrderState(pedido, TypeOrderState.Entregado);    
+  }
+  // Agregá este método para el Punto 19
+  async receiveOrder(pedido: IOrder) {
+    return await this.updateOrderState(pedido, TypeOrderState.Recibido);
   }
 
   private async updateOrderState(pedido: IOrder, estadoNuevo: TypeOrderState) {
