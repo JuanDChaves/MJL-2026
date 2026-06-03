@@ -122,7 +122,7 @@ export const routes: Routes = [
   },
   {path: 'preparar-pedido',
     loadComponent: () => 
-      import('./components/preparar-pedido/preparar-pedido.component').then(
+      import('./components/pedidos/preparar-pedido/preparar-pedido.component').then(
         (m) => m.PrepararPedidoComponent
       ),
   },

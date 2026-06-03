@@ -23,6 +23,7 @@ import {
   gameControllerOutline,
   qrCodeOutline,
   walletOutline,
+  clipboardOutline,
 } from 'ionicons/icons';
 import { register } from 'swiper/element/bundle';
 import { LocalStorageService } from 'src/app/services/local-storage-service';
@@ -79,8 +80,6 @@ export class DetallePedidoComponent implements ViewWillEnter {
     );
   });
 
-  isRegisteredClient = computed(() => this.userService.userData()?.dni !== null); 
-  showJuegosBtn = computed(() => this.isRegisteredClient());
   showEncuestaYPedirCuenta = computed(() => this.order()?.estado === 'recibido');
   confirmacionPedidoRecibido = computed(() => this.order()?.estado === 'entregando');
 
@@ -109,8 +108,8 @@ export class DetallePedidoComponent implements ViewWillEnter {
       checkmarkOutline,
       closeOutline,
       gameControllerOutline,
-      qrCodeOutline,
       walletOutline,
+      clipboardOutline
     });
   }
 

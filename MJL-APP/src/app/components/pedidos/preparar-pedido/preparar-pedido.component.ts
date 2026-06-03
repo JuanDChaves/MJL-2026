@@ -4,7 +4,7 @@ import { ViewWillEnter, IonButton, IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { checkmark } from 'ionicons/icons';
 import { DatePipe } from '@angular/common';
-import { LayoutComponent } from '../layout/layout.component';
+import { LayoutComponent } from '../../layout/layout.component';
 import { ProductsOrdersService } from 'src/app/services/products-orders-service';
 import { IPedidoEnPreparacion } from 'src/app/interfaces/IPedidoEnPreparacion';
 import { ToastService } from 'src/app/services/toast-service';
