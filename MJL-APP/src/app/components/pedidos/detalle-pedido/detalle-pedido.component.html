@@ -23,6 +23,19 @@
     </ion-card>
 
     <!-- SECTION TITLE -->
+     @if ( confirmacionPedidoRecibido() ) {
+      <ion-card class="recepcion-card slide-up" style="--delay: 0.05s">
+        <ion-card-content class="text-center">
+          <ion-icon name="restaurant-outline" class="recepcion-icon"></ion-icon>
+          <h3 class="recepcion-title">¡Tu pedido está en la mesa!</h3>
+          <p class="recepcion-text">Confirmá la recepción de tu comida para habilitar los juegos y las opciones de pago.</p>
+          <ion-button expand="block" color="success" (click)="confirmarRecepcion()">
+            <ion-icon slot="start" name="checkmark-outline"></ion-icon>
+            Confirmar Recepción
+          </ion-button>
+        </ion-card-content>
+      </ion-card>
+    }
     @if (order()?.data?.length) {
       <div class="section-title slide-up" style="--delay: 0.1s">
         Productos ({{ totalItems() }})

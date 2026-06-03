@@ -7,25 +7,36 @@
       pagination-clickable="true"
       class="full-swiper"
     >
-      @for (game of games; track game.name) {
+      @for (game of games; track game.name; let i = $index) {
         <swiper-slide class="game-slide">
-          <ion-card class="game-card">
-            <ion-card-content>
-              <div class="game-icon-wrapper">
-                <ion-icon [name]="game.icon" class="game-icon"></ion-icon>
-              </div>
+          <div class="game-card" [style.--anim-delay]="i * 0.12 + 's'">
+
+            <div class="game-image-wrap">
+              <img
+                class="game-image"
+                [src]="game.url"
+                [alt]="game.name"
+                loading="lazy"
+              />
+              <div class="game-image-overlay"></div>
+            </div>
+
+            <div class="game-body">
               <h2 class="game-name">{{ game.name }}</h2>
               <p class="game-desc">{{ game.description }}</p>
+
               <ion-button
                 [disabled]="game.disabled"
                 [routerLink]="game.disabled ? null : game.route"
                 class="play-btn"
                 expand="block"
               >
+                <ion-icon name="play-outline" slot="start"></ion-icon>
                 JUGAR
               </ion-button>
-            </ion-card-content>
-          </ion-card>
+            </div>
+
+          </div>
         </swiper-slide>
       }
     </swiper-container>

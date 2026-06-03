@@ -1,8 +1,8 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { ManejadorJuegos } from 'src/app/services/manejador-juegos';
 import { UserService } from 'src/app/services/user-service';
-import { IonButton, IonContent } from '@ionic/angular/standalone';
+import { IonButton, IonContent, ViewWillEnter } from '@ionic/angular/standalone';
 @Component({
   selector: 'app-ruleta',
   templateUrl: './ruleta.component.html',
@@ -10,7 +10,7 @@ import { IonButton, IonContent } from '@ionic/angular/standalone';
   imports:[IonContent, IonButton],
   standalone: true
 })
-export class RuletaComponent implements OnInit {
+export class RuletaComponent implements ViewWillEnter {
   manejadorJuegos = inject(ManejadorJuegos);
   userService = inject(UserService);
   router = inject(Router);
@@ -22,12 +22,10 @@ export class RuletaComponent implements OnInit {
   mostrarResultado = false;
   esAnonimo = false;
 
-  ngOnInit() {
+  ionViewWillEnter() {
     // Verificamos si es anónimo para cumplir la consigna: "(anónimo NO)"
     const user = this.userService.userData();
-    if (user && user.perfil === 'cliente anónimo') {
-      this.esAnonimo = true;
-    }
+    this.esAnonimo = user!.dni === null;
   }
 
   girarRuleta() {
@@ -92,7 +90,7 @@ export class RuletaComponent implements OnInit {
 
       if (premioReal > 0) {
         this.resultadoMensaje = `¡Felicidades! Ganaste un ${premioReal}% de descuento en tu cuenta.`;
-        this.manejadorJuegos.tieneDescuento.set(true);
+        this.manejadorJuegos.descuento.set(premioReal);
         // Acá guardarás el descuento en el ticket final
       } else {
         this.resultadoMensaje = `¡Ups! La suerte no te acompañó. ¡Pero podes seguir jugando por diversión!`;

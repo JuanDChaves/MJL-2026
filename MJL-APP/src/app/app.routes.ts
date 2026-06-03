@@ -176,7 +176,7 @@ export const routes: Routes = [
       ),
   },
   {
-    path: 'ahoracado',
+    path: 'ahorcado',
     loadComponent: () =>
       import('./components/juegos/ahorcado/ahorcado.component').then(
         (m) => m.AhorcadoComponent

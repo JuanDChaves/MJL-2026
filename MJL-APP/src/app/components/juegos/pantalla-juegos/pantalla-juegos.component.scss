@@ -3,27 +3,29 @@
   height: 100%;
 }
 
-$btn-color: #B71C1C;
-$btn-hover: #D32F2F;
-$btn-text: #FFFFFF;
-$title-color: #1A1A1A;
-$text-muted: #6E4839;
-$shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-$radius: 12px;
-$beige: #f3e9da;
+$bg-dark:       #1A1A1A;
+$bg-card:       #2A2A2A;
+$bg-card-light: #333333;
+$accent:        #F5A623;
+$accent-hover:  #D4920E;
+$accent-glow:   rgba(245, 166, 35, 0.35);
+$text-light:    #f3e9da;
+$text-muted:    #8B7355;
+$radius:         16px;
 
 .content-inner {
   display: flex;
   flex-direction: column;
   height: 100%;
   overflow: hidden;
-  padding: 16px 0;
+  background: $bg-dark;
+  padding: 0;
 }
 
 .full-swiper {
   width: 100%;
   height: 100%;
-  padding-bottom: 32px;
+  padding: 20px 16px 40px;
 }
 
 .game-slide {
@@ -34,106 +36,180 @@ $beige: #f3e9da;
 }
 
 .game-card {
-  background: $beige;
+  background: linear-gradient(145deg, $bg-card, $bg-card-light);
   border-radius: $radius;
-  box-shadow: $shadow;
+  border-left: 3px solid $accent;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba($accent, 0.08);
   width: 100%;
-  max-width: 340px;
+  max-width: 360px;
   margin: 0 auto;
+  overflow: hidden;
+  animation: fadeInUp 0.5s ease both;
+  animation-delay: var(--anim-delay, 0s);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow:
+      0 16px 48px rgba(0, 0, 0, 0.6),
+      0 0 24px $accent-glow,
+      0 0 0 1px rgba($accent, 0.2);
+  }
 }
 
-.game-card ::ng-deep ion-card-content {
-  padding: 32px 24px;
+.game-image-wrap {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+.game-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.game-image-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 30%,
+    rgba($bg-dark, 0.5) 70%,
+    rgba($bg-dark, 0.85) 100%
+  );
+  pointer-events: none;
+}
+
+.game-body {
+  padding: 20px 20px 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 16px;
-}
-
-.game-icon-wrapper {
-  width: 96px;
-  height: 96px;
-  border-radius: 50%;
-  background: rgba($btn-color, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.game-icon {
-  font-size: 3rem;
-  color: $btn-color;
+  gap: 10px;
 }
 
 .game-name {
   font-family: 'Georgia', serif;
-  font-size: 1.5rem;
+  font-size: 1.35rem;
   font-weight: 700;
-  color: $title-color;
+  color: $text-light;
   margin: 0;
   line-height: 1.3;
+  letter-spacing: 0.01em;
 }
 
 .game-desc {
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   color: $text-muted;
-  line-height: 1.4;
+  line-height: 1.5;
   margin: 0;
+  opacity: 0.85;
+  max-width: 260px;
 }
 
 .play-btn {
   width: 100%;
-  min-height: 50px;
+  min-height: 48px;
   margin: 8px 0 0;
   font-family: 'Georgia', serif;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 700;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  --background: #{$btn-color};
-  --background-hover: #{$btn-hover};
-  --background-activated: #{$btn-hover};
-  --background-focused: #{$btn-hover};
-  --color: #{$btn-text};
-  --border-radius: #{$radius};
-  --box-shadow: #{$shadow};
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  --background: #{$accent};
+  --background-hover: #{$accent-hover};
+  --background-activated: #{$accent-hover};
+  --background-focused: #{$accent-hover};
+  --color: #{$bg-dark};
+  --border-radius: 10px;
+  --box-shadow: 0 4px 16px $accent-glow;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  ion-icon {
+    font-size: 1.1rem;
+  }
 
   &:hover {
-    transform: translateY(-2px);
-    --box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+    transform: scale(1.03);
+    --box-shadow: 0 6px 24px $accent-glow, 0 0 32px $accent-glow;
   }
 
   &:active {
-    transform: translateY(1px);
-    --box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    transform: scale(0.98);
+    --box-shadow: 0 2px 8px $accent-glow;
+  }
+
+  &[disabled] {
+    opacity: 0.4;
+    pointer-events: none;
   }
 }
 
 ::ng-deep .full-swiper {
-  --swiper-pagination-color: #{$btn-color};
-  --swiper-pagination-bullet-inactive-color: #{rgba($btn-color, 0.3)};
-  --swiper-pagination-bullet-size: 10px;
-  --swiper-pagination-bottom: 4px;
+  --swiper-pagination-color: #{$accent};
+  --swiper-pagination-bullet-inactive-color: #{rgba($accent, 0.25)};
+  --swiper-pagination-bullet-size: 8px;
+  --swiper-pagination-bottom: 0;
+  --swiper-pagination-spacing: 8px;
+
+  .swiper-pagination-bullet {
+    transition: transform 0.25s ease, opacity 0.25s ease;
+  }
+
+  .swiper-pagination-bullet-active {
+    transform: scale(1.3);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (max-width: 380px) {
-  .game-icon-wrapper {
-    width: 76px;
-    height: 76px;
+  .content-inner {
+    padding: 0;
   }
 
-  .game-icon {
-    font-size: 2.4rem;
+  .full-swiper {
+    padding: 16px 12px 36px;
+  }
+
+  .game-card {
+    border-radius: 12px;
+    max-width: 100%;
+  }
+
+  .game-body {
+    padding: 16px 16px 20px;
   }
 
   .game-name {
-    font-size: 1.25rem;
+    font-size: 1.15rem;
   }
 
-  .game-card ::ng-deep ion-card-content {
-    padding: 24px 16px;
+  .game-desc {
+    font-size: 0.8rem;
+    max-width: 100%;
+  }
+
+  .play-btn {
+    min-height: 44px;
+    font-size: 0.85rem;
+  }
+
+  ::ng-deep .full-swiper {
+    --swiper-pagination-bullet-size: 7px;
   }
 }

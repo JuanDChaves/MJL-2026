@@ -73,14 +73,13 @@ export class PrepararPedidoComponent implements ViewWillEnter {
       await this.toastService.showError(isCompleted.error.message!);
       return;
     }
-    if (!isCompleted.success) {
-      await this.cargarPedidos();
-      return;
+    if (isCompleted.success) {
+      console.log('pedido completado');
+      const response_finish = await this.orderService.finishOrder(idPedido);
+      if(response_finish.error) return await this.toastService.showError(response_finish.error.message!);
+      await this.notiService.pedidoterminado(response_finish.data?.id_cliente!);
     }
-    console.log('pedido completado');
-    const response_finish = await this.orderService.finishOrder(idPedido);
-    if(response_finish.error) return await this.toastService.showError(response_finish.error.message!);
-    await this.notiService.pedidoterminado(response_finish.data?.id_cliente!);
+    await this.cargarPedidos();
   }
 
   getTitle(): string {

@@ -1,9 +1,9 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, inject } from '@angular/core';
 import { RouterLink, ActivatedRoute } from '@angular/router';
-import { IonCard, IonCardContent, IonButton, IonIcon } from '@ionic/angular/standalone';
+import { IonButton, IonIcon } from '@ionic/angular/standalone';
 import { LayoutComponent } from '../../layout/layout.component';
 import { addIcons } from 'ionicons';
-import { gameControllerOutline, trophyOutline, helpCircleOutline, textOutline } from 'ionicons/icons';
+import { playOutline } from 'ionicons/icons';
 import { register } from 'swiper/element/bundle';
 
 register();
@@ -14,6 +14,7 @@ interface GameItem {
   route: string;
   description: string;
   disabled: boolean;
+  url:string
 }
 
 @Component({
@@ -21,7 +22,7 @@ interface GameItem {
   templateUrl: './pantalla-juegos.component.html',
   styleUrls: ['./pantalla-juegos.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [IonCard, IonCardContent, IonButton, IonIcon, RouterLink, LayoutComponent],
+  imports: [IonButton, IonIcon, RouterLink, LayoutComponent],
 })
 export class PantallaJuegosComponent {
   private route = inject(ActivatedRoute);
@@ -35,6 +36,7 @@ export class PantallaJuegosComponent {
       route: '/mayor-menor',
       description: 'Adiviná si la carta es mayor o menor y ganá descuentos',
       disabled: false,
+      url:'assets/juegos/display/mayor_menor.png'
     },
     {
       name: 'Ruleta',
@@ -42,17 +44,19 @@ export class PantallaJuegosComponent {
       route: '/ruleta',
       description: 'Girá la ruleta y ganá descuentos exclusivos',
       disabled: false,
+      url: 'assets/juegos/display/ruleta.png'
     },
     {
-      name: 'El Ahoracado',
+      name: 'El Ahorcado',
       icon: 'text-outline',
-      route: '/ahoracado',
+      route: '/ahorcado',
       description: 'Adivina una palabra en menos de 5 intentos',
       disabled: false,
+      url: 'assets/juegos/display/ahorcado.png'
     },
   ];
 
   constructor() {
-    addIcons({ gameControllerOutline, trophyOutline, helpCircleOutline, textOutline });
+    addIcons({ playOutline });
   }
 }

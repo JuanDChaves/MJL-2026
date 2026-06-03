@@ -6,6 +6,6 @@ import { Injectable, signal } from '@angular/core';
 export class ManejadorJuegos {
 
   primeraVez = signal<boolean>(true);
-  tieneDescuento = signal<boolean>(false);
+  descuento = signal<number>(0);
   
 }

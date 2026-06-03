@@ -4,7 +4,6 @@ import { IResult } from '../interfaces/IResult';
 import { IUser } from '../interfaces/IUser';
 import { TipoPerfil } from '../types/TipoPerfil';
 import { INotificacionInfo } from '../interfaces/INotificacionInfo';
-import { TipoProducto } from '../interfaces/IProducto';
 import { IMesa } from '../interfaces/IMesa';
 
 @Injectable({
@@ -221,5 +220,17 @@ export class NotificationsService {
       },
     };
     return await this.insertNotification(['cliente'], notiInfoUser, user.id);
+  }
+
+  async sirviendoPedido(id_cliente:string){
+    const notiInfo: INotificacionInfo = {
+      title: "Entregando pedido",
+      body: `El mozo esta llevando su pedido a su mesa`,
+      data: {
+        cliente_id: id_cliente,
+        tipo: 'pedido_sirviendo',
+      },
+    };
+    return await this.insertNotification(['cliente'], notiInfo, id_cliente);
   }
 }

@@ -56,7 +56,7 @@
 
           <h2 class="end-title">{{ gano() ? '¡Ganaste!' : '¡Perdiste!' }}</h2>
 
-          @if (gano() && manejador.tieneDescuento()) {
+          @if (gano() && manejador.descuento() > 0) {
             <p class="end-discount">🎁 Obtuviste un descuento especial</p>
           }
 

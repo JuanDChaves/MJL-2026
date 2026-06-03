@@ -2,8 +2,9 @@ export enum TypeOrderState {
     Pendiente = 'pendiente',
     Preparando = 'preparando',
     Hecho = 'hecho',
-    Entregado = 'entregado',
+    Entregando = 'entregando',
     Editando = 'editando',
     Pagado = 'pagado',
-    Finalizado = 'finalizado'
+    Finalizado = 'finalizado',
+    Recibido = 'recibido'
 } 
