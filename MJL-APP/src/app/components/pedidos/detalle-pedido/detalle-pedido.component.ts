@@ -29,6 +29,7 @@ import { register } from 'swiper/element/bundle';
 import { LocalStorageService } from 'src/app/services/local-storage-service';
 import { UserService } from 'src/app/services/user-service';
 import { ToastService } from 'src/app/services/toast-service';
+import { ManejadorJuegos } from 'src/app/services/manejador-juegos';
 
 register();
 
@@ -57,10 +58,13 @@ export class DetallePedidoComponent implements ViewWillEnter {
   router = inject(Router);
   activatedRoute = inject(ActivatedRoute);
   toastService = inject(ToastService);
+  manejadorJuego = inject(ManejadorJuegos);
   
   total = computed(() => {
     const products = this.order()?.data ?? [];
-    return products.reduce((sum, p) => sum + p.precio * p.cantidad, 0);
+    const total = products.reduce((sum, p) => sum + p.precio * p.cantidad, 0);
+    if(this.manejadorJuego.descuento() > 0) return total - (total * (this.manejadorJuego.descuento() / 100));
+    return total;
   });
 
   totalItems = computed(() => {

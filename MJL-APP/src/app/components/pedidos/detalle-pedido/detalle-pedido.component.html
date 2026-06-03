@@ -104,7 +104,7 @@
             <span class="summary-value">{{ totalTime() }} minutos</span>
           </div>
           <div class="summary-row summary-total">
-            <span class="summary-label">Total</span>
+            <span class="summary-label">{{this.manejadorJuego.descuento()>0?'Total con descuento':'Total'}}</span>
             <span class="summary-value">$ {{ total() }}</span>
           </div>
           @if (this.order()?.estado !== "pendiente") {
