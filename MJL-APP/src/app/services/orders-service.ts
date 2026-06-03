@@ -10,7 +10,24 @@ import { TypeOrderState } from '../types/TypeOrderState';
 })
 export class OrdersService {
   dbService = inject(DbService);
-
+  
+  async finishOrder(id_order: string): Promise<IResult<IOrder>> {
+    const result: IResult<IOrder> = {
+      success: false,
+      error: null,
+      data: null,
+    }
+    const response = await this.dbService.update('pedidos', 'id', id_order, {
+      estado: 'hecho',
+    });
+    if (response.error) {
+      result.error = { message: 'Error al actualizar el estado del pedido a hecho' };
+      return result;
+    }
+    result.success = true;
+    result.data = response.data as IOrder;
+    return result;
+  }
   async getOrdersWithStateFilter(stateOrder: TypeOrderState): Promise<IResult<IOrder[]>> {
     const response = await this.dbService.getAllWithFilter(
       'pedidos',

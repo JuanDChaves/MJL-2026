@@ -11,12 +11,11 @@ import { cashOutline, chatbubbleEllipsesOutline, clipboardOutline, hourglassOutl
   styleUrls: ['./mozo-home-page.component.scss'],
   imports: [IonButton, RouterLink, IonIcon]
 })
-export class MozoHomePageComponent  implements OnInit {
+export class MozoHomePageComponent {
 
   constructor() { 
     addIcons({clipboardOutline,hourglassOutline,chatbubbleEllipsesOutline,cashOutline})
   }
 
-  ngOnInit() {}
 
 }

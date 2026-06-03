@@ -144,22 +144,26 @@ export class NotificationsService {
     return await this.insertNotification(['cocinero'], notiInfo);
   }
 
-  async pedidoterminado(sector: TipoProducto) {
-    const notiInfo: INotificacionInfo = {
-      title:
-        sector === 'bebida'
-          ? 'Pedido de bar terminado'
-          : 'Pedido de cocina terminado',
-      body:
-        sector === 'bebida'
-          ? 'Todas las bebidas fueron preparadas'
-          : 'Todos los platos fueron preparados',
+  async pedidoterminado(id_user: string) {
+    const notiInfoMozo: INotificacionInfo = {
+      title: 'Pedido terminado',
+      body: 'Todos los productos estan listos para servir',
       data: {
         cliente_id: null,
-        tipo: 'pedido_cocina',
+        tipo: 'pedido_mozo',
       },
     };
-    return await this.insertNotification(['mozo'], notiInfo);
+
+    const notiInfoCliente: INotificacionInfo = {
+      title: 'Pedido terminado',
+      body: 'Su pedido ha sido terminado y pronto sera servido',
+      data: {
+        cliente_id: null,
+        tipo: 'pedido_cliente',
+      },
+    };
+    await this.insertNotification(['mozo'], notiInfoMozo);
+    await this.insertNotification(['cliente'], notiInfoCliente, id_user);
   }
 
   async pedirCuenta(user: IUser) {
