@@ -56,6 +56,22 @@ _Completar_
     <img src="./MJL-APP/docs/images/lista-pedidos-pendientes.png" alt=""/>
 </div>
 
+### Diagramas
+#### DER inicial 
+<div align="center">
+    <img src="./MJL-APP/docs/flow/DER.png" alt=""/>
+</div>
+
+#### Diagrama de flujo de la app
+<div align="center">
+    <img src="./MJL-APP/docs/flow/flujo.png" alt=""/>
+</div>
+
+#### Flujo de un pedido.
+<div align="center">
+    <img src="./MJL-APP/docs/flow/Flujo del pedido del cliente.png" alt=""/>
+</div>
+
 ### QRs
 #### Ingreso local
 <div align="center">

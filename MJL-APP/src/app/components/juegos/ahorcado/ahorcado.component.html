@@ -2,7 +2,7 @@
 
   <ion-content class="game-content">
 
-    @if (!juegoEmpezado()) {
+    @if (!juegoEmpezado() && !juegoTerminado()) {
       <div class="start-screen">
         <div class="start-logo">
           <p class="logo-card">Aa</p>
@@ -26,8 +26,16 @@
         <!-- Stats bar -->
         <div class="stats-bar">
           <div class="stat aciertos">
-            <ion-icon name="trophy-outline" class="stat-icon"></ion-icon>
+            <ion-icon name="pricetag-outline" class="stat-icon"></ion-icon>
             <p>{{ porcentaje() }}%</p>
+          </div>
+          <div class="stat">
+            @for (i of [1,2,3,4,5]; track i) {
+              <ion-icon
+                [name] = "i <= failedAttempts() ? 'heart' : 'heart-outline'"
+              >
+              </ion-icon>
+            }
           </div>
         </div>
         <div class="cards-area">
@@ -43,7 +51,7 @@
       </div>
     }
 
-    @if (juegoTerminado()) {
+    @if (juegoTerminado() && !juegoEmpezado()) {
       <div class="end-screen">
         <div class="end-card" [class.end-win]="gano()" [class.end-lose]="!gano()">
           <div class="end-icon-wrapper">
@@ -63,11 +71,7 @@
           <div class="end-stats">
             <div class="end-stat">
               <p class="end-stat-label">Palabra</p>
-              <p class="end-stat-value">{{ word() }}</p>
-            </div>
-            <div class="end-stat">
-              <p class="end-stat-label">Intentos fallidos</p>
-              <p class="end-stat-value">{{ failedAttempts() }}</p>
+              <p class="end-stat-value">{{ currentWord() }}</p>
             </div>
             <div class="end-stat">
               <p class="end-stat-label">Porcentaje ganado</p>
