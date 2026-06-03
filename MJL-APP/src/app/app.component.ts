@@ -15,15 +15,24 @@ export class AppComponent implements OnInit, OnDestroy{
   showSplash = true;
 
   async ngOnInit() {
-    await this.sonido.preload();
-    await this.sonido.playOpen();
+    try {
+      await this.sonido.preload();
+      await this.sonido.playOpen();
+    } catch (e) {
+      console.log('Sound error:', e)
+    }
+
     setTimeout(() => {
       this.showSplash = false;
     }, 3000)
 
     App.addListener('appStateChange', async ({ isActive }) => {
       if(!isActive) {
-        await this.sonido.playClose();
+        try {
+          await this.sonido.playClose();
+        } catch (e) {
+          console.log('Sound error:', e)
+        }
       }
     })
   }
