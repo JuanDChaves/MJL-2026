@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "capacitor-native-audio": "^3.0.2"
+  }
+}
