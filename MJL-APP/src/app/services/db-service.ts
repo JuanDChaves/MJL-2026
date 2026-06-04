@@ -55,12 +55,12 @@ export class DbService<T extends BaseEntity> {
     table: string,
     filter: string,
     value: any,
-  ): Promise<{ data: T[] | null; error: any }> {
+  ): Promise<{ data: T[] ; error: any }> {
     const { data, error } = await this.sbService.client
       .from(table)
       .select('*')
       .eq(filter, value);
-    return { data: data as T[] | null, error };
+    return { data: data as T[] ?? [], error };
   }
 
   async getAll(table: string): Promise<{ data: T[] | null; error: any }> {
@@ -213,5 +213,12 @@ export class DbService<T extends BaseEntity> {
     .select('*')
     .eq('id_pedido', id_pedido)
     .eq('estado','preparando');
+  }
+
+  async getByUserIdColumn(table:string, userId:string){
+    return await this.sbService.client
+    .from(table)
+    .select('*')
+    .eq('user_id', userId);
   }
 }

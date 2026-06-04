@@ -18,11 +18,10 @@
 
     <!-- Botones de acción -->
     <div class="actions-section">
-      <ion-button expand="block" class="action-btn" (click)="anunciarse()">
+      <ion-button expand="block" [disabled]="this.isWaiting()" class="action-btn" (click)="anunciarse()">
         <ion-icon slot="start" name="enter-outline"></ion-icon>
-        <span>Anunciarme</span>
+        <span>{{ this.isWaiting() ? 'Esperando...' : 'Anunciarme'}}</span>
       </ion-button>
-
       <ion-button expand="block" class="action-btn outline" (click)="escanearQR()">
         <ion-icon slot="start" name="qr-code-outline"></ion-icon>
         <span>Escanear QR de mesa</span>

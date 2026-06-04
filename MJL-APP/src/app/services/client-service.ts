@@ -68,4 +68,22 @@ export class ClientService {
     return result;
   }
 
+  async isWaiting(id: string): Promise<IResult<void>> {
+    const result: IResult<void> = {
+      success: false,
+      error: null,
+      data: null
+    }
+    const {data,error} = await this.dbService.getByUserIdColumn('lista_espera', id);
+    if (error) {
+      result.error = { message: 'Error al obtener el usuario' };
+      return result;
+    }
+    if( data === null || data.length === 0){
+      return result;
+    }
+    const isWaiting = data.some(( client ) => client.en_espera === true );
+    result.success = isWaiting;
+    return result;
+  }
 }

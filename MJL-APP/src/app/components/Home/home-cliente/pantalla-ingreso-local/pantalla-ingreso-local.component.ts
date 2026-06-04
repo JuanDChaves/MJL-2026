@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { IonButton, IonIcon, ViewWillEnter } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
@@ -35,7 +35,7 @@ export class PantallaIngresoLocalComponent implements ViewWillEnter {
   localStorageService = inject(LocalStorageService);
   orderService = inject(OrdersService);
   toastService = inject(ToastService);
-
+  isWaiting = signal<boolean>(false);
   constructor() {
     addIcons({
       qrCodeOutline,
@@ -46,20 +46,23 @@ export class PantallaIngresoLocalComponent implements ViewWillEnter {
   }
   async ionViewWillEnter(): Promise<void> {
     await this.userService.loadUserData();
+    await this.isClientWaiting();
   }
 
   async anunciarse() {
+    if(this.isWaiting()){
+      await this.toastService.showError('Ya estas en la lista de espera, debes esperar que se te asigne una mesa');
+      return;
+    }
     const user = this.userService.userData();
-    if (user) {
-      const response = await this.clientService.insertWaitingList(user);
-      if (response.success) {
-        console.log('cliente ingresado en la lista de espera');
-        await this.notiService.ingresoListaEspera(user);
-        return;
-      }
+    const response = await this.clientService.insertWaitingList(user!);
+    if (response.error) {
       await this.toastService.showError(response.error?.message!);
       return;
     }
+    await this.notiService.ingresoListaEspera(user!);
+    this.isWaiting.set(true);
+    return;
   }
 
   async escanearQR() {
@@ -115,4 +118,8 @@ export class PantallaIngresoLocalComponent implements ViewWillEnter {
     this.router.navigate(['/ver-encuesta']);
   }
   
+  async isClientWaiting(){
+    const result = await this.clientService.isWaiting(this.userService.userData()?.id!);
+    this.isWaiting.set(result.success);
+  }
 }
