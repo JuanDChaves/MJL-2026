@@ -157,7 +157,7 @@ export class ChatIndividualComponent implements ViewWillEnter {
     if (msg.nombre_mozo) {
       return `${time} · ${msg.nombre_mozo}`;
     }
-    return time;
+    return `${time} · Cliente`;
   }
 
   isOwnMessage(userId: string | undefined): boolean {

@@ -281,8 +281,9 @@ export class PantallaMenuClienteComponent implements ViewWillEnter {
 
   openChat() {
     const mesaId = this.mesa()?.id;
+    const numeroMesa = this.mesa()?.numero_mesa;
     if (mesaId) {
-      this.router.navigate(['/chat', mesaId]);
+      this.router.navigate(['/chat', mesaId, numeroMesa]);
     }
   }
 
