@@ -1,23 +1,65 @@
-import { Component, computed, inject, OnInit, Signal, signal, viewChild, WritableSignal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  OnInit,
+  Signal,
+  signal,
+  viewChild,
+  WritableSignal,
+} from '@angular/core';
 import { IonLabel, ViewWillEnter } from '@ionic/angular/standalone';
 import { ManejadorJuegos } from 'src/app/services/manejador-juegos';
-import { IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonList, IonIcon, IonButton, IonItem } from '@ionic/angular/standalone';
+import {
+  IonContent,
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardSubtitle,
+  IonCardContent,
+  IonList,
+  IonIcon,
+  IonButton,
+  IonItem,
+} from '@ionic/angular/standalone';
 import { LayoutComponent } from 'src/app/components/layout/layout.component';
 import { KeyboardComponent } from './keyboard/keyboard.component';
-import { heart, heartOutline, pricetagOutline, alertCircleOutline, checkmarkCircleOutline, closeCircleOutline, playCircleOutline, starOutline, timeOutline, warningOutline } from 'ionicons/icons';
+import {
+  heart,
+  heartOutline,
+  pricetagOutline,
+  alertCircleOutline,
+  checkmarkCircleOutline,
+  closeCircleOutline,
+  playCircleOutline,
+  starOutline,
+  timeOutline,
+  warningOutline,
+} from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { ConstantPool } from '@angular/compiler';
-
 
 @Component({
   selector: 'app-ahorcado',
   templateUrl: './ahorcado.component.html',
   styleUrls: ['./ahorcado.component.scss'],
   imports: [
-    IonCard, IonCardContent, IonItem, IonLabel, IonCardHeader, IonCardTitle, IonCardSubtitle, IonContent, IonList, IonButton, IonIcon, LayoutComponent, KeyboardComponent
-  ]
+    IonCard,
+    IonCardContent,
+    IonItem,
+    IonLabel,
+    IonCardHeader,
+    IonCardTitle,
+    IonCardSubtitle,
+    IonContent,
+    IonList,
+    IonButton,
+    IonIcon,
+    LayoutComponent,
+    KeyboardComponent,
+  ],
 })
-export class AhorcadoComponent  implements ViewWillEnter {
+export class AhorcadoComponent implements ViewWillEnter {
   manejador = inject(ManejadorJuegos);
   juegoEmpezado = signal<boolean>(false);
   juegoTerminado = signal<boolean>(false);
@@ -27,21 +69,18 @@ export class AhorcadoComponent  implements ViewWillEnter {
 
   keyboard = viewChild(KeyboardComponent);
 
-  currentWord: WritableSignal<string> = signal("");
+  currentWord: WritableSignal<string> = signal('');
   currentWordIndex: WritableSignal<number> = signal(0);
   imageIndex: WritableSignal<number> = signal(0);
- 
+
   wordLetters: WritableSignal<string[]> = signal([]);
   wordLettersDisplay: WritableSignal<string[]> = signal([]);
 
-
   imageSrc: Signal<string> = computed(
-    () => `assets/juegos/ahorcado/ahorcado-${this.imageIndex()}.png`
+    () => `assets/juegos/ahorcado/ahorcado-${this.imageIndex()}.png`,
   );
- 
-  manejadorJuegos = inject(ManejadorJuegos);
 
-  constructor() { 
+  constructor() {
     addIcons({
       heart,
       heartOutline,
@@ -54,7 +93,6 @@ export class AhorcadoComponent  implements ViewWillEnter {
       checkmarkCircleOutline,
       warningOutline,
     });
-
   }
 
   ionViewWillEnter() {
@@ -62,7 +100,7 @@ export class AhorcadoComponent  implements ViewWillEnter {
   }
 
   ionViewWillLeave() {
-    if(this.juegoEmpezado()) {
+    if (this.juegoEmpezado()) {
       this.stop();
     }
   }
@@ -72,32 +110,33 @@ export class AhorcadoComponent  implements ViewWillEnter {
     this.juegoTerminado.set(false);
     this.setCurrentWord();
   }
- 
+
   stop(): void {
     this.juegoTerminado.set(true);
     this.juegoEmpezado.set(false);
- 
-    if (this.porcentaje() > 0) {
-      console.log("Aqui se pasaria el descuento")
+
+    if (this.manejador.primeraVez()) {
+      this.manejador.descuento.set(this.porcentaje());
+      this.manejador.primeraVez.set(false);
     }
   }
- 
+
   onLetterGuessed(letter: string): void {
     if (this.currentWord().includes(letter)) {
       this.wordLetters.update((prev) => prev.filter((l) => l !== letter));
- 
+
       if (this.wordLetters().length === 0) {
         this.gano.set(true);
         this.stop();
       }
     } else {
-      this.failedAttempts.update((prev) => prev - 1)
-      this.imageIndex.update((prev) => prev + 1); 
-      if(this.failedAttempts() === 2) {
+      this.failedAttempts.update((prev) => prev - 1);
+      this.imageIndex.update((prev) => prev + 1);
+      if (this.failedAttempts() === 2) {
         this.porcentaje.set(15);
-      } else if(this.failedAttempts() === 1) {
+      } else if (this.failedAttempts() === 1) {
         this.porcentaje.set(10);
-      } else if (this.failedAttempts() < 1 ) {
+      } else if (this.failedAttempts() < 1) {
         this.porcentaje.set(0);
         this.stop();
       }
@@ -109,7 +148,7 @@ export class AhorcadoComponent  implements ViewWillEnter {
     this.wordLetters.set(letters);
     this.wordLettersDisplay.set(letters);
   }
- 
+
   private resetState(): void {
     this.currentWordIndex.set(0);
     this.failedAttempts.set(5);
@@ -120,25 +159,63 @@ export class AhorcadoComponent  implements ViewWillEnter {
     this.currentWord.set(this.getRandomWord());
     this.gano.set(false);
   }
- 
+
   private getRandomWord(): string {
-    return hamburguesaWords[Math.floor(Math.random() * hamburguesaWords.length)];
+    return hamburguesaWords[
+      Math.floor(Math.random() * hamburguesaWords.length)
+    ];
   }
- 
-  reiniciarJuego () {
+
+  reiniciarJuego() {
     this.resetState();
     this.start();
   }
-    
 }
 const hamburguesaWords: string[] = [
-  'HAMBURGUESA', 'CARNE', 'QUESO', 'LECHUGA', 'TOMATE',
-  'CEBOLLA', 'PEPINO', 'MOSTAZA', 'KETCHUP', 'MAYONESA',
-  'PANCETA', 'JAMON', 'PAN', 'BRIOCHE', 'INTEGRAL',
-  'PARRILLA', 'PLANCHA', 'AHUMADO', 'JUGOSO', 'CRUJIENTE',
-  'DOBLE', 'TRIPLE', 'CLASICA', 'VEGANA', 'POLLO',
-  'PESCADO', 'CHEDDAR', 'MOZZARELLA', 'BRIE', 'GOUDA',
-  'PEPINILLO', 'AGUACATE', 'SALSA', 'ADEREZO', 'ALIOLI',
-  'PAPAS', 'FRITAS', 'AROS', 'ENSALADA',
-  'COMBO', 'MENU', 'ANGUS','GOURMET', 'ARTESANAL', 'GRATINADA', 'PARRILLA'
+  'HAMBURGUESA',
+  'CARNE',
+  'QUESO',
+  'LECHUGA',
+  'TOMATE',
+  'CEBOLLA',
+  'PEPINO',
+  'MOSTAZA',
+  'KETCHUP',
+  'MAYONESA',
+  'PANCETA',
+  'JAMON',
+  'PAN',
+  'BRIOCHE',
+  'INTEGRAL',
+  'PARRILLA',
+  'PLANCHA',
+  'AHUMADO',
+  'JUGOSO',
+  'CRUJIENTE',
+  'DOBLE',
+  'TRIPLE',
+  'CLASICA',
+  'VEGANA',
+  'POLLO',
+  'PESCADO',
+  'CHEDDAR',
+  'MOZZARELLA',
+  'BRIE',
+  'GOUDA',
+  'PEPINILLO',
+  'AGUACATE',
+  'SALSA',
+  'ADEREZO',
+  'ALIOLI',
+  'PAPAS',
+  'FRITAS',
+  'AROS',
+  'ENSALADA',
+  'COMBO',
+  'MENU',
+  'ANGUS',
+  'GOURMET',
+  'ARTESANAL',
+  'GRATINADA',
+  'PARRILLA',
 ];
