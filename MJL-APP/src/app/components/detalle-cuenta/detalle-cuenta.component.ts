@@ -22,6 +22,7 @@ import {
 import { addIcons } from 'ionicons';
 import { walletOutline, restaurantOutline, beerOutline, heartOutline } from 'ionicons/icons';
 import { NotificationsService } from 'src/app/services/notifications-service';
+import { BarcodeScannerService } from 'src/app/services/barcode-scanner-service';
 
 @Component({
   selector: 'app-detalle-cuenta',
@@ -48,7 +49,7 @@ export class DetalleCuentaComponent implements ViewWillEnter {
   tipService = inject(TipService);
   toastCtrl = inject(ToastController);
   notiService = inject(NotificationsService);
-
+  scanService = inject(BarcodeScannerService);
   order = signal<IOrder | null>(null);
   tip = toSignal(this.tipService.tip$, { initialValue: 0 });
 
@@ -113,7 +114,9 @@ export class DetalleCuentaComponent implements ViewWillEnter {
     this.order.set(result.data);
   }
 
-  goToTip() {
+  async goToTip() {
+    const scanResult = await this.scanService.scanQrGeneric();
+    if(scanResult !== 'propinas') return await this.toastService.showError('Error al escanear el qr de propinas');
     this.router.navigate(['/propinas', this.order()?.id]);
   }
 
