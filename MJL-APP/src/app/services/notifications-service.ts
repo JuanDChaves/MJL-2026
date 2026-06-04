@@ -4,7 +4,6 @@ import { IResult } from '../interfaces/IResult';
 import { IUser } from '../interfaces/IUser';
 import { TipoPerfil } from '../types/TipoPerfil';
 import { INotificacionInfo } from '../interfaces/INotificacionInfo';
-import { TipoProducto } from '../interfaces/IProducto';
 import { IMesa } from '../interfaces/IMesa';
 
 @Injectable({
@@ -144,22 +143,26 @@ export class NotificationsService {
     return await this.insertNotification(['cocinero'], notiInfo);
   }
 
-  async pedidoterminado(sector: TipoProducto) {
-    const notiInfo: INotificacionInfo = {
-      title:
-        sector === 'bebida'
-          ? 'Pedido de bar terminado'
-          : 'Pedido de cocina terminado',
-      body:
-        sector === 'bebida'
-          ? 'Todas las bebidas fueron preparadas'
-          : 'Todos los platos fueron preparados',
+  async pedidoterminado(id_user: string) {
+    const notiInfoMozo: INotificacionInfo = {
+      title: 'Pedido terminado',
+      body: 'Todos los productos estan listos para servir',
       data: {
         cliente_id: null,
-        tipo: 'pedido_cocina',
+        tipo: 'pedido_mozo',
       },
     };
-    return await this.insertNotification(['mozo'], notiInfo);
+
+    const notiInfoCliente: INotificacionInfo = {
+      title: 'Pedido terminado',
+      body: 'Su pedido ha sido terminado y pronto sera servido',
+      data: {
+        cliente_id: null,
+        tipo: 'pedido_cliente',
+      },
+    };
+    await this.insertNotification(['mozo'], notiInfoMozo);
+    await this.insertNotification(['cliente'], notiInfoCliente, id_user);
   }
 
   async pedirCuenta(user: IUser) {
@@ -174,10 +177,10 @@ export class NotificationsService {
     return await this.insertNotification(['mozo'], notiInfo);
   }
 
-  async realizoPago(user: IUser){
+  async realizoPago(user: {nombres: string, id: string}){
     const notiInfo: INotificacionInfo = {
       title: "Pago realizado",
-      body: `El cliente ${user.nombres} ${user.apellidos} ha realizado el pago`,
+      body: `El cliente ${user.nombres} ha realizado el pago`,
       data: {
         cliente_id: user.id,
         tipo: 'pago_realizado',
@@ -217,5 +220,17 @@ export class NotificationsService {
       },
     };
     return await this.insertNotification(['cliente'], notiInfoUser, user.id);
+  }
+
+  async sirviendoPedido(id_cliente:string){
+    const notiInfo: INotificacionInfo = {
+      title: "Entregando pedido",
+      body: `El mozo esta llevando su pedido a su mesa`,
+      data: {
+        cliente_id: id_cliente,
+        tipo: 'pedido_sirviendo',
+      },
+    };
+    return await this.insertNotification(['cliente'], notiInfo, id_cliente);
   }
 }

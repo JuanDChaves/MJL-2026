@@ -9,7 +9,7 @@ import {
   IonBadge,
   ViewWillEnter,
 } from '@ionic/angular/standalone';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { OrdersService } from 'src/app/services/orders-service';
 import { IOrder } from 'src/app/interfaces/IOrder';
 import { addIcons } from 'ionicons';
@@ -23,10 +23,13 @@ import {
   gameControllerOutline,
   qrCodeOutline,
   walletOutline,
+  clipboardOutline,
 } from 'ionicons/icons';
 import { register } from 'swiper/element/bundle';
 import { LocalStorageService } from 'src/app/services/local-storage-service';
 import { UserService } from 'src/app/services/user-service';
+import { ToastService } from 'src/app/services/toast-service';
+import { ManejadorJuegos } from 'src/app/services/manejador-juegos';
 
 register();
 
@@ -52,10 +55,16 @@ export class DetallePedidoComponent implements ViewWillEnter {
   @Input() pedidoId: WritableSignal<string> = signal('');
   order= signal<IOrder|null>(null);
   userService = inject(UserService);
+  router = inject(Router);
+  activatedRoute = inject(ActivatedRoute);
+  toastService = inject(ToastService);
+  manejadorJuego = inject(ManejadorJuegos);
   
   total = computed(() => {
     const products = this.order()?.data ?? [];
-    return products.reduce((sum, p) => sum + p.precio * p.cantidad, 0);
+    const total = products.reduce((sum, p) => sum + p.precio * p.cantidad, 0);
+    if(this.manejadorJuego.descuento() > 0) return total - (total * (this.manejadorJuego.descuento() / 100));
+    return total;
   });
 
   totalItems = computed(() => {
@@ -75,12 +84,8 @@ export class DetallePedidoComponent implements ViewWillEnter {
     );
   });
 
-  isRegisteredClient = computed(() => this.userService.userData()?.dni !== null); 
-
-  showJuegosBtn = computed(() => this.isRegisteredClient());
-  showEncuestaYPedirCuenta = computed(() => this.order()?.estado === 'entregado');
-  // entregado
-  
+  showEncuestaYPedirCuenta = computed(() => this.order()?.estado === 'recibido');
+  confirmacionPedidoRecibido = computed(() => this.order()?.estado === 'entregando');
 
   badgeColor = computed(() => {
     const estado = this.order()?.estado;
@@ -91,14 +96,14 @@ export class DetallePedidoComponent implements ViewWillEnter {
         return 'primary';
       case 'hecho':
         return 'success';
-      case 'entregado':
+      case 'entregando':
         return 'medium';
       default:
         return 'medium';
     }
   });
 
-  constructor(private route: ActivatedRoute) {
+  constructor() {
     addIcons({
       receiptOutline,
       beerOutline,
@@ -107,8 +112,8 @@ export class DetallePedidoComponent implements ViewWillEnter {
       checkmarkOutline,
       closeOutline,
       gameControllerOutline,
-      qrCodeOutline,
       walletOutline,
+      clipboardOutline
     });
   }
 
@@ -118,7 +123,7 @@ export class DetallePedidoComponent implements ViewWillEnter {
   }
 
   async loadOrder() {
-    const id = this.route.snapshot.paramMap.get('id');
+    const id = this.activatedRoute.snapshot.paramMap.get('id');
     if (!id) return;
     this.pedidoId.set(id);
     const response = await this.orderService.getOneOrder(id);
@@ -132,5 +137,13 @@ export class DetallePedidoComponent implements ViewWillEnter {
     }
     const data = response.data;
     this.order.set(data);
-  }  
+  } 
+  
+  async confirmarRecepcion(){
+    const response = await this.orderService.receivedOrder(this.pedidoId());
+    if(response.error){
+      await this.toastService.showError(response.error?.message);
+    }
+    this.router.navigate(['ingreso-local-cliente']);
+  }
 }

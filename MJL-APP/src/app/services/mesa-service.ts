@@ -205,7 +205,7 @@ export class MesaService {
     }
   }
 
-  async liberarMesa(numer_mesa: number): Promise<IResult<void>> {
+  async liberarMesa(numero_mesa: number): Promise<IResult<void>> {
     const result: IResult<void> = {
       success: false,
       error: null,
@@ -213,8 +213,8 @@ export class MesaService {
     };
     const { data, error } = await this.dbService.update(
       'mesas',
-      'numer_mesa',
-      numer_mesa,
+      'numero_mesa',
+      numero_mesa,
       { ocupada: false, user_id: null },
     );
 

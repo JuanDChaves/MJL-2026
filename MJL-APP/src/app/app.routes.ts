@@ -51,13 +51,6 @@ export const routes: Routes = [
       ).then((m) => m.PedidosPendientesComponent),
   },
   {
-    path: 'pedidos-en-preparacion',
-    loadComponent: () =>
-      import(
-        './components/pedidos/pedidos-en-preparacion/pedidos-en-preparacion.component'
-      ).then((m) => m.PedidosEnPreparacionComponent),
-  },
-  {
     path: 'pedidos-preparados',
     loadComponent: () =>
       import(
@@ -127,16 +120,10 @@ export const routes: Routes = [
         (m) => m.HomeClienteComponent
       ),
   },
-  {path: 'verificar-pedido',
+  {path: 'preparar-pedido',
     loadComponent: () => 
-      import('./components/verificar-pedido/verificar-pedido.component').then(
-        (m) => m.VerificarPedidoComponent
-      ),
-  },
-  {path: 'entregar-pedido',
-    loadComponent: () => 
-      import('./components/entregar-pedido/entregar-pedido.component').then(
-        (m) => m.EntregarPedidoComponent
+      import('./components/pedidos/preparar-pedido/preparar-pedido.component').then(
+        (m) => m.PrepararPedidoComponent
       ),
   },
   {
@@ -189,7 +176,7 @@ export const routes: Routes = [
       ),
   },
   {
-    path: 'ahoracado',
+    path: 'ahorcado',
     loadComponent: () =>
       import('./components/juegos/ahorcado/ahorcado.component').then(
         (m) => m.AhorcadoComponent
@@ -203,10 +190,17 @@ export const routes: Routes = [
       ),
   },
   {
-    path: 'propinas',
+    path: 'propinas/:idOrder',
     loadComponent: () =>
       import('./components/seleccionar-propina/seleccionar-propina.component').then(
         (m) => m.SeleccionarPropinaComponent
+      ),
+  },
+  {
+    path: 'detalle-cuenta/:idOrder',
+    loadComponent: () =>
+      import('./components/detalle-cuenta/detalle-cuenta.component').then(
+        (m) => m.DetalleCuentaComponent
       ),
   }
 ];

@@ -95,8 +95,9 @@ export class PantallaIngresoLocalComponent implements ViewWillEnter {
         if (
           resultOrder.data?.estado === 'preparando' ||
           resultOrder.data?.estado === 'hecho' ||
-          resultOrder.data?.estado === 'entregado' ||
-          resultOrder.data?.estado === 'pendiente'
+          resultOrder.data?.estado === 'entregando' ||
+          resultOrder.data?.estado === 'pendiente' ||
+          resultOrder.data?.estado === 'recibido'
         ) {
           this.router.navigate(['/detalle-pedido', id_pedido?.id]);
           return;

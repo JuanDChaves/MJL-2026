@@ -1,6 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import { SupabaseService } from './supabase-service';
 import { IProductOrderToLoad } from '../interfaces/IProductOrderToLoad';
+import { TypeProduct } from '../types/TypeProduct';
+import { IPedidoEnPreparacion } from '../interfaces/IPedidoEnPreparacion';
+import { IResult } from '../interfaces/IResult';
 
 export interface BaseEntity {
   id?: string;
@@ -79,13 +82,13 @@ export class DbService<T extends BaseEntity> {
 
   async getOneByIdWithRelations(
     table: string,
-    id: string, 
-    selectQuery: string
-  ) : Promise<{ data: any | null; error: any}> {
+    id: string,
+    selectQuery: string,
+  ): Promise<{ data: any | null; error: any }> {
     const { data, error } = await this.sbService.client
       .from(table)
       .select(selectQuery)
-      .eq("id", id)
+      .eq('id', id)
       .single();
     return { data, error };
   }
@@ -174,7 +177,7 @@ export class DbService<T extends BaseEntity> {
     return response;
   }
 
-  async MesaConCliente(numero_mesa:number){
+  async MesaConCliente(numero_mesa: number) {
     const response = await this.sbService.client
       .from('mesas')
       .select(
@@ -185,5 +188,30 @@ export class DbService<T extends BaseEntity> {
       )
       .eq('numero_mesa', numero_mesa);
     return response;
+  }
+
+  async getProductsCocina() {
+    return await this.sbService.client
+      .from('vista_cocina_en_preparacion')
+      .select('*');
+  }
+
+  async getProductsBarra() {
+    return await this.sbService.client
+      .from('vista_barra_en_preparacion')
+      .select('*');
+  }
+
+  async finishProducts(p_id_pedido:string, p_tipo: string){
+    return await this.sbService.client
+    .rpc('terminar_sector_pedido',{p_id_pedido, p_tipo});
+  }
+
+  async isOrderCompleted(id_pedido: string){
+    return await this.sbService.client
+    .from('productos_pedido')
+    .select('*')
+    .eq('id_pedido', id_pedido)
+    .eq('estado','preparando');
   }
 }

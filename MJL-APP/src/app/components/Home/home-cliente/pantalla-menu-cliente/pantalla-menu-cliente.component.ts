@@ -174,12 +174,13 @@ export class PantallaMenuClienteComponent implements ViewWillEnter {
       'id_pedido',
     );
     if (!order_id?.id) {
-      result.error = { message: 'No hay pedido cargado' };
+      result.success = false;
       return result;
     }
     const resultOrder = await this.orderService.getOneOrder(order_id!.id);
     if (!resultOrder.success) {
-      return resultOrder;
+      result.error = resultOrder.error;
+      return result;
     }
     result.data = resultOrder.data;
     result.success = true;
@@ -202,7 +203,7 @@ export class PantallaMenuClienteComponent implements ViewWillEnter {
     const result = await this.checkExistOrder();
     if (result.success && result.data?.estado === 'editando') {
       return await this.loadOrderPreview();
-    }else if (!result.success) {
+    }else if (result.error) {
       return await this.toastService.showError(result.error?.message!);
     }
 

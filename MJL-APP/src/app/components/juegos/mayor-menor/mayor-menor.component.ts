@@ -2,11 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { ViewWillEnter } from '@ionic/angular/standalone';
 import { ManejadorJuegos } from 'src/app/services/manejador-juegos';
 import { MayorMenorService } from 'src/app/services/MayorMenorService';
-import {
-  IonButton,
-  IonIcon,
-  IonContent,
-} from '@ionic/angular/standalone';
+import { IonButton, IonIcon, IonContent } from '@ionic/angular/standalone';
 import { LayoutComponent } from 'src/app/components/layout/layout.component';
 import { addIcons } from 'ionicons';
 import {
@@ -17,6 +13,7 @@ import {
   trophyOutline,
   reloadOutline,
 } from 'ionicons/icons';
+import { UserService } from 'src/app/services/user-service';
 
 @Component({
   selector: 'app-mayor-menor',
@@ -27,6 +24,7 @@ import {
 export class MayorMenorComponent implements ViewWillEnter {
   mmService = inject(MayorMenorService);
   manejador = inject(ManejadorJuegos);
+  userService = inject(UserService);
 
   srcImgIncognita = signal<string>(this.mmService.getSrcCardIncognit());
   srcImgSiguiente = signal<string>(this.srcImgIncognita());
@@ -97,16 +95,10 @@ export class MayorMenorComponent implements ViewWillEnter {
     this.srcImgSiguiente.set(this.srcImgIncognita());
   }
 
-  chequearEstadoDelJuego(): boolean {
-    if (this.aciertos() === 5 || this.cantidadDeVidas() === 0) {
-      this.gano.set(this.aciertos() === 5);
-      if (this.gano() && this.manejador.primeraVez()) {
-        this.manejador.tieneDescuento.set(true);
-      }
-      this.manejador.primeraVez.set(false);
-      return true;
-    }
-    return false;
+  estaFinalizado(): boolean {
+    if (this.aciertos() < 5 && this.cantidadDeVidas() > 0) return false;
+    this.gano.set(this.aciertos() === 5);
+    return true;
   }
 
   empezarJuego() {
@@ -137,13 +129,13 @@ export class MayorMenorComponent implements ViewWillEnter {
   jugar() {
     const resultado = this.chequearResultado();
     this.resultadoRonda.set(resultado ? 'win' : 'lose');
-    if (this.chequearEstadoDelJuego()) {
-      this.rondaFinal.set(true);
-      this.timeoutId = setTimeout(() => {
-        this.juegoTerminado.set(true);
-        this.timeoutId = null;
-      }, 2000);
-    }
+    if (!this.estaFinalizado()) return;
+    this.cargarDescuento();
+    this.rondaFinal.set(true);
+    this.timeoutId = setTimeout(() => {
+      this.juegoTerminado.set(true);
+      this.timeoutId = null;
+    }, 2000);
   }
 
   reiniciarJuego() {
@@ -163,4 +155,12 @@ export class MayorMenorComponent implements ViewWillEnter {
     this.cargarImgIncognita();
     this.mmService.resetListCard();
   }
+
+  cargarDescuento(){
+    if(this.manejador.primeraVez() && this.gano() && this.userService.userData()?.dni ){
+      this.manejador.descuento.set(20);
+    }
+    this.manejador.primeraVez.set(false);
+  }
+
 }

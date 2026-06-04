@@ -19,7 +19,7 @@ import {
 ],
 })
 
-export class HomeCantineroPage implements OnInit {
+export class HomeCantineroPage {
 
   constructor(private router: Router) {
     addIcons({ addCircleOutline, checkmarkCircleOutline, bicycleOutline });
@@ -29,14 +29,7 @@ export class HomeCantineroPage implements OnInit {
     this.router.navigate(['/alta-producto']); 
   }
  
-  verificarPedido() {
-    this.router.navigate(['/verificar-pedido'],{queryParams: {rol: 'cantinero'}});
+  prepararPedidos() {
+    this.router.navigate(['/preparar-pedido'],{queryParams: {rol: 'cantinero'}});
   }
- 
-  entregarPedido() {
-    this.router.navigate(['/entregar-pedido'],{queryParams: {rol: 'cantinero'}});
-  }
-  ngOnInit() {
-  }
-
 }

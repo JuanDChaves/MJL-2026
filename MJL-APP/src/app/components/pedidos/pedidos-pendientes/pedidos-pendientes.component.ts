@@ -44,7 +44,7 @@ export class PedidosPendientesComponent implements ViewWillEnter {
   }
 
   async aprobarPedido(pedido: IOrder) {
-    const response = await this.orderService.approveOrder(pedido);
+    const response = await this.orderService.approveOrder(pedido.id);
     if (response.error) {
       return await this.toastService.showError(response.error?.message!);
     }
@@ -58,7 +58,7 @@ export class PedidosPendientesComponent implements ViewWillEnter {
   }
 
   async rechazarPedido(pedido: IOrder) {
-    const response = await this.orderService.rejectOrder(pedido);
+    const response = await this.orderService.rejectOrder(pedido.id);
     await this.notiService.rechazaPedido(pedido.id_cliente);
     if (response.error) {
       return await this.toastService.showError(response.error?.message!);

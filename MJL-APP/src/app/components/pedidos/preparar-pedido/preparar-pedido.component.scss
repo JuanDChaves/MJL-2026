@@ -1,0 +1,206 @@
+$bg-beige:      #f3e9da;
+$btn-color:     #B71C1C;
+$btn-hover:     #D32F2F;
+$text-dark:     #1A1A1A;
+$text-muted:    #6E4839;
+$radius:        12px;
+
+.orders-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+}
+
+.order-card {
+  background: $bg-beige;
+  border-radius: $radius;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  border-left: 4px solid $btn-color;
+  animation: slideUp 0.4s ease both;
+  animation-delay: var(--anim-delay, 0s);
+  transition: box-shadow 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.14);
+  }
+}
+
+.order-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px 0;
+}
+
+.mesa-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mesa-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: $text-muted;
+  font-weight: 600;
+}
+
+.mesa-numero {
+  font-family: 'Georgia', serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: $text-dark;
+}
+
+.order-time {
+  font-size: 0.78rem;
+  color: $text-muted;
+  font-weight: 500;
+}
+
+.order-divider {
+  height: 1px;
+  background: rgba($text-muted, 0.12);
+  margin: 8px 14px;
+}
+
+.order-products {
+  padding: 0 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.product-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.88rem;
+}
+
+.prod-cantidad {
+  font-weight: 700;
+  color: $btn-color;
+  min-width: 28px;
+  flex-shrink: 0;
+}
+
+.prod-nombre {
+  color: $text-dark;
+  font-weight: 500;
+}
+
+.order-actions {
+  padding: 12px 14px 14px;
+}
+
+.finish-btn {
+  --background: #{$btn-color};
+  --background-hover: #{$btn-hover};
+  --color: #ffffff;
+  --border-radius: 8px;
+  --box-shadow: 0 3px 10px rgba($btn-color, 0.3);
+  font-family: 'Georgia', serif;
+  font-weight: 700;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  height: 44px;
+  margin: 0;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  ion-icon {
+    font-size: 1.05rem;
+  }
+
+  &:hover {
+    transform: translateY(-1px);
+    --box-shadow: 0 5px 16px rgba($btn-color, 0.4);
+  }
+
+  &:active {
+    transform: translateY(1px);
+    --box-shadow: 0 2px 6px rgba($btn-color, 0.25);
+  }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 24px;
+  text-align: center;
+  gap: 8px;
+}
+
+.empty-icon-wrap {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: $bg-beige;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.empty-icon {
+  font-size: 2.4rem;
+}
+
+.empty-title {
+  font-family: 'Georgia', serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: $text-dark;
+  margin: 0;
+}
+
+.empty-hint {
+  font-size: 0.85rem;
+  color: $text-muted;
+  margin: 0;
+  opacity: 0.7;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 380px) {
+  .orders-container {
+    padding: 8px;
+    gap: 10px;
+  }
+
+  .order-header {
+    padding: 10px 12px 0;
+  }
+
+  .mesa-numero {
+    font-size: 1.15rem;
+  }
+
+  .order-products {
+    padding: 0 12px;
+  }
+
+  .order-divider {
+    margin: 6px 12px;
+  }
+
+  .order-actions {
+    padding: 10px 12px 12px;
+  }
+
+  .finish-btn {
+    height: 40px;
+    font-size: 0.78rem;
+  }
+}

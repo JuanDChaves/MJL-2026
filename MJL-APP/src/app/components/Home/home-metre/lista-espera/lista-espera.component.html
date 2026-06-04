@@ -1,7 +1,7 @@
 <app-layout [title]="'Clientes en espera'" [showBackButton]="true" [backUrl]="'/home'">
   <div class="waitlist-container">
-    @for (item of clientesEnEsperaList(); track item.id_lista_espera; let i = $index) {
-      <div class="waiter-card" [style.--anim-delay]="i * 0.07 + 's'">
+    @for (item of clientesEnEsperaList(); track item.id) {
+      <div class="waiter-card">
         <div class="waiter-content">
           <div class="waiter-top">
             <div class="waiter-avatar">

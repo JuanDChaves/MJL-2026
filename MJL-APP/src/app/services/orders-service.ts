@@ -10,7 +10,8 @@ import { TypeOrderState } from '../types/TypeOrderState';
 })
 export class OrdersService {
   dbService = inject(DbService);
-
+  
+  
   async getOrdersWithStateFilter(stateOrder: TypeOrderState): Promise<IResult<IOrder[]>> {
     const response = await this.dbService.getAllWithFilter(
       'pedidos',
@@ -72,29 +73,38 @@ export class OrdersService {
     return result;
   }
 
-  async approveOrder(pedido: IOrder) {
-        return await this.updateOrderState(pedido, TypeOrderState.Preparando);    
+  async rejectOrder(id_pedido: string) {
+    return await this.updateOrderState(id_pedido, TypeOrderState.Editando);    
   }
-  
-  async rejectOrder(pedido: IOrder) {
-    return await this.updateOrderState(pedido, TypeOrderState.Editando);    
+  async approveOrder(id_pedido: string) {
+        return await this.updateOrderState(id_pedido, TypeOrderState.Preparando);    
   }
-
-  async confirmedPayment(pedido: IOrder) {
-    return await this.updateOrderState(pedido, TypeOrderState.Finalizado);    
+  async finishOrder(id_pedido: string) {
+    return await this.updateOrderState(id_pedido, TypeOrderState.Hecho);
   }
 
-  async deliverOrder(pedido: IOrder) {
-    return await this.updateOrderState(pedido, TypeOrderState.Hecho);    
+  async deliverOrder(id_pedido: string) {
+    return await this.updateOrderState(id_pedido, TypeOrderState.Entregando);    
+  }
+  async receivedOrder(id_pedido: string) {
+    return await this.updateOrderState(id_pedido, TypeOrderState.Recibido);
   }
 
-  private async updateOrderState(pedido: IOrder, estadoNuevo: TypeOrderState) {
+  async payOrder(id_pedido: string) {
+    return await this.updateOrderState(id_pedido, TypeOrderState.Pagado);
+  }
+  async confirmedPayment(id_pedido: string) {
+    return await this.updateOrderState(id_pedido, TypeOrderState.Finalizado);    
+  }
+
+
+  private async updateOrderState(id_pedido: string, estadoNuevo: TypeOrderState) {
     const result : IResult<IOrder> = {
       success: false,
       error: null,
       data: null
     }
-    const response = await this.dbService.update('pedidos', 'id', pedido.id, {
+    const response = await this.dbService.update('pedidos', 'id', id_pedido, {
       estado: estadoNuevo,
     });
     if (response.error) {

@@ -71,7 +71,7 @@ export class PagosComponent implements ViewWillEnter {
   }
 
   async confirmPayment(order: IOrder) {
-    const responseOrder = await this.orderService.confirmedPayment(order);
+    const responseOrder = await this.orderService.confirmedPayment(order.id);
     if (!responseOrder.success) {
       return await this.toastService.showError('error en la confirmacion del pago');
     }
