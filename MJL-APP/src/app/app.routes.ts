@@ -190,10 +190,17 @@ export const routes: Routes = [
       ),
   },
   {
-    path: 'propinas',
+    path: 'propinas/:idOrder',
     loadComponent: () =>
       import('./components/seleccionar-propina/seleccionar-propina.component').then(
         (m) => m.SeleccionarPropinaComponent
+      ),
+  },
+  {
+    path: 'detalle-cuenta/:idOrder',
+    loadComponent: () =>
+      import('./components/detalle-cuenta/detalle-cuenta.component').then(
+        (m) => m.DetalleCuentaComponent
       ),
   }
 ];

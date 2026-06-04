@@ -1,5 +1,19 @@
 <app-layout [title]="'Juegos'" [showBackButton]="true" [backUrl]="backUrl">
   <div class="content-inner">
+
+    <header class="juegos-header">
+      <span class="kicker">JUGÁ Y GANÁ</span>
+      <h1 class="display-title">
+        Desafíos<br />
+        del <span class="accent">bar</span>
+      </h1>
+      <p class="lead">
+        Sumá puntos en cada partida y canjealos por descuentos
+        en tu próxima consumición.
+      </p>
+      <div class="header-divider"></div>
+    </header>
+
     <swiper-container
       slides-per-view="1"
       space-between="0"
@@ -18,6 +32,7 @@
                 [alt]="game.name"
                 loading="lazy"
               />
+              <span class="game-tag">{{ game.category }}</span>
               <div class="game-image-overlay"></div>
             </div>
 

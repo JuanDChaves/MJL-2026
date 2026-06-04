@@ -1,7 +1,10 @@
-import { Component, computed, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { LayoutComponent } from '../layout/layout.component';
 import { CommonModule } from '@angular/common';
 import { IonButton } from '@ionic/angular/standalone';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ToastService } from 'src/app/services/toast-service';
+import { TipService } from 'src/app/services/tip-service';
 
 interface OpcionPropina {
   nombre: string;
@@ -17,7 +20,15 @@ interface OpcionPropina {
   styleUrls: ['./seleccionar-propina.component.scss'],
   imports: [LayoutComponent, CommonModule, IonButton],
 })
-export class SeleccionarPropinaComponent implements OnInit {
+export class SeleccionarPropinaComponent {
+  
+  opcionSeleccionada = signal<OpcionPropina | null>(null);
+  activateRoute = inject(ActivatedRoute);
+  idOrder = this.activateRoute.snapshot.paramMap.get('idOrder');
+  toastService = inject(ToastService);
+  router = inject(Router);
+  tipService = inject(TipService);
+
   opciones: OpcionPropina[] = [
     {
       nombre: 'Excelente',
@@ -59,30 +70,22 @@ export class SeleccionarPropinaComponent implements OnInit {
         'Experiencia insatisfactoria. Mejoras necesarias en varios aspectos.',
     },
   ];
-
-  opcionSeleccionada = signal<OpcionPropina | null>(null);
-
-  descuento = computed(() => {
+  
+  propina = computed(() => {
     const op = this.opcionSeleccionada();
-    const pct = op?.porcentaje ?? 0;
-    const result = (100 - pct) / 100;
-    return result;
+    return op;
   });
-
-  constructor() {}
-
-  ngOnInit() {}
 
   seleccionar(opcion: OpcionPropina): void {
     this.opcionSeleccionada.set(opcion);
   }
 
   confirmar(): void {
-    /**
-     * LU ACA REDIRIGIS A LA PANTALLA DE PAGO CON DETALLE DEL PEDIDO Y EL CALCULO DE LA PROPINA ETC PUNTO 21.
-     */
     if (this.opcionSeleccionada()) {
-      console.log('Propina elegida:', this.opcionSeleccionada());
+      this.tipService.setTip(this.opcionSeleccionada()!.porcentaje);
+      this.router.navigate(['/detalle-cuenta', this.idOrder]);
+    }else{
+      this.toastService.showError('Debe seleccionar una propina antes de confirmar');
     }
   }
 }

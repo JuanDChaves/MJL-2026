@@ -177,10 +177,10 @@ export class NotificationsService {
     return await this.insertNotification(['mozo'], notiInfo);
   }
 
-  async realizoPago(user: IUser){
+  async realizoPago(user: {nombres: string, id: string}){
     const notiInfo: INotificacionInfo = {
       title: "Pago realizado",
-      body: `El cliente ${user.nombres} ${user.apellidos} ha realizado el pago`,
+      body: `El cliente ${user.nombres} ha realizado el pago`,
       data: {
         cliente_id: user.id,
         tipo: 'pago_realizado',

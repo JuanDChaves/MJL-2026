@@ -14,7 +14,8 @@ interface GameItem {
   route: string;
   description: string;
   disabled: boolean;
-  url:string
+  url: string;
+  category: 'Cartas' | 'Ruleta' | 'Palabras';
 }
 
 @Component({
@@ -36,7 +37,8 @@ export class PantallaJuegosComponent {
       route: '/mayor-menor',
       description: 'Adiviná si la carta es mayor o menor y ganá descuentos',
       disabled: false,
-      url:'assets/juegos/display/mayor_menor.png'
+      url: 'assets/juegos/display/mayor_menor.png',
+      category: 'Cartas',
     },
     {
       name: 'Ruleta',
@@ -44,7 +46,8 @@ export class PantallaJuegosComponent {
       route: '/ruleta',
       description: 'Girá la ruleta y ganá descuentos exclusivos',
       disabled: false,
-      url: 'assets/juegos/display/ruleta.png'
+      url: 'assets/juegos/display/ruleta.png',
+      category: 'Ruleta',
     },
     {
       name: 'El Ahorcado',
@@ -52,7 +55,8 @@ export class PantallaJuegosComponent {
       route: '/ahorcado',
       description: 'Adivina una palabra en menos de 5 intentos',
       disabled: false,
-      url: 'assets/juegos/display/ahorcado.png'
+      url: 'assets/juegos/display/ahorcado.png',
+      category: 'Palabras',
     },
   ];
 

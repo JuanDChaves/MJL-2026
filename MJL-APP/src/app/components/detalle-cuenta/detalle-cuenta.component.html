@@ -1,0 +1,113 @@
+<app-layout [title]="'Detalle de cuenta'" [showBackButton]="true" [backUrl]="'/ingreso-local-cliente'">
+  <div class="content-inner">
+
+    <ion-card class="header-card slide-up" style="--delay: 0s">
+      <ion-card-content>
+        <div class="user-info">
+          <ion-avatar class="user-avatar">
+            <ion-icon name="wallet-outline" class="avatar-icon"></ion-icon>
+          </ion-avatar>
+          <div class="user-details">
+            <h2 class="user-name">{{ order()?.nombre_cliente }}</h2>
+            <p class="user-detail-line">Mesa #{{ order()?.numero_mesa }}</p>
+            <ion-badge color="medium" class="estado-badge">
+              {{ order()?.estado }}
+            </ion-badge>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    @if (order()?.data?.length) {
+      <div class="receipt-area">
+        <div class="receipt slide-up" style="--delay: 0.1s">
+          <div class="receipt-perforation-top"></div>
+          <div class="receipt-inner">
+
+            <div class="receipt-header">
+              <span class="dash-line"></span>
+              <h2>Detalle de Cuenta</h2>
+              <span class="dash-line"></span>
+            </div>
+
+            <ul class="product-list">
+              @for (prod of order()?.data; track prod.id_producto; let i = $index) {
+                <li class="product-row" [style.--delay]="'calc(0.15s + ' + i + ' * 0.06s)'">
+                  <ion-icon
+                    class="prod-icon"
+                    [name]="prod.tipo === 'bebida' ? 'beer-outline' : 'restaurant-outline'"
+                  ></ion-icon>
+                  <div class="prod-main">
+                    <span class="prod-name">{{ prod.nombre }}</span>
+                    <span class="prod-meta">{{ prod.cantidad }} × ${{ prod.precio }}</span>
+                  </div>
+                  <span class="prod-total">${{ prod.precio * prod.cantidad }}</span>
+                </li>
+              }
+            </ul>
+
+            <div class="dashed-divider"></div>
+
+            <div class="summary-row">
+              <span class="summary-label">Subtotal</span>
+              <span class="summary-value">${{ subtotal() }}</span>
+            </div>
+
+            @if (showDiscount() > 0) {
+              <div class="summary-row discount-row">
+                <span class="summary-label">
+                  Descuento juego
+                  <ion-badge class="discount-pct">-{{ handlerGame.descuento() }}%</ion-badge>
+                </span>
+                <div class="summary-right">
+                  <span class="summary-value discount-value">-${{ showDiscount() }}</span>
+                  <div class="stamp">
+                    <span class="stamp-pct">-{{ handlerGame.descuento() }}%</span>
+                    <span class="stamp-text">DTO</span>
+                  </div>
+                </div>
+              </div>
+            }
+
+            @if (showTip() > 0) {
+              <div class="summary-row tip-row">
+                <span class="summary-label">Propina ({{ tip() }}%)</span>
+                <span class="summary-value tip-value">+${{ showTip() }}</span>
+              </div>
+            }
+
+            <div class="thick-divider"></div>
+
+            <div class="grand-total-row">
+              <span class="grand-label">Total a abonar</span>
+              <span class="grand-amount">${{ total() }}</span>
+            </div>
+
+          </div>
+          <div class="receipt-perforation-bottom"></div>
+        </div>
+      </div>
+    }
+
+    @if (order()?.data?.length) {
+      <ion-button
+        expand="block"
+        fill="outline"
+        class="tip-btn slide-up"
+        style="--delay: 0.4s"
+        (click)="goToTip()"
+      >
+        <ion-icon slot="start" name="heart-outline"></ion-icon>
+        {{ tip() > 0 ? 'Modificar propina' : 'Agregar propina' }}
+      </ion-button>
+    }
+
+    @if (order()?.data?.length) {
+      <button class="pay-btn slide-up" style="--delay: 0.5s" (click)="proceedToPayment()">
+        <span class="pay-label">Pagar</span>
+        <span class="pay-amount">${{ total() }}</span>
+      </button>
+    }
+
+  </div>
+</app-layout>
