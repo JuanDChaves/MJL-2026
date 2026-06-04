@@ -135,7 +135,7 @@
                 <ion-button
                   fill="clear"
                   class="games-btn"
-                  routerLink="/pagos"
+                  (click)="pedirCuenta()"
                   [queryParams]="{ pedidoId: pedidoId() }"
                 >
                   <div class="btn-content">

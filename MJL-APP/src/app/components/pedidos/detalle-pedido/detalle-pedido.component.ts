@@ -50,6 +50,7 @@ register();
   ],
 })
 export class DetallePedidoComponent implements ViewWillEnter {
+
   orderService = inject(OrdersService);
   localStorageService = inject(LocalStorageService);
   @Input() pedidoId: WritableSignal<string> = signal('');
@@ -146,4 +147,8 @@ export class DetallePedidoComponent implements ViewWillEnter {
     }
     this.router.navigate(['ingreso-local-cliente']);
   }
+  pedirCuenta() {
+    this.router.navigate(['detalle-cuenta', this.pedidoId()]);
+  }
+
 }
