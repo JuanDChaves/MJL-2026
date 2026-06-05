@@ -23,6 +23,7 @@ import { NotificationsService } from 'src/app/services/notifications-service';
 import { OrdersService } from 'src/app/services/orders-service';
 import { TypeOrderState } from 'src/app/types/TypeOrderState';
 import { ToastService } from 'src/app/services/toast-service';
+import { RealtimeService } from 'src/app/services/realtime-service';
 
 @Component({
   selector: 'app-pagos',
@@ -45,6 +46,7 @@ export class PagosComponent implements ViewWillEnter {
   notiService = inject(NotificationsService);
   clientService = inject(ClientService);
   localStorageService = inject(LocalStorageService);
+  realtimeService = inject(RealtimeService);
   toastService = inject(ToastService);
 
   constructor() {
@@ -71,6 +73,7 @@ export class PagosComponent implements ViewWillEnter {
   }
 
   async confirmPayment(order: IOrder) {
+    console.log(order);
     const responseOrder = await this.orderService.confirmedPayment(order.id);
     if (!responseOrder.success) {
       return await this.toastService.showError('error en la confirmacion del pago');
@@ -84,6 +87,10 @@ export class PagosComponent implements ViewWillEnter {
     await this.notiService.confirmacionPago(responseClient.data!);
     const response = await this.mesaService.liberarMesa(order.numero_mesa);
     if( !response.success ) return await this.toastService.showError(response.error?.message!);
+    const mesaResult = await this.mesaService.getByIdUser(order.id_cliente);
+    if(mesaResult.error) return await this.toastService.showError(mesaResult.error?.message);
+    const resultCleanChat = await this.realtimeService.cleanChat(mesaResult.data!.id!);
+    if(resultCleanChat.error) return await this.toastService.showError(resultCleanChat.error?.message);
     await this.loadPaidOrders();
   }
 }

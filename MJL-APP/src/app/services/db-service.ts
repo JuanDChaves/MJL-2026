@@ -221,4 +221,8 @@ export class DbService<T extends BaseEntity> {
     .select('*')
     .eq('user_id', userId);
   }
+
+  async cleanChat(p_mesa_id: string) {
+    return await this.sbService.client.rpc('limpiar_chat_por_mesa', { p_mesa_id });
+  }
 }
