@@ -11,7 +11,7 @@ App móvil para la hamburguesería HTN
 - [Convenciones de Commits](#convenciones-de-commits)
 
 ## Introducción
-_Completar_
+Bienvenido a tu HTN! descubre nuestra carta, haz tu pedido y vive la mejor experiencia hamburguesera.
 ## Funcionalidades de la App
 ### UI - Pantallas
 
@@ -55,6 +55,59 @@ _Completar_
 <div align="center">
     <img src="./MJL-APP/docs/images/lista-pedidos-pendientes.png" alt=""/>
 </div>
+
+
+#### Cuenta
+<div align="center">
+    <img src="./MJL-APP/docs/images/cuenta.jpeg" alt=""/>
+</div>
+
+<div align="center">
+    <img src="./MJL-APP/docs/images/cuenta-sin-descuento.jpeg" alt=""/>
+</div>
+
+
+#### Encuestas 
+<div align="center">
+    <img src="./MJL-APP/docs/images/encuesta.jpeg" alt=""/>
+</div>
+
+<div align="center">
+    <img src="./MJL-APP/docs/images/encuesta-1.png" alt=""/>
+</div>
+
+<div align="center">
+    <img src="./MJL-APP/docs/images/encuesta-2.png" alt=""/>
+</div>
+
+<div align="center">
+    <img src="./MJL-APP/docs/images/encuesta-3.png" alt=""/>
+</div>
+
+
+#### Juegos
+<div align="center">
+    <img src="./MJL-APP/docs/images/juego1.png" alt=""/>
+</div>
+
+<div align="center">
+    <img src="./MJL-APP/docs/images/juego2.png" alt=""/>
+</div>
+
+<div align="center">
+    <img src="./MJL-APP/docs/images/juego3.png" alt=""/>
+</div>
+
+<div align="center">
+    <img src="./MJL-APP/docs/images/juegos.png" alt=""/>
+</div>
+
+
+#### Propina
+<div align="center">
+    <img src="./MJL-APP/docs/images/propina.jpeg" alt=""/>
+</div>
+
 
 ### Diagramas
 #### DER inicial 
