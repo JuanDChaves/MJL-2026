@@ -1,0 +1,38 @@
+<app-layout [title]="'Ingreso al Local'" [showBackButton]="true" [backUrl]="'/home'">
+  <div class="ingreso-container">
+
+    <!-- Icono central -->
+    <div class="icon-section">
+      <div class="icon-circle">
+        <ion-icon name="enter-outline" class="main-icon"></ion-icon>
+      </div>
+    </div>
+
+    <!-- Texto explicativo -->
+    <div class="text-section">
+      <h1 class="main-title">Bienvenido a HTN Bar</h1>
+      <p class="main-subtitle">
+        Anunciate para ingresar a la lista de espera. Cuando el metre te asigne una mesa, escaneá su QR.
+      </p>
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="actions-section">
+      <ion-button expand="block" [disabled]="this.isWaiting()" class="action-btn" (click)="anunciarse()">
+        <ion-icon slot="start" name="enter-outline"></ion-icon>
+        <span>{{ this.isWaiting() ? 'Esperando...' : 'Anunciarme'}}</span>
+      </ion-button>
+      <ion-button expand="block" class="action-btn outline" (click)="escanearQR()">
+        <ion-icon slot="start" name="qr-code-outline"></ion-icon>
+        <span>Escanear QR de mesa</span>
+      </ion-button>
+
+      <ion-button expand="block" class="action-btn outline" (click)="verEncuestas()">
+        <ion-icon slot="start" name="clipboard-outline"></ion-icon>
+        <span>Ver encuestas</span>
+      </ion-button>
+      
+    </div>
+
+  </div>
+</app-layout>

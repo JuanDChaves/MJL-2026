@@ -1,0 +1,287 @@
+// ─── Variables (mismas que otros componentes) ─────────────────────────────────
+$bg-color:      #F5A623;   // warm amber
+$btn-color:     #B71C1C;   // deep red buttons
+$btn-hover:     #D32F2F;
+$btn-text:      #FFFFFF;
+$title-color:   #1A1A1A;
+$bg-form:       #f3e9da;
+$shadow:        0 4px 12px rgba(0, 0, 0, 0.25);
+
+// ─── Container principal ───────────────────────────────────────────────────────
+.mesa-form-container {
+  padding: 0;
+}
+
+// ─── Sección de foto ───────────────────────────────────────────────────────────
+.foto-section {
+  display: flex;
+  justify-content: center;
+  padding: 0.5rem 0.5rem 1rem;
+  background: #{$bg-color};
+}
+
+.foto-container {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: #{$bg-form};
+  border: 4px dashed #{$btn-color};
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 
+    0 4px 20px rgba(0, 0, 0, 0.15),
+    inset 0 2px 10px rgba(255, 255, 255, 0.5);
+  transition: all 0.3s ease;
+  animation: photoAppear 0.5s ease-out;
+
+  &:active {
+    transform: scale(0.95);
+    background: #f0f0f0;
+  }
+
+  .foto-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+
+  .foto-placeholder-icon {
+    font-size: 2.25rem;
+    color: #{$btn-color};
+    opacity: 0.7;
+    margin-bottom: 0.25rem;
+  }
+
+  .foto-hint {
+    font-family: 'Georgia', serif;
+    font-size: 0.65rem;
+    font-weight: 500;
+    color: #{$btn-color};
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+// ─── Formulario ────────────────────────────────────────────────────────────────
+.mesa-form {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+.field-wrapper {
+  position: relative;
+  animation: slideInLeft 0.4s ease-out calc(var(--field-index, 0) * 0.08s) both;
+}
+
+@for $i from 1 through 3 {
+  .field-wrapper:nth-child(#{$i}) {
+    --field-index: #{$i - 1};
+  }
+}
+
+.field-item {
+  --padding-start: 0.5rem;
+  --padding-end: 0.5rem;
+  --inner-padding-end: 0.5rem;
+  --min-height: 44px;
+  --border-radius: 12px;
+  --background: #{$bg-form};
+  --border-color: transparent;
+  --ion-item-background: #{$bg-form};
+  margin: 0 1rem 0.5rem;
+  transition: --border-color 0.3s ease, --background 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  &.item-has-focus {
+    --border-color: #{$btn-color};
+    --background: #ffffff;
+    box-shadow: 0 4px 12px rgba(183, 28, 28, 0.2);
+  }
+
+  ion-icon.field-icon {
+    color: #{$btn-color};
+    font-size: 1.1rem;
+    margin-right: 0.5rem;
+  }
+
+  .field-input {
+    --padding-start: 0.25rem;
+    font-size: 0.95rem;
+    font-family: 'Georgia', serif;
+  }
+
+  .field-select {
+    --padding-start: 0.25rem;
+    font-size: 0.95rem;
+    font-family: 'Georgia', serif;
+  }
+
+  ion-input,
+  ion-select {
+    --placeholder-color: var(--ion-color-medium-shade);
+    --placeholder-opacity: 0.6;
+  }
+}
+
+.field-item.item-has-focus {
+  --border-width: 2px;
+  --border-style: solid;
+}
+
+.field-error {
+  display: block;
+  padding: 0.125rem 1rem 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-top: -0.125rem;
+  animation: shake 0.4s ease-out;
+  color: #{$btn-color};
+}
+
+// ─── Botón submit (estilo igual a registration-form) ──────────────────────────
+.submit-btn {
+  --background: #{$btn-color};
+  --background-hover: #{$btn-hover};
+  --background-activated: #{$btn-hover};
+  --background-focused: #{$btn-hover};
+  --color: #{$btn-text};
+  --border-radius: 12px;
+  --box-shadow: #{$shadow};
+
+  width: calc(100% - 2rem);
+  height: auto;
+  min-height: 48px;
+  margin: 0.75rem 1rem 1rem;
+
+  font-family: 'Georgia', serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+
+  transition: all 0.3s ease;
+  animation: fadeInUp 0.5s ease-out 0.3s both;
+
+  &::part(native) {
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  ion-icon {
+    font-size: 1.25rem;
+    flex-shrink: 0;
+    margin-right: 12px;
+    color: #{$btn-text};
+  }
+
+  span {
+    flex: 1;
+    text-align: center;
+    padding-right: 32px;
+  }
+
+  &:active {
+    transform: scale(0.98);
+    --box-shadow: 0 2px 8px rgba(183, 28, 28, 0.3);
+  }
+
+  &:disabled {
+    --box-shadow: none;
+    opacity: 0.6;
+  }
+}
+
+
+.global-error {
+  display: block;
+  margin: 1rem;
+  padding: 0.75rem 1rem;
+  background: #ffffff;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-align: center;
+  color: #{$btn-color};
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+// ─── Keyframes ─────────────────────────────────────────────────────────────────
+@keyframes photoAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-2px);
+  }
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(2px);
+  }
+}
+
+// Responsive
+@media (max-width: 480px) {
+  .foto-container {
+    width: 100px;
+    height: 100px;
+  }
+
+  .field-item {
+    margin: 0 0.75rem 0.5rem;
+  }
+
+  .submit-btn {
+    width: calc(100% - 1.5rem);
+    margin: 0.75rem 0.75rem 0.75rem;
+    font-size: 0.95rem;
+    min-height: 44px;
+  }
+}

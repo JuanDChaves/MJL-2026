@@ -1,0 +1,39 @@
+<app-layout [title]="'Propina'" [showBackButton]="true" [backUrl]="`/detalle-cuenta/${idOrder}`">
+  <div class="propinas-content">
+    <div class="propinas-card">
+      <div class="card-header">
+        <h2>¿Cómo fue tu experiencia?</h2>
+        <p>Tu opinión nos ayuda a mejorar</p>
+      </div>
+
+      <div class="opciones-list">
+        @for (opcion of opciones; track opcion.nombre) {
+          <div
+            class="opcion-item"
+            [class]="opcion.colorClass"
+            [class.seleccionada]="opcionSeleccionada()?.nombre === opcion.nombre"
+            (click)="seleccionar(opcion)"
+          >
+            <div class="opcion-icono">{{ opcion.icono }}</div>
+            <div class="opcion-body">
+              <div class="opcion-header">
+                <div class="opcion-nombre">{{ opcion.nombre }}</div>
+                <div class="opcion-badge" [class]="opcion.colorClass">{{ opcion.porcentaje }}%</div>
+              </div>
+              <p class="opcion-descripcion">{{ opcion.descripcion }}</p>
+            </div>
+          </div>
+        }
+      </div>
+
+      <ion-button
+        expand="block"
+        class="confirmar-btn"
+        [disabled]="!opcionSeleccionada()"
+        (click)="confirmar()"
+      >
+        Confirmar Propina
+      </ion-button>
+    </div>
+  </div>
+</app-layout>

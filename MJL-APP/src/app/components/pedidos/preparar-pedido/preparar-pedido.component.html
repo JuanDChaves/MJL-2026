@@ -1,0 +1,55 @@
+<app-layout
+  [title]="getTitle()"
+  [showBackButton]="true"
+  [backUrl]="'/home'"
+>
+  <div class="orders-container">
+
+    @for (pedido of pedidos(); track pedido.id_pedido; let i = $index) {
+      <div class="order-card" [style.--anim-delay]="i * 0.08 + 's'">
+
+        <div class="order-header">
+          <div class="mesa-badge">
+            <span class="mesa-label">Mesa</span>
+            <span class="mesa-numero">#{{ pedido.numero_mesa }}</span>
+          </div>
+          <span class="order-time">{{ pedido.fecha_hora | date:'dd/MM HH:mm' }}</span>
+        </div>
+
+        <div class="order-divider"></div>
+
+        <div class="order-products">
+          @for (prod of pedido.productos; track prod.id) {
+            <div class="product-row">
+              <span class="prod-cantidad">{{ prod.cantidad }}×</span>
+              <span class="prod-nombre">{{ prod.nombre }}</span>
+            </div>
+          }
+        </div>
+
+        <div class="order-actions">
+          <ion-button
+            expand="block"
+            class="finish-btn"
+            (click)="finishOrder(pedido.id_pedido)"
+          >
+            <ion-icon name="checkmark" slot="start"></ion-icon>
+            Marcar Terminado
+          </ion-button>
+        </div>
+
+      </div>
+    }
+
+    @empty {
+      <div class="empty-state">
+        <div class="empty-icon-wrap">
+          <span class="empty-icon">{{ rolEmpleado() === 'cocinero' ? '🍳' : '🍸' }}</span>
+        </div>
+        <p class="empty-title">Sin pedidos en preparación</p>
+        <p class="empty-hint">Los nuevos pedidos aparecerán aquí</p>
+      </div>
+    }
+
+  </div>
+</app-layout>

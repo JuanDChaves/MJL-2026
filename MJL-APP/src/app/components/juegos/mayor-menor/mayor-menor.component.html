@@ -1,0 +1,153 @@
+<app-layout [title]="'Mayor o Menor'" [showBackButton]="true" [backUrl]="'/home'">
+
+  <ion-content class="game-content">
+
+    @if (!juegoEmpezado()) {
+      <!-- ═══ PANTALLA DE INICIO ═══ -->
+      <div class="start-screen">
+        <div class="start-logo">
+          <span class="logo-card">🃏</span>
+        </div>
+        <h1 class="start-title">Mayor o Menor</h1>
+        <p class="start-desc">
+          @if (manejador.primeraVez()) {
+            Adiviná si la siguiente carta es mayor o menor y ganá un descuento 🎁
+          } @else {
+            Adiviná si la siguiente carta es mayor o menor y divertite
+          }
+        </p>
+        <ion-button expand="block" class="play-btn" (click)="empezarJuego()">
+          <ion-icon slot="start" name="trophy-outline"></ion-icon>
+          <span>{{ manejador.primeraVez() ? 'Jugar y ganar descuento' : 'Jugar' }}</span>
+        </ion-button>
+      </div>
+    }
+
+    @if (juegoEmpezado() && !juegoTerminado()) {
+      <!-- rondaFinal: se muestra el tablero pero se oculta "Siguiente ronda" -->
+      <!-- ═══ JUEGO EN CURSO ═══ -->
+      <div class="game-screen">
+        <!-- Stats bar -->
+        <div class="stats-bar">
+          <div class="stat vidas">
+            @for (v of [1,2,3]; track v) {
+              <ion-icon
+                [name]="v <= cantidadDeVidas() ? 'heart' : 'heart-outline'"
+                class="heart-icon"
+                [class.heart-filled]="v <= cantidadDeVidas()"
+              ></ion-icon>
+            }
+          </div>
+          <div class="stat aciertos">
+            <ion-icon name="trophy-outline" class="stat-icon"></ion-icon>
+            <span>{{ aciertos() }}/5</span>
+          </div>
+          <div class="stat turno">
+            <span>Turno #{{ cantidadDeTurnos() }}</span>
+          </div>
+        </div>
+
+        <!-- Cards -->
+        <div class="cards-area">
+          <div class="card-col">
+            <div class="card-label">Tu carta</div>
+            <div class="card-wrapper player-card" [class.card-revealed]="true">
+              <img [src]="srcImgActual()" alt="Tu carta" class="card-img" />
+            </div>
+          </div>
+
+          <div class="card-vs">vs</div>
+
+          <div class="card-col">
+            <div class="card-label">PC</div>
+            <div class="card-wrapper pc-card" [class.card-revealed]="pcRevelada()">
+              @if (pcRevelada()) {
+                <img [src]="srcImgSiguiente()" alt="Carta PC" class="card-img" />
+              } @else {
+                <img [src]="srcImgIncognita()" alt="?" class="card-img card-back" />
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Resultado de la ronda -->
+        @if (resultadoRonda()) {
+          <div class="result-banner" [class.result-win]="resultadoRonda() === 'win'" [class.result-lose]="resultadoRonda() === 'lose'">
+            @if (resultadoRonda() === 'win') {
+              <span class="result-text">¡Correcto!</span>
+            } @else {
+              <span class="result-text">¡Incorrecto!</span>
+            }
+          </div>
+        }
+
+        <!-- Botones de acción -->
+        <div class="actions-area">
+          @if (!pcRevelada()) {
+            <div class="choice-row">
+              <ion-button expand="block" class="choice-btn btn-mayor" (click)="elegir(false)">
+                <ion-icon slot="start" name="arrow-up-outline"></ion-icon>
+                MAYOR
+              </ion-button>
+              <ion-button expand="block" class="choice-btn btn-menor" (click)="elegir(true)">
+                <ion-icon slot="start" name="arrow-down-outline"></ion-icon>
+                MENOR
+              </ion-button>
+            </div>
+          } @else if (!rondaFinal()) {
+            <ion-button expand="block" class="next-btn" (click)="proximaRonda()">
+              Siguiente ronda
+            </ion-button>
+          } @else {
+            <div class="end-waiting">
+              <span class="end-waiting-text">Calculando resultado...</span>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    @if (juegoTerminado()) {
+      <!-- ═══ JUEGO TERMINADO ═══ -->
+      <div class="end-screen">
+        <div class="end-card" [class.end-win]="gano()" [class.end-lose]="!gano()">
+          <div class="end-icon-wrapper">
+            @if (gano()) {
+              <span class="end-icon">🎉</span>
+            } @else {
+              <span class="end-icon">😞</span>
+            }
+          </div>
+
+          <h2 class="end-title">{{ gano() ? '¡Ganaste!' : '¡Perdiste!' }}</h2>
+
+          @if (gano() && manejador.descuento() !== 0) {
+            <p class="end-discount">🎁 Obtuviste un descuento especial</p>
+          }
+
+          <div class="end-stats">
+            <div class="end-stat">
+              <span class="end-stat-label">Aciertos</span>
+              <span class="end-stat-value">{{ aciertos() }}/5</span>
+            </div>
+            <div class="end-stat">
+              <span class="end-stat-label">Turnos</span>
+              <span class="end-stat-value">{{ cantidadDeTurnos() }}</span>
+            </div>
+            <div class="end-stat">
+              <span class="end-stat-label">Vidas restantes</span>
+              <span class="end-stat-value">{{ cantidadDeVidas() }}</span>
+            </div>
+          </div>
+
+          <ion-button expand="block" class="replay-btn" (click)="reiniciarJuego()">
+            <ion-icon slot="start" name="reload-outline"></ion-icon>
+            Jugar de nuevo
+          </ion-button>
+        </div>
+      </div>
+    }
+
+  </ion-content>
+
+</app-layout>

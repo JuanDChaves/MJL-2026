@@ -1,0 +1,15 @@
+#ignore ia files
+skills-lock.json
+AGENTS.md
+.agents
+sesiones.txt
+.opencode
+opencode.json
+
+#vscode 
+.vscode
+
+#supabase
+supabase/.temp
+supabase/migrations
+**/service-account.json

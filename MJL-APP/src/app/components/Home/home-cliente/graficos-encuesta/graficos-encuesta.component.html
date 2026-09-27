@@ -1,0 +1,39 @@
+<ion-content [fullscreen]="true" class="graficos-content">
+  @if (cargando) {
+    <div class="loading-overlay">
+      <img src="assets/icon-only.png" alt="Logo Empresa" class="spinner-logo bounce" />
+      <p class="loading-text">Cargando Estadísticas...</p>
+    </div>
+  } @else {
+    <div class="main-container">
+      
+      <div class="header">
+        <h2>Resultados de Encuestas</h2>
+        <p>Estadísticas en tiempo real</p>
+      </div>
+
+      <div class="chart-card">
+        <canvas #graficoCanvas></canvas>
+      </div>
+
+      <div class="controls-container">
+        <div class="navigation-buttons">
+          <ion-button color="warning" (click)="cambiarGrafico(-1)">
+            <ion-icon name="arrow-back-outline" slot="icon-only"></ion-icon>
+          </ion-button>
+          
+          <span class="indicator">Gráfico {{ graficoActual }} de 3</span>
+          
+          <ion-button color="warning" (click)="cambiarGrafico(1)">
+            <ion-icon name="arrow-forward-outline" slot="icon-only"></ion-icon>
+          </ion-button>
+        </div>
+
+        <ion-button expand="block" class="btn-primary mt-3" (click)="volver()">
+          Volver al Menú
+        </ion-button>
+      </div>
+
+    </div>
+  }
+</ion-content>

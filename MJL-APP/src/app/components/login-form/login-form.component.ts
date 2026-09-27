@@ -1,0 +1,265 @@
+import { Component, inject } from '@angular/core';
+import {
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+  FormControl,
+} from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import {
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardContent,
+  IonItem,
+  IonIcon,
+  IonInput,
+  IonButton,
+  IonList,
+  IonText,
+  IonSpinner,
+  IonFabButton,
+  IonFab,
+  IonFabList,
+  ModalController,
+} from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import {
+  mail,
+  lockClosed,
+  eye,
+  eyeOff,
+  arrowForward,
+  chevronUpCircle,
+  man,
+  colorWand,
+  personAdd,
+  people,
+  clipboard,
+  restaurant,
+  beer,
+  person,
+  fastFoodOutline,
+} from 'ionicons/icons';
+import { LoginService } from '../../services/login-service';
+import { DbService } from 'src/app/services/db-service';
+import { LocalStorageService } from 'src/app/services/local-storage-service';
+import { PushNotificationService } from 'src/app/services/push-notification-service';
+import { IUser } from 'src/app/interfaces/IUser';
+import { AnonymousUserRegistrationFormComponent } from '../anonymous-user-registration-form/anonymous-user-registration-form.component';
+import { VibrationsService } from 'src/app/services/vibrations-service';
+
+@Component({
+  selector: 'app-login-form',
+  templateUrl: './login-form.component.html',
+  styleUrls: ['./login-form.component.scss'],
+  imports: [
+    IonCard,
+    IonCardHeader,
+    IonCardTitle,
+    IonCardContent,
+    IonItem,
+    IonIcon,
+    IonInput,
+    IonButton,
+    IonList,
+    IonText,
+    IonSpinner,
+    ReactiveFormsModule,
+    IonFabButton,
+    IonFab,
+    IonFabList,
+  ],
+})
+export class LoginFormComponent {
+  private loginServ = inject(LoginService);
+  private dbServ = inject(DbService);
+  private storageServ = inject(LocalStorageService);
+  private pushServ = inject(PushNotificationService);
+  vibrateServ = inject(VibrationsService);
+  router = inject(Router);
+  modalAnon = inject(ModalController);
+
+  email = new FormControl('', [Validators.required, Validators.email]);
+  password = new FormControl('', [
+    Validators.required,
+    Validators.minLength(6),
+  ]);
+  loginForm = new FormGroup({
+    email: this.email,
+    password: this.password,
+  });
+
+  showPassword = false;
+  isLoading = false;
+  errorMessage: string | null = null;
+
+  constructor() {
+    addIcons({
+      mail,
+      lockClosed,
+      eye,
+      eyeOff,
+      arrowForward,
+      chevronUpCircle,
+      man,
+      colorWand,
+      personAdd,
+      people,
+      clipboard,
+      restaurant,
+      beer,
+      person,
+      fastFoodOutline,
+    });
+  }
+
+  get emailControl() {
+    return this.loginForm.get('email');
+  }
+
+  get passwordControl() {
+    return this.loginForm.get('password');
+  }
+
+  getEmailErrorMessage(): string | null {
+    if (!this.emailControl) return null;
+    if (this.emailControl.hasError('required')) {
+      return 'El correo es obligatorio';
+    }
+    if (this.emailControl.hasError('email')) {
+      return 'Ingrese un correo válido';
+    }
+    return null;
+  }
+
+  getPasswordErrorMessage(): string | null {
+    if (!this.passwordControl) return null;
+    if (this.passwordControl.hasError('required')) {
+      return 'La contraseña es obligatoria';
+    }
+    if (this.passwordControl.hasError('minlength')) {
+      return 'Mínimo 6 caracteres';
+    }
+    return null;
+  }
+
+  togglePassword() {
+    this.showPassword = !this.showPassword;
+  }
+
+  async onSubmit() {
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
+      return;
+    }
+
+    this.isLoading = true;
+    this.errorMessage = null;
+
+    try {
+      const { email, password } = this.loginForm.value;
+      const { data, error } = await this.dbServ.getOneByEmail(
+        'usuarios',
+        email!,
+      );
+      if (!data || error) {
+        this.errorMessage = 'Credenciales incorrectas';
+        await this.vibrateServ.vibrate();
+        return;
+      }
+      const user = data as IUser;
+      if (user.perfil === 'cliente' && !user.activo) {
+        this.errorMessage =
+          'El usuario no ha sido aprobado por el administrador';
+          await this.vibrateServ.vibrate();
+        return;
+      }
+      const response = await this.loginServ.initSession(email!, password!);
+      console.log(response);
+      if (response.error) {
+        if (response.error.code === 'invalid_credentials') {
+          this.errorMessage = 'Credenciales incorrectas';
+        } else {
+          this.errorMessage = 'Error al iniciar sesión';
+        }
+        await this.vibrateServ.vibrate();
+        return;
+      } else {
+        const response = await this.dbServ.getOneByEmail('usuarios', email!);
+        await this.storageServ.saveData('perfil', response.data.perfil);
+        await this.storageServ.saveData('user', response.data!);
+        console.log('guardado en el local storage exitoso');
+
+        // Cargamos el fcm token en la base de datos
+        this.pushServ
+          .init()
+          .catch((err: any) =>
+            console.warn('Push notifications not available:', err),
+          );
+
+        this.router.navigate(['/home']);
+      }
+    } catch (error: any) {
+      this.errorMessage = 'Credenciales incorrectas';
+      await this.vibrateServ.vibrate();
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+  async loginAsAnonymusUser() {
+    const modal = await this.modalAnon.create({
+      component: AnonymousUserRegistrationFormComponent,
+    });
+    await modal.present();
+
+    const { data, role } = await modal.onWillDismiss();
+    if (role === 'confirm' && data) {
+      this.router.navigate(['/home']);
+    }else if(role === 'error') {
+      await this.vibrateServ.vibrate();
+      this.errorMessage = data.message;
+    }
+
+  }
+
+  toRegister() {
+    this.router.navigate(['/register']);
+  }
+
+  autocompleteDuenio() {
+    this.email.setValue('matias123@gmail.com');
+    this.password.setValue('12345678');
+  }
+
+  autocompleteSupervisor() {
+    this.email.setValue('pablo123@gmail.com');
+    this.password.setValue('12345678');
+  }
+
+  autocompleteMetre() {
+    this.email.setValue('miguel123@gmail.com');
+    this.password.setValue('12345678');
+  }
+
+  autocompleteMozo() {
+    this.email.setValue('pepito@gmail.com');
+    this.password.setValue('12345678');
+  }
+
+  autocompleteCocinero() {
+    this.email.setValue('sofia123@gmail.com');
+    this.password.setValue('12345678');
+  }
+
+  autocompleteCliente() {
+    this.email.setValue('matu.93tkd@gmail.com');
+    this.password.setValue('12345678');
+  }
+
+  autocompleteCantinero() {
+    this.email.setValue('cantinero@gmail.com');
+    this.password.setValue('12345678');
+  }
+}

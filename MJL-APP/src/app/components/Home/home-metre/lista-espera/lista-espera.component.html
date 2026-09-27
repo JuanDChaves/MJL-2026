@@ -1,0 +1,41 @@
+<app-layout [title]="'Clientes en espera'" [showBackButton]="true" [backUrl]="'/home'">
+  <div class="waitlist-container">
+    @for (item of clientesEnEsperaList(); track item.id) {
+      <div class="waiter-card">
+        <div class="waiter-content">
+          <div class="waiter-top">
+            <div class="waiter-avatar">
+              @if (item.cliente.url_foto_perfil) {
+                <img [src]="item.cliente.url_foto_perfil" alt="" />
+              } @else {
+                <div class="initials-avatar">
+                  {{ item.cliente.nombres[0] }}{{ item.cliente.apellidos?.[0] ?? '' }}
+                </div>
+              }
+            </div>
+            <div class="waiter-info">
+              <h2 class="waiter-name">{{ item.cliente.nombres }} {{ item.cliente.apellidos }}</h2>
+              <p class="waiter-status">En espera</p>
+            </div>
+          </div>
+          <div class="waiter-actions">
+            <ion-button class="assign-btn" expand="block" (click)="asignarMesa(item)">
+              <ion-icon slot="start" name="checkmark"></ion-icon>
+              Asignar mesa
+            </ion-button>
+          </div>
+        </div>
+      </div>
+    }
+
+    @empty {
+      <div class="empty-state">
+        <div class="empty-icon-wrapper">
+          <ion-icon name="checkmark-circle" class="empty-icon"></ion-icon>
+        </div>
+        <p class="empty-text">No hay clientes en espera</p>
+        <p class="empty-hint">Los clientes aparecerán aquí cuando se anuncien</p>
+      </div>
+    }
+  </div>
+</app-layout>

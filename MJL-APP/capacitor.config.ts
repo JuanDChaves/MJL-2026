@@ -1,9 +1,10 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'MJL-APP',
-  webDir: 'www'
+  appId: 'com.htn.mjl2026',
+  appName: 'HTN',
+  webDir: 'www',
+
 };
 
 export default config;

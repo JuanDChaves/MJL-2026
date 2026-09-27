@@ -1,0 +1,17 @@
+<app-layout [title]="'Inicio'" [showBackButton]="false">
+  @if(this.userServ.userData()?.perfil === "mozo"){
+    <app-mozo-home-page></app-mozo-home-page>
+  } @else if(userServ.userData()?.perfil === 'cocinero') {
+     <app-home-cocinero></app-home-cocinero> 
+  }@else if (userServ.userData()?.perfil === 'supervisor' || userServ.userData()?.perfil === 'duenio') {
+    <app-home-supervisor></app-home-supervisor>
+  }@else if (userServ.userData()?.perfil === 'cantinero') {
+    <app-home-cantinero></app-home-cantinero>
+  } @else if (userServ.userData()?.perfil === 'cliente'){
+    <app-home-cliente></app-home-cliente>
+  } @else if (userServ.userData()?.perfil === 'metre'){ 
+    <app-home-metre></app-home-metre>
+  }@else {
+    <app-home-cliente></app-home-cliente>
+  }
+</app-layout>

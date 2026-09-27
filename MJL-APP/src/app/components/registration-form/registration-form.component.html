@@ -1,0 +1,283 @@
+<ion-content [fullscreen]="true" class="registration-content">
+  <div class="registration-container">
+    <!-- Header -->
+    <ion-header class="registration-header">
+      <ion-toolbar>
+        <ion-button
+          fill="clear"
+          slot="start"
+          (click)="goBack()"
+          class="back-button"
+        >
+          <ion-icon slot="icon-only" name="chevron-back"></ion-icon>
+        </ion-button>
+        <ion-title class="header-title">Nuevo Usuario</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <!-- Profile Photo Section -->
+    <div class="profile-photo-section">
+      <div class="photo-container" (click)="onSelectPhoto()">
+        <div class="photo-wrapper">
+            @if (viewProfilePhoto()) {
+            <img
+              [src]="viewProfilePhoto()"
+              alt="Foto de perfil"
+              class="profile-photo"
+              />
+              <div class="photo-overlay">
+              <ion-icon name="camera" class="camera-icon"></ion-icon>
+            </div>
+            } @else {
+              <div class="photo-placeholder">
+                <ion-icon name="camera" class="placeholder-icon"></ion-icon>
+              </div>
+            }            
+          </div>
+      </div>
+    </div>
+
+    <!-- Registration Form -->
+    <form
+      [formGroup]="form()"
+      (ngSubmit)="onSubmit()"
+      class="registration-form"
+    >
+      <ion-list class="fields-list">
+        <!-- Apellidos -->
+        <div class="field-wrapper">
+          <ion-item class="field-item">
+            <ion-icon name="person" slot="start" class="field-icon"></ion-icon>
+            <ion-input
+              formControlName="apellidos"
+              type="text"
+              label="Apellidos"
+              labelPlacement="floating"
+              autocomplete="family-name"
+              enterkeyhint="next"
+              placeholder="Ingrese apellidos"
+              class="field-input"
+            ></ion-input>
+          </ion-item>
+          @if (
+            f["apellidos"].touched &&
+            (f["apellidos"] | errorMessage: "apellidos")
+          ) {
+            <ion-text color="danger" class="field-error">
+              {{ f["apellidos"] | errorMessage: "apellidos" }}
+            </ion-text>
+          }
+        </div>
+
+        <!-- Nombres -->
+        <div class="field-wrapper">
+          <ion-item class="field-item">
+            <ion-icon name="person" slot="start" class="field-icon"></ion-icon>
+            <ion-input
+              formControlName="nombres"
+              type="text"
+              label="Nombres"
+              labelPlacement="floating"
+              autocomplete="given-name"
+              enterkeyhint="next"
+              placeholder="Ingrese nombres"
+              class="field-input"
+            ></ion-input>
+          </ion-item>
+          @if (
+            f["nombres"].touched && (f["nombres"] | errorMessage: "nombres")
+          ) {
+            <ion-text color="danger" class="field-error">
+              {{ f["nombres"] | errorMessage: "nombres" }}
+            </ion-text>
+          }
+        </div>
+
+        <!-- Número de Documento / CUIL -->
+        <div class="field-wrapper">
+          <ion-item class="field-item">
+            <ion-icon
+              name="document-text"
+              slot="start"
+              class="field-icon"
+            ></ion-icon>
+            <ion-input
+              formControlName="dni"
+              type="number"
+              label="Dni"
+              labelPlacement="floating"
+              autocomplete="off"
+              enterkeyhint="next"
+              placeholder="Ingrese el dni"
+              class="field-input"
+            ></ion-input>
+          </ion-item>
+          @if (f["dni"].touched && (f["dni"] | errorMessage: "dni")) {
+            <ion-text color="danger" class="field-error">
+              {{ f["dni"] | errorMessage: "dni" }}
+            </ion-text>
+          }
+        </div>
+
+        <!-- Número de  CUIL -->
+        @if (
+          userService.userData()?.perfil === "duenio" ||
+          userService.userData()?.perfil === "supervisor"
+        ) {
+          <div class="field-wrapper">
+            <ion-item class="field-item">
+              <ion-icon
+                name="document-text"
+                slot="start"
+                class="field-icon"
+              ></ion-icon>
+              <ion-input
+                formControlName="cuil"
+                type="number"
+                label="Cuil"
+                labelPlacement="floating"
+                autocomplete="off"
+                enterkeyhint="next"
+                placeholder="Ingrese el CUIL"
+                class="field-input"
+              ></ion-input>
+            </ion-item>
+            @if (f["cuil"].touched && (f["cuil"] | errorMessage: "cuil")) {
+              <ion-text color="danger" class="field-error">
+                {{ f["cuil"] | errorMessage: "cuil" }}
+              </ion-text>
+            }
+          </div>
+        }
+
+        <!-- Correo Electrónico -->
+        <div class="field-wrapper">
+          <ion-item class="field-item">
+            <ion-icon name="mail" slot="start" class="field-icon"></ion-icon>
+            <ion-input
+              formControlName="correoElectronico"
+              type="email"
+              label="Correo electrónico"
+              labelPlacement="floating"
+              autocomplete="email"
+              enterkeyhint="next"
+              placeholder="correo@ejemplo.com"
+              class="field-input"
+            ></ion-input>
+          </ion-item>
+          @if (
+            f["correoElectronico"].touched &&
+            (f["correoElectronico"] | errorMessage: "correoElectronico")
+          ) {
+            <ion-text color="danger" class="field-error">
+              {{ f["correoElectronico"] | errorMessage: "correoElectronico" }}
+            </ion-text>
+          }
+        </div>
+
+        <!-- Clave -->
+        <div class="field-wrapper">
+          <ion-item class="field-item">
+            <ion-icon
+              name="lock-closed"
+              slot="start"
+              class="field-icon"
+            ></ion-icon>
+            <ion-input
+              formControlName="clave"
+              [type]="showPassword() ? 'text' : 'password'"
+              label="Clave"
+              labelPlacement="floating"
+              autocomplete="new-password"
+              enterkeyhint="done"
+              placeholder="Mínimo 6 caracteres"
+              class="field-input"
+            ></ion-input>
+            <ion-button
+              fill="clear"
+              slot="end"
+              (click)="togglePassword()"
+              class="toggle-password-btn"
+            >
+              <ion-icon
+                slot="icon-only"
+                [name]="showPassword() ? 'eye-off' : 'eye'"
+              ></ion-icon>
+            </ion-button>
+          </ion-item>
+          @if (f["clave"].touched && (f["clave"] | errorMessage: "clave")) {
+            <ion-text color="danger" class="field-error">
+              {{ f["clave"] | errorMessage: "clave" }}
+            </ion-text>
+          }
+        </div>
+
+        <!-- Perfil -->
+        @if (userService.isLogged()) {
+          <div class="field-wrapper">
+            <ion-item class="field-item">
+              <ion-icon
+                name="people"
+                slot="start"
+                class="field-icon"
+              ></ion-icon>
+              <ion-select
+                formControlName="perfil"
+                label="Perfil"
+                labelPlacement="floating"
+                placeholder="Seleccionar perfil"
+                interface="popover"
+                class="field-select"
+              >
+                @for (perfil of this.profilelist(); track perfil.value) {
+                  <ion-select-option [value]="perfil.value">
+                    {{ perfil.label }}
+                  </ion-select-option>
+                }
+              </ion-select>
+            </ion-item>
+            @if (
+              f["perfil"].touched && (f["perfil"] | errorMessage: "perfil")
+            ) {
+              <ion-text color="danger" class="field-error">
+                {{ f["perfil"] | errorMessage: "perfil" }}
+              </ion-text>
+            }
+          </div>
+        }
+      </ion-list>
+
+      @if (errorMessage) {
+        <ion-text color="danger" class="global-error">
+          {{ errorMessage }}
+        </ion-text>
+      }
+
+      <!-- Scan qr Button -->
+      <ion-button
+        type="button"
+        expand="block"
+        (click)="scanQr()"
+        class="qr-button"
+      >
+        <ion-icon slot="start" name="qr-code-outline"></ion-icon>
+        <span>Leer QR</span>
+      </ion-button>
+
+      <!-- Submit Button -->
+      <ion-button
+        type="submit"
+        expand="block"
+        [disabled]="isSubmitting()"
+        class="submit-button"
+      >
+        @if (isSubmitting()) {
+          <ion-spinner name="crescent"></ion-spinner>
+        } @else {
+          <ion-icon slot="start" name="flash"></ion-icon>
+          <span>Crear Usuario</span>
+        }
+      </ion-button>
+    </form>
+  </div>
+</ion-content>

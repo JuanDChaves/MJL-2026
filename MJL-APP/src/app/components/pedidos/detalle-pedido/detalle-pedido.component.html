@@ -1,0 +1,153 @@
+<app-layout
+  [title]="'Estado del pedido'"
+  [showBackButton]="true"
+  [backUrl]="'/ingreso-local-cliente'"
+>
+  <div class="content-inner">
+    <!-- HEADER CARD -->
+    <ion-card class="user-card slide-up" style="--delay: 0s">
+      <ion-card-content>
+        <div class="user-info">
+          <ion-avatar class="user-avatar">
+            <ion-icon name="receipt-outline" class="avatar-icon"></ion-icon>
+          </ion-avatar>
+          <div class="user-details">
+            <h2 class="user-name">{{ order()?.nombre_cliente }}</h2>
+            <p class="user-detail-line">Mesa #{{ order()?.numero_mesa }}</p>
+            <ion-badge [color]="badgeColor()" class="estado-badge">
+              {{ order()?.estado }}
+            </ion-badge>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- SECTION TITLE -->
+    @if (confirmacionPedidoRecibido()) {
+      <ion-card class="recepcion-card slide-up" style="--delay: 0.05s">
+        <ion-card-content class="text-center">
+          <ion-icon name="restaurant-outline" class="recepcion-icon"></ion-icon>
+          <h3 class="recepcion-title">¡Tu pedido está en la mesa!</h3>
+          <p class="recepcion-text">
+            Confirmá la recepción de tu comida para habilitar los juegos y las
+            opciones de pago.
+          </p>
+          <ion-button
+            expand="block"
+            color="success"
+            (click)="confirmarRecepcion()"
+          >
+            <ion-icon slot="start" name="checkmark-outline"></ion-icon>
+            Confirmar Recepción
+          </ion-button>
+        </ion-card-content>
+      </ion-card>
+    }
+    @if (order()?.data?.length) {
+      <div class="section-title slide-up" style="--delay: 0.1s">
+        Productos ({{ totalItems() }})
+      </div>
+    }
+
+    <!-- SWIPER PRODUCTS -->
+    @if (order()?.data?.length) {
+      <div class="swiper-area slide-up" style="--delay: 0.15s">
+        <swiper-container
+          slides-per-view="1"
+          space-between="0"
+          pagination="true"
+          pagination-clickable="true"
+          class="product-swiper"
+        >
+          @for (prod of order()?.data; track prod.id_producto) {
+            <swiper-slide class="product-slide">
+              <div class="swiper-card">
+                <div class="swiper-card-top">
+                  <div class="product-icon-wrapper">
+                    <ion-icon
+                      [name]="
+                        prod.tipo === 'bebida'
+                          ? 'beer-outline'
+                          : 'restaurant-outline'
+                      "
+                    ></ion-icon>
+                  </div>
+                  <ion-badge class="qty-badge" color="dark"
+                    >x{{ prod.cantidad }}</ion-badge
+                  >
+                </div>
+                <span class="product-name">{{ prod.nombre }}</span>
+                <p class="product-desc">{{ prod.descripcion }}</p>
+                <div class="product-meta">
+                  <span class="meta-time">
+                    <ion-icon name="time-outline"></ion-icon>
+                    {{ prod.tiempo_elaboracion }} minutos
+                  </span>
+                  <span class="product-price">$ {{ prod.precio }}</span>
+                </div>
+              </div>
+            </swiper-slide>
+          }
+        </swiper-container>
+      </div>
+    }
+    <!-- SUMMARY CARD -->
+    @if (order()?.data?.length) {
+      <ion-card class="summary-card slide-up" style="--delay: 0.3s">
+        <ion-card-content>
+          <div class="summary-row">
+            <span class="summary-label">Items</span>
+            <span class="summary-value">{{ totalItems() }}</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-label">Tiempo estimado</span>
+            <span class="summary-value">{{ totalTime() }} minutos</span>
+          </div>
+          <div class="summary-row summary-total">
+            <span class="summary-label">{{this.manejadorJuego.descuento()>0?'Total con descuento':'Total'}}</span>
+            <span class="summary-value">$ {{ total() }}</span>
+          </div>
+          @if (this.order()?.estado !== "pendiente") {
+            <div class="summary-games-row">
+              <ion-button
+                fill="clear"
+                class="games-btn"
+                routerLink="/juegos"
+                [queryParams]="{ pedidoId: pedidoId() }"
+              >
+                <div class="btn-content">
+                  <ion-icon name="game-controller-outline"></ion-icon>
+                  <span class="btn-label">Jugar</span>
+                </div>
+              </ion-button>
+              @if (showEncuestaYPedirCuenta()) {
+                <ion-button
+                  fill="clear"
+                  class="games-btn"
+                  routerLink="/encuesta"
+                  [queryParams]="{ pedidoId: pedidoId() }"
+                >
+                  <div class="btn-content">
+                    <ion-icon name="clipboard-outline"></ion-icon>
+                    <span class="btn-label">Encuesta</span>
+                  </div>
+                </ion-button>
+                <ion-button
+                  fill="clear"
+                  class="games-btn"
+                  (click)="pedirCuenta()"
+                  [queryParams]="{ pedidoId: pedidoId() }"
+                >
+                  <div class="btn-content">
+                    <ion-icon name="wallet-outline"></ion-icon>
+                    <span class="btn-label">Cuenta</span>
+                  </div>
+                </ion-button>
+              }
+            </div>
+          }
+        </ion-card-content>
+      </ion-card>
+    }
+  </div>
+</app-layout>

@@ -1,0 +1,89 @@
+$bg-color: #F5A623;
+$btn-color: #B71C1C;
+$text-dark: #1A1A1A;
+
+.graficos-content {
+  --background: #{$bg-color};
+}
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 16px;
+}
+
+.header {
+  text-align: center;
+  color: white;
+  margin-bottom: 16px;
+
+  h2 { font-weight: bold; font-size: 1.8rem; margin: 0; }
+  p { font-size: 1.1rem; margin-top: 4px; }
+}
+
+.chart-card {
+  background-color: #FFFFFF;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  flex-grow: 1; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  
+  canvas {
+    max-height: 100%;
+    width: 100% !important;
+  }
+}
+
+.controls-container {
+  background-color: #FFFFFF;
+  border-radius: 16px;
+  padding: 16px;
+  margin-top: 16px;
+  box-shadow: 0 -4px 16px rgba(0,0,0,0.1);
+}
+
+.navigation-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+
+  .indicator {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: $text-dark;
+  }
+}
+
+.btn-primary {
+  --background: #{$btn-color};
+  --border-radius: 12px;
+  font-weight: bold;
+  height: 56px;
+  font-size: 1.2rem;
+}
+
+// Spinner Personalizado
+.loading-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(#F5A623, 0.95);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  
+  .spinner-logo { width: 120px; }
+  .loading-text { color: #FFFFFF; font-size: 1.4rem; font-weight: bold; margin-top: 16px; }
+  .bounce { animation: bounce 1.5s infinite alternate; }
+}
+@keyframes bounce {
+  from { transform: translateY(0); }
+  to { transform: translateY(-20px); }
+}

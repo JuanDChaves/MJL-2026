@@ -1,0 +1,150 @@
+/* Fondo principal Naranja */
+.custom-background {
+  --background: #ed9b24; /* Naranja similar al de tu captura */
+}
+
+.custom-toolbar {
+  --background: #ed9b24;
+  --border-width: 0;
+}
+
+.custom-title {
+  font-weight: 800;
+  color: #000000;
+  font-size: 1.2rem;
+}
+
+.form-wrapper {
+  max-width: 600px;
+  margin: 0 auto;
+  padding-top: 10px;
+}
+
+.transparent-list {
+  background: transparent;
+  padding: 0;
+}
+
+/* Estilo de los inputs idéntico a tu captura (blancos, redondeados) */
+.custom-input {
+  --background: #f3e9da;
+  --border-radius: 12px; /* Redondeado, ajusta si los quieres más como píldora a 30px */
+  --padding-start: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  border: 2px solid transparent;
+
+  /* ¡AQUÍ ESTÁ LA CLAVE PARA EL TEXTO NEGRO! */
+  ion-input, ion-textarea {
+    --color: #000000 !important; /* Letras negras al escribir */
+    --placeholder-color: #95a5a6; /* Gris para que el placeholder se diferencie */
+    --placeholder-opacity: 0.8;
+    font-weight: 500;
+  }
+}
+
+/* Color rojo para los íconos de la izquierda */
+.input-icon {
+  color: #b31d1d; /* Rojo oscuro de tu app */
+  font-size: 1.3rem;
+  margin-right: 15px;
+}
+
+.error-msg {
+  display: flex;
+  align-items: center;
+  color: #ffffff; /* Texto de error en blanco para contrastar con el naranja */
+  font-size: 0.85rem;
+  font-weight: bold;
+  margin: -8px 0 12px 15px;
+}
+
+/* Sección de Fotos en blanco para que resalte */
+.fotos-seccion {
+  margin-top: 20px;
+  background: #f3e9da;
+  border-radius: 15px;
+  padding: 15px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+
+  .fotos-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #b31d1d;
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    font-weight: 700;
+
+    ion-icon {
+      margin-right: 8px;
+    }
+  }
+}
+
+.foto-col {
+  padding: 4px;
+}
+
+/* Cuadrados para las fotos con borde rojo */
+.foto-card {
+  width: 100%;
+  aspect-ratio: 1 / 1; 
+  background-color: #fcebeb; /* Un fondito rojo muy claro */
+  border: 2px dashed #b31d1d; /* Borde rojo */
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease-in-out;
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  .placeholder {
+    color: #b31d1d;
+    ion-icon {
+      font-size: 2.2rem;
+    }
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .edit-overlay {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    background: rgba(179, 29, 29, 0.8);
+    border-radius: 50%;
+    padding: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    ion-icon {
+      color: white;
+      font-size: 1rem;
+    }
+  }
+}
+
+/* Botón Rojo Principal */
+.submit-btn {
+  --background: #b31d1d;
+  --background-activated: #8e1515;
+  --border-radius: 8px;
+  --color: #ffffff;
+  margin-top: 25px;
+  height: 50px;
+  font-weight: 800;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+}

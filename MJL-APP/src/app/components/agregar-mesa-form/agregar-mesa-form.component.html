@@ -1,0 +1,103 @@
+<app-layout [title]="'Agregar Mesa'" [showBackButton]="true" [backUrl]="'/home'">
+  <div class="mesa-form-container">
+
+    <!-- Sección de foto -->
+    <div class="foto-section">
+      <div class="foto-container" (click)="tomarFoto()">
+        @if (photoPreview) {
+          <img [src]="photoPreview" alt="Foto de mesa" class="foto-preview" />
+        } @else {
+          <ion-icon name="camera" class="foto-placeholder-icon"></ion-icon>
+          <span class="foto-hint">Agregar foto</span>
+        }
+      </div>
+    </div>
+
+    <!-- Formulario -->
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="mesa-form">
+
+      <!-- Número de mesa -->
+      <div class="field-wrapper">
+        <ion-item class="field-item">
+          <ion-icon name="grid" slot="start" class="field-icon"></ion-icon>
+          <ion-input
+            formControlName="numeroMesa"
+            type="number"
+            label="Número de mesa"
+            labelPlacement="floating"
+            placeholder="Ingrese el número de mesa"
+            class="field-input"
+          ></ion-input>
+        </ion-item>
+        @if (f['numeroMesa'].touched && (f['numeroMesa'] | errorMessage:'numeroMesa')) {
+          <ion-text color="danger" class="field-error">
+            {{ f["numeroMesa"] | errorMessage:"numeroMesa" }}
+          </ion-text>
+        }
+      </div>
+
+      <!-- Cantidad de comensales -->
+      <div class="field-wrapper">
+        <ion-item class="field-item">
+          <ion-icon name="people" slot="start" class="field-icon"></ion-icon>
+          <ion-input
+            formControlName="cantidadComensales"
+            type="number"
+            label="Cantidad de comensales"
+            labelPlacement="floating"
+            placeholder="Ingrese la cantidad"
+            class="field-input"
+          ></ion-input>
+        </ion-item>
+        @if (f['cantidadComensales'].touched && (f['cantidadComensales'] | errorMessage:'cantidadComensales')) {
+          <ion-text color="danger" class="field-error">
+            {{ f["cantidadComensales"] | errorMessage:"cantidadComensales" }}
+          </ion-text>
+        }
+      </div>
+
+      <!-- Tipo de mesa -->
+      <div class="field-wrapper">
+        <ion-item class="field-item">
+          <ion-icon name="restaurant" slot="start" class="field-icon"></ion-icon>
+          <ion-select
+            formControlName="tipoMesa"
+            label="Tipo de mesa"
+            labelPlacement="floating"
+            placeholder="Seleccionar tipo"
+            interface="popover"
+            class="field-select"
+          >
+            @for (tipo of tiposMesa; track tipo.value) {
+              <ion-select-option [value]="tipo.value">
+                {{ tipo.label }}
+              </ion-select-option>
+            }
+          </ion-select>
+        </ion-item>
+        @if (f['tipoMesa'].touched && (f['tipoMesa'] | errorMessage:'tipoMesa')) {
+          <ion-text color="danger" class="field-error">
+            {{ f["tipoMesa"] | errorMessage:"tipoMesa" }}
+          </ion-text>
+        }
+      </div>
+
+      @if (errorMessage) {
+      <ion-text color="danger" class="global-error">
+        {{ errorMessage }}
+      </ion-text>
+      }
+
+      <!-- Botón submit -->
+      <ion-button type="submit" expand="block" class="submit-btn">
+        @if (isSubmitting()) {
+        <ion-spinner name="crescent"></ion-spinner>
+        } @else {
+        <ion-icon slot="start" name="flash"></ion-icon>
+        <span>Crear mesa</span>
+        }
+      </ion-button>
+
+    </form>
+  </div>
+</app-layout>

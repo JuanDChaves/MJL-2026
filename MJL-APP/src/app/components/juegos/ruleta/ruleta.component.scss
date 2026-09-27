@@ -1,0 +1,133 @@
+$bg-color: #F5A623;
+$btn-rojo: #B71C1C;
+$rueda-size: 280px;
+
+.ruleta-bg {
+  --background: #{$bg-color};
+}
+
+.juego-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 16px;
+  justify-content: space-between;
+}
+
+.header {
+  text-align: center;
+  color: white;
+  margin-top: 20px;
+  h2 { font-weight: bold; font-size: 2rem; margin-bottom: 8px; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);}
+  p { font-size: 1.1rem; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 8px;}
+}
+
+// -- LA RULETA DE 4 PORCIONES (CORREGIDA) --
+$rueda-size: 300px; // Hacemos la ruleta un poco más grande
+
+.ruleta-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px auto;
+  
+  // SOLUCIÓN AL OVALADO: Forzamos el ancho y alto estricto
+  width: $rueda-size;
+  height: $rueda-size;
+  min-width: $rueda-size;
+  min-height: $rueda-size;
+}
+
+.puntero {
+  position: absolute;
+  top: -25px; 
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 3.5rem; // Puntero más grande para que se note
+  color: $btn-rojo;
+  z-index: 10; 
+  text-shadow: 0px 3px 5px rgba(0,0,0,0.5);
+}
+
+.rueda {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 6px solid white;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+  position: relative;
+  overflow: hidden;
+  transition: transform 4s cubic-bezier(0.25, 0.1, 0.15, 1); 
+
+  .seccion {
+    position: absolute;
+    // Ubicamos cada cuadrado en la esquina superior derecha
+    top: 0;
+    left: 50%;
+    width: 50%; 
+    height: 50%; 
+    // El eje de rotación será la esquina inferior izquierda (el centro de la ruleta)
+    transform-origin: 0% 100%; 
+    border: 1px solid rgba(255,255,255,0.4);
+    box-sizing: border-box;
+
+    span {
+      position: absolute;
+      // Centramos el texto visualmente dentro de la porción
+      left: 45%;
+      top: 45%;
+      transform: translate(-50%, -50%) rotate(45deg);
+      font-weight: bold;
+      font-size: 1.8rem;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+    }
+  }
+
+  // Rotamos cada cuadrante exactamente 90 grados
+  .s-20 { background-color: #9C27B0; transform: rotate(0deg); }
+  .s-15 { background-color: #FFC107; transform: rotate(90deg); }
+  .s-10 { background-color: #FF5722; transform: rotate(180deg); }
+  .s-0  { background-color: #607D8B; transform: rotate(270deg); }
+}
+
+// -- RESULTADOS Y BOTONES --
+.panel-resultados {
+  background-color: white;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 -4px 16px rgba(0,0,0,0.1);
+}
+
+.mensaje-box {
+  background: #f8f9fa;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+  margin-bottom: 20px;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  h3 { margin: 0; color: #333; font-size: 1.2rem; font-weight: 600;}
+  
+  &.destacado {
+    background: #e8f5e9;
+    border-color: #4CAF50;
+    h3 { color: #2E7D32; font-weight: bold; font-size: 1.3rem; }
+  }
+}
+
+.btn-girar {
+  --background: #{$btn-rojo};
+  font-weight: bold;
+  height: 56px;
+  font-size: 1.2rem;
+}
+.btn-volver {
+  height: 50px;
+  font-weight: 600;
+}

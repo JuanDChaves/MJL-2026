@@ -1,0 +1,257 @@
+$noise-svg: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.02'/%3E%3C/svg%3E";
+
+$bg-amber: #F5A623;
+$bg-beige: #f3e9da;
+$btn-color: #B71C1C;
+$btn-hover: #D32F2F;
+$btn-text: #FFFFFF;
+$text-dark: #1A1A1A;
+$text-muted: #6E4839;
+$shadow-card: 0 4px 16px rgba(0, 0, 0, 0.18);
+$radius: 12px;
+
+// ─── Header ────────────────────────────────────────────────────────────────────
+.modal-header {
+  --background: #{$bg-amber};
+  --box-shadow: none;
+
+  ion-toolbar {
+    --background: #{$bg-amber};
+    --padding-top: 0;
+    --padding-bottom: 0;
+    padding: 0 8px;
+  }
+
+  .header-title {
+    font-family: 'Georgia', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: $text-dark;
+  }
+
+  .close-btn {
+    font-family: 'Georgia', serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    --color: #{$btn-color};
+    --padding-start: 8px;
+    --padding-end: 8px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+// ─── Modal content ───────────────────────────────────────────────────────────
+.modal-content {
+  --background: transparent;
+  background: $bg-beige;
+  background-image: url($noise-svg);
+  background-blend-mode: overlay;
+  position: relative;
+}
+
+.modal-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+// ─── Client section ───────────────────────────────────────────────────────────
+.client-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+  position: relative;
+  padding-bottom: 16px;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 48px;
+    height: 3px;
+    background: $btn-color;
+    border-radius: 2px;
+  }
+}
+
+.client-avatar {
+  position: relative;
+}
+
+.avatar-initials {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: $btn-color;
+  color: $btn-text;
+  font-family: 'Georgia', serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: 0 4px 12px rgba(183, 28, 28, 0.3);
+}
+
+.pulse-dot {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #2E7D32;
+  border: 2px solid $bg-beige;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.client-name {
+  font-family: 'Georgia', serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: $text-dark;
+  margin: 0;
+}
+
+.client-subtitle {
+  font-size: 0.9rem;
+  color: $text-muted;
+  margin: 0;
+}
+
+// ─── Form ────────────────────────────────────────────────────────────────────
+.field-wrapper {
+  position: relative;
+}
+
+.modal-form {
+  .form-item {
+    --background: #{$bg-beige};
+    --border-radius: #{$radius};
+    --padding-start: 0.5rem;
+    --inner-padding-end: 0.5rem;
+    --min-height: 48px;
+    --border-color: transparent;
+    --highlight-color-focused: #{$btn-color};
+    --highlight-height: 2px;
+    border-radius: $radius;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.2s ease, --background 0.2s ease;
+
+    &:focus-within {
+      box-shadow: 0 4px 14px rgba(183, 28, 28, 0.2);
+      --background: #ffffff;
+    }
+
+    ion-icon.field-icon {
+      color: $btn-color;
+      font-size: 1.2rem;
+      margin-right: 0.5rem;
+    }
+  }
+
+  .mesa-select {
+    font-family: 'Georgia', serif;
+    font-size: 1rem;
+    color: $text-dark;
+    --placeholder-color: #{$text-muted};
+    --placeholder-opacity: 0.6;
+    width: 100%;
+    --padding-start: 4px;
+    --padding-end: 4px;
+  }
+}
+
+// ─── Confirm button ──────────────────────────────────────────────────────────
+.confirm-btn {
+  --background: #{$btn-color};
+  --background-hover: #{$btn-hover};
+  --background-activated: #{$btn-hover};
+  --background-focused: #{$btn-hover};
+  --color: #{$btn-text};
+  --border-radius: #{$radius};
+  --box-shadow: 0 4px 14px rgba(183, 28, 28, 0.35);
+
+  font-family: 'Georgia', serif;
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin: 0;
+  min-height: 50px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &::part(native) {
+    padding: 12px 20px;
+  }
+
+  &:hover:not([disabled]) {
+    transform: translateY(-1px);
+    --box-shadow: 0 6px 20px rgba(183, 28, 28, 0.45);
+  }
+
+  &:active:not([disabled]) {
+    transform: translateY(1px);
+    --box-shadow: 0 2px 6px rgba(183, 28, 28, 0.25);
+  }
+
+  &[disabled] {
+    opacity: 0.4;
+  }
+}
+
+// ─── Animations ───────────────────────────────────────────────────────────────
+.fade-in-up {
+  animation: fadeInUp 0.45s ease forwards;
+  opacity: 0;
+  animation-delay: var(--delay, 0s);
+}
+
+.slide-in-left {
+  animation: slideInLeft 0.4s ease forwards;
+  opacity: 0;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-20px); }
+  to   { opacity: 1; transform: translateX(0);     }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%      { transform: scale(1.3); opacity: 0.7; }
+}
+
+// ─── Responsive ──────────────────────────────────────────────────────────────
+@media (max-width: 480px) {
+  .modal-body {
+    padding: 20px;
+    gap: 24px;
+  }
+
+  .avatar-initials {
+    width: 60px;
+    height: 60px;
+    font-size: 1.3rem;
+  }
+
+  .client-name {
+    font-size: 1.15rem;
+  }
+}
